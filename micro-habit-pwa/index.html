@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="theme-color" content="#f4efe2" />
+    <title>微习惯系统</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="./config.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Micro Habit</p>
+          <h1>微习惯系统</h1>
+        </div>
+        <button id="open-settings" class="ghost-button" type="button">设置</button>
+      </header>
+
+      <main class="stage">
+        <section class="task-card" aria-live="polite">
+          <p id="mode-badge" class="mode-badge">本地模式</p>
+          <p id="task-order" class="task-order">今天第 1 项</p>
+          <h2 id="task-title" class="task-title">先创建一个微习惯</h2>
+          <p id="task-hint" class="task-hint">
+            打开设置页，添加一些你想长期坚持的小动作。
+          </p>
+          <div class="task-actions">
+            <button id="complete-task" class="primary-button" type="button">
+              完成
+            </button>
+            <button id="skip-task" class="secondary-button" type="button">
+              跳过
+            </button>
+          </div>
+        </section>
+
+        <section class="today-panel">
+          <div class="today-header">
+            <h3>今日进度</h3>
+            <p id="today-progress">0 / 0</p>
+          </div>
+          <ul id="today-list" class="today-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="settings-dialog" class="settings-dialog">
+      <form method="dialog" class="settings-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Settings</p>
+            <h2>设置你的微习惯</h2>
+          </div>
+          <button id="close-settings" class="ghost-button" type="submit">关闭</button>
+        </header>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>同步状态</h3>
+            <p id="sync-status">未连接 Supabase，当前只保存在本机。</p>
+          </div>
+
+          <div class="auth-grid">
+            <label>
+              邮箱
+              <input id="auth-email" type="email" autocomplete="email" />
+            </label>
+            <label>
+              密码
+              <input
+                id="auth-password"
+                type="password"
+                autocomplete="current-password"
+              />
+            </label>
+          </div>
+
+          <div class="auth-actions">
+            <button id="sign-in" class="secondary-button" type="button">登录</button>
+            <button id="sign-up" class="secondary-button" type="button">注册</button>
+            <button id="sign-out" class="ghost-button" type="button">退出登录</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>新增微习惯</h3>
+            <p>建议写成 1 分钟内能完成的动作。</p>
+          </div>
+
+          <div class="habit-form">
+            <label>
+              习惯内容
+              <input
+                id="habit-title-input"
+                type="text"
+                maxlength="80"
+                placeholder="例如：喝一口水"
+              />
+            </label>
+            <button id="add-habit" class="primary-button" type="button">添加</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>我的习惯列表</h3>
+            <p>可排序、停用和删除。</p>
+          </div>
+          <ul id="habit-list" class="habit-list"></ul>
+        </section>
+      </form>
+    </dialog>
+  </body>
+</html>

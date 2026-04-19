@@ -1,0 +1,17 @@
+{
+  "name": "微习惯系统",
+  "short_name": "微习惯",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4efe2",
+  "theme_color": "#f4efe2",
+  "description": "手机和电脑同步的超大字微习惯页面。",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

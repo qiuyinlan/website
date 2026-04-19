@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI小说创作流水线 - 专业导航版</title>
+    <style>
+        :root { --p-color: #2563eb; --bg: #f1f5f9; --code-bg: #111; --code-color: #0f0; --border: #e2e8f0; }
+        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
+        
+        /* 侧边栏 - 章节导航 */
+        #chapter-sidebar { width: 220px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 20px; font-weight: bold; color: var(--p-color); border-bottom: 1px solid var(--border); }
+        .nav-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .nav-item { padding: 8px 12px; font-size: 13px; color: #475569; cursor: pointer; border-radius: 4px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .nav-item:hover { background: #f8fafc; color: var(--p-color); }
+        .nav-item.active-nav { background: #eff6ff; color: var(--p-color); font-weight: bold; }
+
+        /* 中间内容区 */
+        #main { flex: 1; display: flex; flex-direction: column; background: #fff; }
+        .tab-nav { display: flex; background: #fff; border-bottom: 1px solid var(--border); padding: 0 20px; }
+        .tab-btn { padding: 15px 20px; cursor: pointer; font-size: 14px; font-weight: bold; color: #64748b; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--p-color); border-bottom-color: var(--p-color); }
+
+        .workspace { display: flex; flex: 1; overflow: hidden; padding: 20px; gap: 20px; }
+        .editor-part { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .output-part { flex: 1.2; display: flex; flex-direction: column; overflow-y: auto; padding-right: 10px; scroll-behavior: smooth; }
+
+        textarea { width: 100%; flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 15px; font-size: 14px; line-height: 1.6; resize: none; background: #fff; }
+        textarea:focus { outline: 2px solid #bfdbfe; }
+
+        /* 卡片样式 */
+        .card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
+
+        /* 提示词黑框 */
+        .prompt-box { background: var(--code-bg); color: var(--code-color); padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; white-space: pre-wrap; position: relative; }
+        
+        /* 按钮 */
+        button { cursor: pointer; border: none; border-radius: 4px; font-weight: bold; transition: 0.2s; }
+        .btn-copy { background: #334155; color: #fff; padding: 4px 8px; font-size: 11px; }
+        .btn-action { width: 100%; padding: 10px; font-size: 14px; background: var(--p-color); color: white; border-radius: 6px; }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-secondary { background: #e2e8f0; color: #334155; padding: 10px 14px; font-size: 13px; }
+        .btn-secondary:hover { background: #cbd5e1; }
+        .action-row { display: flex; gap: 10px; align-items: center; }
+        .save-hint { font-size: 12px; color: #64748b; text-align: right; }
+
+        /* 分开复制按钮 */
+        .copy-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-title { flex: 1; background: #3b82f6; color: white; padding: 10px; font-size: 13px; }
+        .btn-body { flex: 2; background: #10b981; color: white; padding: 10px; font-size: 13px; }
+
+        .word-tag { font-size: 11px; color: #94a3b8; font-weight: normal; }
+    </style>
+</head>
+<body>
+
+<!-- 左侧侧边栏导航 -->
+<div id="chapter-sidebar">
+    <div class="sidebar-header">章节导航</div>
+    <div id="nav-list" class="nav-list">
+        <!-- 动态生成目录 -->
+    </div>
+</div>
+
+<!-- 主操作区 -->
+<div id="main">
+        <div class="tab-nav">
+        <div class="tab-btn active" data-tab="gen" onclick="switchTab('gen', this)">1. 细纲转提示词</div>
+        <div class="tab-btn" data-tab="parse" onclick="switchTab('parse', this)">2. 正文解析(无号标题)</div>
+    </div>
+
+    <div class="workspace">
+        <!-- 输入区 -->
+        <div class="editor-part">
+            <div id="input-label" style="font-weight: bold; font-size: 14px;">批量输入细纲大纲：</div>
+            <textarea id="main-input" placeholder="请在此输入内容..." oninput="autoRefresh()"></textarea>
+            <div class="action-row">
+                <button class="btn-action" onclick="manualRefresh()">立即解析并同步导航</button>
+                <button class="btn-secondary" onclick="clearStoredContent()">清除当前内容</button>
+            </div>
+            <div class="save-hint">两个标签页的输入内容会分别保存在本机浏览器的 localStorage 中</div>
+        </div>
+
+        <!-- 输出预览区 -->
+        <div id="output-list" class="output-part">
+            <!-- 动态生成卡片 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const CONFIG = {
+        activeTab: 'gen',
+        STORAGE_KEY: 'novel-pipeline-state',
+        tabInputs: {
+            gen: '',
+            parse: ''
+        },
+        PREFIX: `请根据下面章节大纲创作正文。
+        
+核心要求（必须严格遵守）：
+1. 联系章节上下文创作
+2. 网文格式：多用短句、短段落（一段不超过3行），适合手机快速滑动阅读。
+3. 风格调性：用最符合该小说设定的写作风格创作或者根据上传的上一章的正文风格创作下一章
+4. 正文字数控制（重要）：1600-1700字左右
+5. 剧情截断：严格按照大纲写，写到大纲的“结尾钩子”处立刻停下，绝对不要提前写下一章的内容，也不要写总结性的结尾。
+
+正文带章节标题，标题是一级标题，格式：eg 第一章就是 1.xxx
+
+【`,
+        SUFFIX: `】
+
+用一个新文档展示
+注意：“极其”这个词，一章内，不要出现超过3次
+不要过度修辞。`
+    };
+
+    function getTabMeta(type) {
+        return type === 'gen'
+            ? { label: '批量输入细纲大纲：', placeholder: '第 1 章：标题...' }
+            : { label: '粘贴AI生成的正文全文：', placeholder: '1.标题\n内容...' };
+    }
+
+    function syncCurrentTabInput() {
+        CONFIG.tabInputs[CONFIG.activeTab] = document.getElementById('main-input').value;
+    }
+
+    function updateTabUi(type, btn) {
+        CONFIG.activeTab = type;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const targetBtn = btn || document.querySelector(`.tab-btn[data-tab="${type}"]`);
+        if (targetBtn) {
+            targetBtn.classList.add('active');
+        }
+        const meta = getTabMeta(type);
+        document.getElementById('input-label').innerText = meta.label;
+        document.getElementById('main-input').placeholder = meta.placeholder;
+        document.getElementById('main-input').value = CONFIG.tabInputs[type] || '';
+    }
+
+    function switchTab(type, btn) {
+        syncCurrentTabInput();
+        updateTabUi(type, btn);
+        saveState();
+        manualRefresh();
+    }
+
+    function autoRefresh() {
+        syncCurrentTabInput();
+        saveState();
+        // 输入内容较少时自动刷新，内容多时建议手动点击
+        if (document.getElementById('main-input').value.length < 5000) {
+            manualRefresh();
+        }
+    }
+
+    function manualRefresh() {
+        syncCurrentTabInput();
+        const input = document.getElementById('main-input').value.trim();
+        const nav = document.getElementById('nav-list');
+        const out = document.getElementById('output-list');
+        saveState();
+        nav.innerHTML = '';
+        out.innerHTML = '';
+
+        if (!input) return;
+
+        if (CONFIG.activeTab === 'gen') {
+            // 模式1：解析细纲 (识别 "第 X 章")
+            const chapters = input.split(/(?=第\s*\d+\s*章)/g).map(s => s.trim()).filter(Boolean);
+            chapters.forEach((ch, i) => {
+                const header = ch.split('\n')[0];
+                const id = `item-gen-${i}`;
+                
+                // 导航
+                createNavItem(header, id);
+                
+                // 卡片
+                const prompt = '```\n' + CONFIG.PREFIX + ch + CONFIG.SUFFIX + '\n```';
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = id;
+                card.innerHTML = `
+                    <div class="card-title">
+                        <span>${header}</span>
+                        <button class="btn-copy" onclick="copyText(this, \`${prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">复制提示词</button>
+                    </div>
+                    <div class="prompt-box">${prompt}</div>
+                `;
+                out.appendChild(card);
+            });
+        } else {
+            // 模式2：解析正文 (识别 "1.标题" 或 "第X章")
+            const chapters = input.split(/(?=\d+[\.|\s|、|：])|(?=第\s*\d+\s*章)/g).map(s => s.trim()).filter(Boolean);
+            chapters.forEach((ch, i) => {
+                const lines = ch.split('\n');
+                const rawTitle = lines[0];
+                const body = lines.slice(1).join('\n').trim();
+                const id = `item-parse-${i}`;
+
+                // 清洗标题：去掉开头的数字和标点 (1.标题 -> 标题)
+                const cleanTitle = rawTitle.replace(/^\d+[\.|\s|、|：]\s*/, '').replace(/^第\s*\d+\s*章\s*[:：]?\s*/, '');
+
+                // 导航
+                createNavItem(cleanTitle, id);
+
+                // 卡片
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = id;
+                card.innerHTML = `
+                    <div class="card-title">
+                        <span>${cleanTitle} <span class="word-tag">(约${body.length}字)</span></span>
+                    </div>
+                    <div style="font-size: 13px; color: #64748b; line-height: 1.4; max-height: 100px; overflow: hidden; mask-image: linear-gradient(to bottom, black 50%, transparent 100%);">
+                        ${body.substring(0, 200)}...
+                    </div>
+                    <div class="copy-group">
+                        <button class="btn-title" onclick="copyText(this, \`${cleanTitle.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">复制纯净标题</button>
+                        <button class="btn-body" onclick="copyText(this, \`${body.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">复制章节正文</button>
+                    </div>
+                `;
+                out.appendChild(card);
+            });
+        }
+    }
+
+    function createNavItem(text, targetId) {
+        const nav = document.getElementById('nav-list');
+        const item = document.createElement('div');
+        item.className = 'nav-item';
+        item.innerText = text;
+        item.onclick = () => {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-nav'));
+            item.classList.add('active-nav');
+            document.getElementById(targetId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+        nav.appendChild(item);
+    }
+
+    function copyText(btn, text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        const originalText = btn.innerText;
+        btn.innerText = "√ 已复制";
+        btn.style.opacity = "0.7";
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.opacity = "1";
+        }, 1000);
+    }
+
+    function saveState() {
+        syncCurrentTabInput();
+        const state = {
+            activeTab: CONFIG.activeTab,
+            tabInputs: {
+                gen: CONFIG.tabInputs.gen,
+                parse: CONFIG.tabInputs.parse
+            }
+        };
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+        const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+        if (!raw) {
+            updateTabUi(CONFIG.activeTab);
+            manualRefresh();
+            return;
+        }
+
+        try {
+            const state = JSON.parse(raw);
+            if (state.activeTab === 'gen' || state.activeTab === 'parse') {
+                CONFIG.activeTab = state.activeTab;
+            }
+
+            if (state.tabInputs && typeof state.tabInputs === 'object') {
+                if (typeof state.tabInputs.gen === 'string') {
+                    CONFIG.tabInputs.gen = state.tabInputs.gen;
+                }
+                if (typeof state.tabInputs.parse === 'string') {
+                    CONFIG.tabInputs.parse = state.tabInputs.parse;
+                }
+            } else if (typeof state.inputValue === 'string') {
+                // 兼容旧版单输入缓存
+                CONFIG.tabInputs[CONFIG.activeTab] = state.inputValue;
+            }
+        } catch (error) {
+            localStorage.removeItem(CONFIG.STORAGE_KEY);
+        }
+
+        updateTabUi(CONFIG.activeTab);
+        manualRefresh();
+    }
+
+    function clearStoredContent() {
+        if (!confirm('确定要清除当前标签页的输入内容吗？')) {
+            return;
+        }
+
+        CONFIG.tabInputs[CONFIG.activeTab] = '';
+        updateTabUi(CONFIG.activeTab);
+        saveState();
+        document.getElementById('nav-list').innerHTML = '';
+        document.getElementById('output-list').innerHTML = '';
+    }
+
+    // 初始化
+    loadState();
+</script>
+
+</body>
+</html>

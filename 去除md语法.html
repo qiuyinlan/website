@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>去除 Markdown 语法并清理多余空白行（修复版）</title>
+  <style>
+    body{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding:18px; max-width:900px; margin:0 auto}
+    textarea{width:100%; height:180px; font-family: inherit; font-size:14px; padding:10px; box-sizing:border-box}
+    pre#out{white-space:pre-wrap; word-wrap:break-word; background:#f7f7f8; padding:12px; border-radius:8px; min-height:80px}
+    .row{display:flex; gap:8px; margin-top:8px; align-items:center}
+    button{padding:8px 12px; border-radius:8px; border:1px solid #ddd; background:#fff; cursor:pointer}
+    .small{font-size:13px; color:#666}
+    table{border-collapse:collapse;width:100%;margin-top:12px}
+    td,th{border:1px solid #e6e6e6;padding:8px;text-align:left}
+    .ok{color:green}
+    .ng{color:red}
+  </style>
+</head>
+<body>
+  <h1>去除 Markdown 并清理多余空白行（修复版）</h1>
+  <p class="small">说明：去掉 Markdown 标记（标题、强调、链接、图片、列表、引用、行内/块代码等），压缩行内多余空白，<strong>移除空白行</strong>（只保留实际内容行之间的换行）。</p>
+
+  <label for="src">输入（可粘贴含 Markdown 的文本）：</label>
+  <textarea id="src" placeholder="在这里粘贴或输入文本"></textarea>
+
+  <div class="row">
+    <button id="cleanBtn">清理</button>
+    <button id="exampleBtn">填入示例</button>
+    <button id="copyBtn">复制结果</button>
+    <button id="testBtn">运行内置测试</button>
+    <span class="small">&nbsp;&nbsp;（示例输入：<code>123         ###2233</code>）</span>
+  </div>
+
+  <h3>结果：</h3>
+  <pre id="out"></pre>
+
+  <h3>测试结果：</h3>
+  <div id="testResult" class="small"></div>
+
+  <script>
+    function sanitizeMarkdown(text){
+      if(!text) return '';
+
+      // 1) 移除代码块（包括 ``` ``` 和 ```lang ... ```）
+      text = text.replace(/```[\s\S]*?```/g, '');
+
+      // 2) 图片： ![alt](url) -> alt
+      text = text.replace(/!\[([^\]]*)\]\((?:[^)]*)\)/g, '$1');
+
+      // 3) 链接： [text](url) 或 [text][ref] -> text
+      text = text.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1');
+      text = text.replace(/\[([^\]]+)\]\s*\[[^\]]*\]/g, '$1');
+
+      // 4) 行内代码： `code` -> code
+      text = text.replace(/`([^`]*)`/g, '$1');
+
+      // 5) 标题：行首的 #... -> 去掉井号，保留文字
+      text = text.replace(/^\s{0,3}#{1,6}\s*/gm, '');
+
+      // 6) setext 标题（下划线 ---------- 或 =======）去掉单独的横线行
+      text = text.replace(/^[=\-]{2,}\s*$/gm, '');
+
+      // 7) 区块引用：去掉开头的 >
+      text = text.replace(/^\s{0,3}>\s?/gm, '');
+
+      // 8) 列表：去掉行首的 -, *, + 或 数字. 标记
+      text = text.replace(/^\s{0,3}[-+*]\s+/gm, '');
+      text = text.replace(/^\s{0,3}\d+\.\s+/gm, '');
+
+      // 9) 强调：**bold**, __bold__, *italic*, _italic_ -> 保留内部文本
+      text = text.replace(/(\*\*|__)(.*?)\1/g, '$2');
+      text = text.replace(/(\*|_)(.*?)\1/g, '$2');
+      text = text.replace(/~~(.*?)~~/g, '$1');
+
+      // 10) HTML 标签（简单去掉）
+      text = text.replace(/<[^>]+>/g, '');
+
+      // 11) 将每行内部的多余空白（含制表符和连续空格）压缩为单个空格，并去掉行首尾空格
+      text = text.split('\n').map(function(line){
+        return line.replace(/\s+/g, ' ').trim();
+      }).join('\n');
+
+      // 12) 去掉行尾多余空格（已在上一步处理），此处做保险处理
+      text = text.replace(/ +$/gm, '');
+
+      // 13) 移除所有空白行（用户需要：去掉所有多余空行，仅保留真实内容行的换行）
+      // 修复：正确使用换行字符 '\n' 进行 split/join（之前出现语法错误使用了不正确的单引号换行）
+      text = text.split('\n').filter(function(line){
+        return line.trim() !== '';
+      }).join('\n');
+
+      // 14) 去除文首文尾的空白
+      text = text.replace(/^\s+|\s+$/g, '');
+
+      return text;
+    }
+
+    document.getElementById('cleanBtn').addEventListener('click', function(){
+      const src = document.getElementById('src').value;
+      const out = sanitizeMarkdown(src);
+      document.getElementById('out').textContent = out;
+    });
+
+    document.getElementById('exampleBtn').addEventListener('click', function(){
+      const example = '#ddd\n\nddd\n\n123         ###2233\n\n- 列表项1\n\n> 引用行\n\n```\nconsole.log("代码块")\n```\n\n结束';
+      document.getElementById('src').value = example;
+      document.getElementById('cleanBtn').click();
+    });
+
+    // 内置测试用例（增加测试覆盖）
+    const TESTS = [
+      {
+        name: '移除空行并保留换行',
+        input: '#ddd\n\nddd',
+        expected: 'ddd\nddd'
+      },
+      {
+        name: '压缩多余空白并保留内容',
+        input: '123         ###2233',
+        expected: '123 ###2233' // 预期：多余空格被压缩为一个空格，井号被视为行内文本（非行首），因此保留
+      },
+      {
+        name: '移除代码块',
+        input: '行1\n```\ncode\n```\n行2',
+        expected: '行1\n行2'
+      }
+    ];
+
+    function runTests(){
+      const results = TESTS.map(function(t){
+        const out = sanitizeMarkdown(t.input);
+        const pass = out === t.expected;
+        return {name:t.name, pass:pass, got:out, expected:t.expected};
+      });
+
+      // 渲染测试结果表格
+      const container = document.getElementById('testResult');
+      container.innerHTML = '';
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      thead.innerHTML = '<tr><th>测试</th><th>状态</th><th>期待</th><th>实际</th></tr>';
+      table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      results.forEach(function(r){
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>'+r.name+'</td>'+
+                       '<td>'+(r.pass?'<span class="ok">PASS</span>':'<span class="ng">FAIL</span>')+'</td>'+
+                       '<td><pre>'+r.expected+'</pre></td>'+
+                       '<td><pre>'+r.got+'</pre></td>';
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      container.appendChild(table);
+
+      // 返回是否全部通过
+      return results.every(r => r.pass);
+    }
+
+    document.getElementById('testBtn').addEventListener('click', function(){
+      const allPass = runTests();
+      if(allPass){
+        alert('所有内置测试通过 ✅');
+      } else {
+        alert('有测试未通过，请查看测试结果表格 ❌');
+      }
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', function(){
+      const out = document.getElementById('out').textContent;
+      if(!out) return alert('当前没有结果可复制');
+      navigator.clipboard.writeText(out).then(function(){
+        alert('已复制到剪贴板');
+      }, function(){
+        alert('复制失败，请手动复制');
+      });
+    });
+  </script>
+</body>
+</html>
