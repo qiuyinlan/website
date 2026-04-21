@@ -71,6 +71,24 @@
       .sort((a, b) => a.order - b.order);
   }
 
+  function getPendingHabits() {
+    const completed = new Set(getTodayCompletions());
+    return getActiveHabits().filter((habit) => !completed.has(habit.id));
+  }
+
+  function resetSkippedRoundIfNeeded() {
+    const pendingHabits = getPendingHabits();
+    if (!pendingHabits.length) {
+      state.skippedToday = [];
+      return;
+    }
+
+    const skipped = new Set(state.skippedToday);
+    if (pendingHabits.every((habit) => skipped.has(habit.id))) {
+      state.skippedToday = [];
+    }
+  }
+
   function computeNextHabit() {
     const completed = new Set(getTodayCompletions());
     const skipped = new Set(state.skippedToday);
@@ -82,15 +100,19 @@
   function renderMain() {
     const activeHabits = getActiveHabits();
     const completed = new Set(getTodayCompletions());
+    resetSkippedRoundIfNeeded();
+    const skipped = new Set(state.skippedToday);
     const nextHabit = computeNextHabit();
 
     if (!activeHabits.length) {
+      state.currentHabitId = null;
       els.taskOrder.textContent = "还没有习惯";
       els.taskTitle.textContent = "先添加一个微习惯";
       els.taskHint.textContent = "建议从最小动作开始，比如喝一口水。";
       els.completeTask.disabled = true;
       els.skipTask.disabled = true;
     } else if (!nextHabit) {
+      state.currentHabitId = null;
       els.taskOrder.textContent = "今天已完成";
       els.taskTitle.textContent = "今天的微习惯已经完成";
       els.taskHint.textContent = "你可以休息一下，或者去设置里再加一个新习惯。";
@@ -109,10 +131,10 @@
     els.modeBadge.textContent =
       state.mode === "supabase" ? "Supabase 同步模式" : "本地模式";
     els.todayProgress.textContent = `${completed.size} / ${activeHabits.length}`;
-    renderTodayList(activeHabits, completed);
+    renderTodayList(activeHabits, completed, skipped);
   }
 
-  function renderTodayList(activeHabits, completed) {
+  function renderTodayList(activeHabits, completed, skipped = new Set()) {
     els.todayList.innerHTML = "";
     if (!activeHabits.length) {
       const li = document.createElement("li");
@@ -122,12 +144,14 @@
       return;
     }
     activeHabits.forEach((habit) => {
+      const isCompleted = completed.has(habit.id);
+      const isSkipped = skipped.has(habit.id);
       const li = document.createElement("li");
-      li.className = `today-item${completed.has(habit.id) ? " done" : ""}`;
+      li.className = `today-item${isCompleted ? " done" : ""}`;
       li.innerHTML = `
         <span class="today-check"></span>
         <span class="today-title">${escapeHtml(habit.title)}</span>
-        <span class="habit-row-meta">${completed.has(habit.id) ? "已完成" : "待完成"}</span>
+        <span class="habit-row-meta">${isCompleted ? "已完成" : isSkipped ? "已跳过" : "待完成"}</span>
       `;
       els.todayList.appendChild(li);
     });
@@ -475,12 +499,6 @@
     }
   }
 
-  function registerServiceWorker() {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
-    }
-  }
-
   function wireEvents() {
     els.openSettings.addEventListener("click", () => els.settingsDialog.showModal());
     els.completeTask.addEventListener("click", completeCurrentHabit);
@@ -507,5 +525,4 @@
 
   wireEvents();
   initProvider();
-  registerServiceWorker();
 })();
