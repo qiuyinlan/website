@@ -8,19 +8,47 @@
     />
     <meta name="theme-color" content="#f4efe2" />
     <title>微习惯系统</title>
-    <link rel="manifest" href="./manifest.webmanifest" />
+    <script>
+      (function () {
+        const LEGACY_CACHE_PREFIX = "micro-habit-pwa-";
+
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) =>
+              Promise.all(registrations.map((registration) => registration.unregister())),
+            )
+            .catch(() => {});
+        }
+
+        if ("caches" in window) {
+          caches
+            .keys()
+            .then((keys) =>
+              Promise.all(
+                keys
+                  .filter((key) => key.startsWith(LEGACY_CACHE_PREFIX))
+                  .map((key) => caches.delete(key)),
+              ),
+            )
+            .catch(() => {});
+        }
+      })();
+    </script>
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.21-d772a7c" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=2026.04.21-d772a7c" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js"></script>
-    <script defer src="./app.js"></script>
+    <script defer src="./config.js?v=2026.04.21-d772a7c"></script>
+    <script defer src="./app.js?v=2026.04.21-d772a7c"></script>
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div>
+        <div class="brand-block">
           <p class="eyebrow">Micro Habit</p>
           <h1>微习惯系统</h1>
+          <p id="app-version" class="app-version">版本读取中</p>
         </div>
         <button id="open-settings" class="ghost-button" type="button">设置</button>
       </header>

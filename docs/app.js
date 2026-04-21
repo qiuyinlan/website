@@ -1,5 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
+  const DEFAULT_APP_VERSION = "2026.04.21-d772a7c";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
@@ -12,6 +13,7 @@
   };
 
   const els = {
+    appVersion: document.getElementById("app-version"),
     modeBadge: document.getElementById("mode-badge"),
     taskOrder: document.getElementById("task-order"),
     taskTitle: document.getElementById("task-title"),
@@ -33,6 +35,19 @@
     addHabit: document.getElementById("add-habit"),
     habitList: document.getElementById("habit-list"),
   };
+
+  function getAppVersion() {
+    const version = window.APP_CONFIG?.version;
+    if (typeof version === "string" && version.trim()) {
+      return version.trim();
+    }
+    return DEFAULT_APP_VERSION;
+  }
+
+  function renderAppVersion() {
+    if (!els.appVersion) return;
+    els.appVersion.textContent = `版本 v${getAppVersion()}`;
+  }
 
   function uid() {
     if (crypto.randomUUID) return crypto.randomUUID();
@@ -553,5 +568,6 @@
   });
 
   wireEvents();
+  renderAppVersion();
   initProvider();
 })();

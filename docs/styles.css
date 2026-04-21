@@ -60,12 +60,23 @@ button {
   gap: 16px;
 }
 
+.brand-block {
+  display: grid;
+  gap: 4px;
+}
+
 .eyebrow {
   margin: 0 0 4px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.8rem;
+}
+
+.app-version {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 h1,
