@@ -219,6 +219,14 @@ h3,
   grid-template-columns: auto 1fr auto;
 }
 
+.today-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .habit-item {
   grid-template-columns: 1fr auto auto auto;
 }
@@ -304,6 +312,12 @@ input {
   background: white;
 }
 
+.undo-button {
+  min-width: auto;
+  padding: 0 12px;
+  color: var(--accent-strong);
+}
+
 .danger {
   color: var(--warn);
 }
@@ -332,5 +346,14 @@ input {
 
   .habit-item {
     grid-template-columns: 1fr auto auto;
+  }
+
+  .today-item {
+    grid-template-columns: auto 1fr;
+  }
+
+  .today-item-actions {
+    grid-column: 1 / -1;
+    justify-content: space-between;
   }
 }

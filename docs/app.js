@@ -151,8 +151,28 @@
       li.innerHTML = `
         <span class="today-check"></span>
         <span class="today-title">${escapeHtml(habit.title)}</span>
-        <span class="habit-row-meta">${isCompleted ? "已完成" : isSkipped ? "已跳过" : "待完成"}</span>
       `;
+      const actions = document.createElement("div");
+      actions.className = "today-item-actions";
+
+      const status = document.createElement("span");
+      status.className = "habit-row-meta";
+      status.textContent = isCompleted ? "已完成" : isSkipped ? "已跳过" : "待完成";
+      actions.appendChild(status);
+
+      if (isCompleted) {
+        const undoButton = document.createElement("button");
+        undoButton.className = "small-button undo-button";
+        undoButton.type = "button";
+        undoButton.textContent = "撤销";
+        undoButton.setAttribute("aria-label", `把 ${habit.title} 改为未完成`);
+        undoButton.addEventListener("click", () => {
+          markHabitIncomplete(habit.id);
+        });
+        actions.appendChild(undoButton);
+      }
+
+      li.appendChild(actions);
       els.todayList.appendChild(li);
     });
   }
@@ -265,6 +285,15 @@
     completed.add(state.currentHabitId);
     setTodayCompletions(Array.from(completed));
     state.skippedToday = state.skippedToday.filter((id) => id !== state.currentHabitId);
+    await persistAll();
+  }
+
+  async function markHabitIncomplete(id) {
+    const completed = new Set(getTodayCompletions());
+    if (!completed.has(id)) return;
+    completed.delete(id);
+    setTodayCompletions(Array.from(completed));
+    state.skippedToday = state.skippedToday.filter((habitId) => habitId !== id);
     await persistAll();
   }
 
