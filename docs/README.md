@@ -27,8 +27,8 @@
 最简单的方法是用一个静态服务器打开：
 
 ```bash
-cd /home/xuzichun/micro-habit-pwa
-python3 -m http.server 8080
+cd /home/xuzichun/website/docs
+python3 -m http.server 8080 --bind 127.0.0.1
 ```
 
 然后访问：

@@ -136,10 +136,13 @@
   function renderSettings() {
     els.habitList.innerHTML = "";
     const activeCount = getActiveHabits().length;
+    const setupStatus = getSupabaseSetupStatus();
     els.syncStatus.textContent =
       state.mode === "supabase"
         ? `已连接 Supabase，同步账号：${state.session?.user?.email || "未知"}`
-        : "未连接 Supabase，当前只保存在本机。";
+        : setupStatus.ready
+          ? "已检测到 Supabase 配置，当前尚未登录；登录后可同步到手机和电脑。"
+          : setupStatus.message;
 
     if (!state.habits.length) {
       const li = document.createElement("li");
@@ -258,6 +261,40 @@
       .replaceAll("'", "&#39;");
   }
 
+  function getSupabaseSetupStatus() {
+    const config = window.APP_CONFIG || {};
+    const hasUrl =
+      typeof config.supabaseUrl === "string" && config.supabaseUrl.trim().length > 0;
+    const hasKey =
+      typeof config.supabaseAnonKey === "string" &&
+      config.supabaseAnonKey.trim().length > 0;
+    const hasSdk = typeof window.supabase?.createClient === "function";
+
+    if (!hasUrl || !hasKey) {
+      return {
+        ready: false,
+        reason: "config-missing",
+        message:
+          "未读取到 Supabase 配置，请检查 config.js 是否已更新；如果刚改过配置，请先清除站点缓存再刷新。",
+      };
+    }
+
+    if (!hasSdk) {
+      return {
+        ready: false,
+        reason: "sdk-missing",
+        message:
+          "已检测到 Supabase 配置，但 Supabase SDK 没有加载成功。请检查网络，或确认浏览器没有使用旧缓存。",
+      };
+    }
+
+    return {
+      ready: true,
+      reason: "ready",
+      message: "已检测到 Supabase 配置，登录后可在多设备之间同步。",
+    };
+  }
+
   const localProvider = {
     async init() {
       const saved = loadLocalState();
@@ -270,10 +307,10 @@
       saveLocalState();
     },
     async signIn() {
-      throw new Error("当前未配置 Supabase。");
+      throw new Error(getSupabaseSetupStatus().message);
     },
     async signUp() {
-      throw new Error("当前未配置 Supabase。");
+      throw new Error(getSupabaseSetupStatus().message);
     },
     async signOut() {
       return;
@@ -407,8 +444,9 @@
   }
 
   async function initProvider() {
-    const config = window.APP_CONFIG || {};
-    if (config.supabaseUrl && config.supabaseAnonKey && window.supabase) {
+    const setupStatus = getSupabaseSetupStatus();
+    if (setupStatus.ready) {
+      const config = window.APP_CONFIG || {};
       provider = createSupabaseProvider(config);
     }
     await provider.init();
