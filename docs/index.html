@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.21-d772a7c" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.24-mainline" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.04.21-d772a7c" />
+    <link rel="stylesheet" href="./styles.css?v=2026.04.24-mainline" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.04.21-d772a7c"></script>
-    <script defer src="./app.js?v=2026.04.21-d772a7c"></script>
+    <script defer src="./config.js?v=2026.04.24-mainline"></script>
+    <script defer src="./app.js?v=2026.04.24-mainline"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -50,7 +50,10 @@
           <h1>微习惯系统</h1>
           <p id="app-version" class="app-version">版本读取中</p>
         </div>
-        <button id="open-settings" class="ghost-button" type="button">设置</button>
+        <div class="topbar-actions">
+          <button id="open-mainline" class="secondary-button" type="button">主线</button>
+          <button id="open-settings" class="ghost-button" type="button">设置</button>
+        </div>
       </header>
 
       <main class="stage">
@@ -147,6 +150,46 @@
           <ul id="habit-list" class="habit-list"></ul>
         </section>
       </form>
+    </dialog>
+
+    <dialog id="mainline-dialog" class="mainline-dialog">
+      <div class="mainline-shell">
+        <header class="mainline-header">
+          <div>
+            <p class="eyebrow">Main Line</p>
+            <h2>我的主线</h2>
+          </div>
+          <div class="mainline-actions">
+            <button id="mainline-edit" class="secondary-button" type="button">修改</button>
+            <button id="mainline-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <section id="mainline-display-panel" class="mainline-panel">
+          <p id="mainline-empty" class="mainline-empty">你还没有写主线。</p>
+          <p id="mainline-display" class="mainline-display"></p>
+          <p id="mainline-display-hint" class="mainline-display-hint">
+            把最重要的那一句放大看一遍，提醒自己不要跑偏。
+          </p>
+        </section>
+
+        <section id="mainline-editor-panel" class="mainline-panel mainline-editor-panel">
+          <label class="mainline-label" for="mainline-input">主线内容</label>
+          <textarea
+            id="mainline-input"
+            class="mainline-input"
+            maxlength="160"
+            placeholder="例如：先守住主线，再谈扩展。"
+          ></textarea>
+          <p class="mainline-editor-hint">建议写成一句你愿意反复提醒自己的话。</p>
+          <div class="mainline-actions">
+            <button id="save-mainline" class="primary-button" type="button">保存主线</button>
+            <button id="cancel-mainline-edit" class="ghost-button" type="button">
+              取消
+            </button>
+          </div>
+        </section>
+      </div>
     </dialog>
   </body>
 </html>

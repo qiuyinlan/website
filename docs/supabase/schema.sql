@@ -18,17 +18,33 @@ create table if not exists public.habit_completions (
   unique (user_id, habit_id, completed_on)
 );
 
+create table if not exists public.user_mainlines (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  content text not null check (char_length(btrim(content)) > 0),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.habits enable row level security;
 alter table public.habit_completions enable row level security;
+alter table public.user_mainlines enable row level security;
 
+drop policy if exists "users_manage_own_habits" on public.habits;
 create policy "users_manage_own_habits"
 on public.habits
 for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 
+drop policy if exists "users_manage_own_completions" on public.habit_completions;
 create policy "users_manage_own_completions"
 on public.habit_completions
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+drop policy if exists "users_manage_own_mainlines" on public.user_mainlines;
+create policy "users_manage_own_mainlines"
+on public.user_mainlines
 for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);

@@ -37,7 +37,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -90,6 +91,15 @@ h3,
 
 .topbar {
   margin-bottom: 24px;
+}
+
+.topbar-actions,
+.mainline-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .stage {
@@ -282,6 +292,18 @@ input {
   color: var(--ink);
 }
 
+textarea {
+  width: 100%;
+  min-height: 220px;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  padding: 22px 24px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink);
+  line-height: 1.45;
+  resize: vertical;
+}
+
 .settings-dialog {
   width: min(900px, calc(100vw - 32px));
   border: 0;
@@ -294,6 +316,20 @@ input {
   backdrop-filter: blur(6px);
 }
 
+.mainline-dialog {
+  width: min(1400px, calc(100vw - 24px));
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.mainline-dialog::backdrop {
+  background:
+    radial-gradient(circle at top, rgba(43, 106, 74, 0.24), transparent 38%),
+    rgba(20, 16, 12, 0.68);
+  backdrop-filter: blur(8px);
+}
+
 .settings-shell {
   display: grid;
   gap: 16px;
@@ -302,6 +338,89 @@ input {
   border: 1px solid rgba(255, 255, 255, 0.7);
   padding: 24px;
   box-shadow: var(--shadow);
+}
+
+.mainline-shell {
+  min-height: min(88vh, 920px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 20px;
+  background:
+    radial-gradient(circle at top left, rgba(43, 106, 74, 0.16), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(163, 63, 24, 0.12), transparent 26%),
+    var(--bg);
+  border-radius: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 28px;
+  box-shadow: 0 28px 80px rgba(20, 16, 12, 0.26);
+}
+
+.mainline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mainline-panel {
+  display: none;
+}
+
+.mainline-panel.is-visible {
+  display: grid;
+}
+
+#mainline-display-panel {
+  min-height: 0;
+}
+
+#mainline-display-panel.is-visible {
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.mainline-display {
+  margin: 0;
+  max-width: 11ch;
+  font-family: var(--font-display);
+  font-size: clamp(3.8rem, 11vw, 8.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+  white-space: pre-wrap;
+  text-wrap: balance;
+}
+
+.mainline-empty {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+  line-height: 1.15;
+}
+
+.mainline-display-hint,
+.mainline-editor-hint {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+}
+
+.mainline-editor-panel {
+  max-width: 920px;
+  width: 100%;
+  align-content: start;
+  margin: 0 auto;
+  gap: 16px;
+}
+
+.mainline-label {
+  display: block;
+  color: var(--muted);
+}
+
+.mainline-input {
+  font-size: clamp(1.2rem, 2.3vw, 1.9rem);
 }
 
 .habit-row-title {
@@ -338,6 +457,18 @@ input {
     padding: 16px;
   }
 
+  .topbar,
+  .mainline-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topbar-actions,
+  .mainline-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .stage {
     grid-template-columns: 1fr;
   }
@@ -366,5 +497,19 @@ input {
   .today-item-actions {
     grid-column: 1 / -1;
     justify-content: space-between;
+  }
+
+  .mainline-shell {
+    min-height: min(100dvh, 100vh);
+    padding: 22px;
+    border-radius: 28px;
+  }
+
+  .mainline-display {
+    max-width: none;
+  }
+
+  .mainline-input {
+    min-height: 180px;
   }
 }

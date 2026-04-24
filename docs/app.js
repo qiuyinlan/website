@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
-  const DEFAULT_APP_VERSION = "2026.04.21-d772a7c";
+  const DEFAULT_APP_VERSION = "2026.04.24-mainline";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
@@ -8,6 +8,7 @@
     session: null,
     habits: [],
     completions: {},
+    mainline: "",
     currentHabitId: null,
     skippedToday: [],
   };
@@ -23,6 +24,18 @@
     todayProgress: document.getElementById("today-progress"),
     todayList: document.getElementById("today-list"),
     settingsDialog: document.getElementById("settings-dialog"),
+    mainlineDialog: document.getElementById("mainline-dialog"),
+    openMainline: document.getElementById("open-mainline"),
+    mainlineClose: document.getElementById("mainline-close"),
+    mainlineEdit: document.getElementById("mainline-edit"),
+    mainlineDisplayPanel: document.getElementById("mainline-display-panel"),
+    mainlineDisplay: document.getElementById("mainline-display"),
+    mainlineEmpty: document.getElementById("mainline-empty"),
+    mainlineDisplayHint: document.getElementById("mainline-display-hint"),
+    mainlineEditorPanel: document.getElementById("mainline-editor-panel"),
+    mainlineInput: document.getElementById("mainline-input"),
+    saveMainline: document.getElementById("save-mainline"),
+    cancelMainlineEdit: document.getElementById("cancel-mainline-edit"),
     openSettings: document.getElementById("open-settings"),
     closeSettings: document.getElementById("close-settings"),
     syncStatus: document.getElementById("sync-status"),
@@ -35,6 +48,7 @@
     addHabit: document.getElementById("add-habit"),
     habitList: document.getElementById("habit-list"),
   };
+  let isMainlineEditing = false;
 
   function getAppVersion() {
     const version = window.APP_CONFIG?.version;
@@ -68,8 +82,20 @@
       JSON.stringify({
         habits: state.habits,
         completions: state.completions,
+        mainline: state.mainline,
       }),
     );
+  }
+
+  function hydrateStateFromSavedState(saved = loadLocalState()) {
+    state.habits = Array.isArray(saved.habits) ? saved.habits : [];
+    state.completions =
+      saved.completions && typeof saved.completions === "object" ? saved.completions : {};
+    state.mainline = typeof saved.mainline === "string" ? saved.mainline : "";
+  }
+
+  function getMainlineText() {
+    return typeof state.mainline === "string" ? state.mainline.trim() : "";
   }
 
   function getTodayCompletions() {
@@ -240,6 +266,65 @@
     }
   }
 
+  function renderMainlineDialog() {
+    const mainlineText = getMainlineText();
+    const hasMainline = Boolean(mainlineText);
+
+    els.mainlineDisplay.textContent = mainlineText;
+    els.mainlineEmpty.hidden = hasMainline;
+    els.mainlineDisplay.hidden = !hasMainline;
+    els.mainlineDisplayHint.textContent = hasMainline
+      ? "把最重要的那一句放大看一遍，提醒自己不要跑偏。"
+      : "你还没有写主线，点右下方保存后，它就会在这里放大展示。";
+    els.mainlineEdit.hidden = isMainlineEditing || !hasMainline;
+    els.mainlineDisplayPanel.classList.toggle("is-visible", !isMainlineEditing);
+    els.mainlineEditorPanel.classList.toggle("is-visible", isMainlineEditing);
+    els.cancelMainlineEdit.textContent = hasMainline ? "取消" : "稍后再写";
+    if (isMainlineEditing) {
+      els.mainlineInput.value = state.mainline;
+    }
+  }
+
+  function focusMainlineInput() {
+    requestAnimationFrame(() => {
+      els.mainlineInput.focus();
+      const value = els.mainlineInput.value;
+      els.mainlineInput.setSelectionRange(value.length, value.length);
+    });
+  }
+
+  function openMainlineDialog() {
+    isMainlineEditing = !getMainlineText();
+    renderMainlineDialog();
+    if (!els.mainlineDialog.open) {
+      els.mainlineDialog.showModal();
+    }
+    if (isMainlineEditing) {
+      focusMainlineInput();
+    }
+  }
+
+  function closeMainlineDialog() {
+    if (els.mainlineDialog.open) {
+      els.mainlineDialog.close();
+    }
+  }
+
+  function startMainlineEdit() {
+    isMainlineEditing = true;
+    renderMainlineDialog();
+    focusMainlineInput();
+  }
+
+  function cancelMainlineEdit() {
+    if (!getMainlineText()) {
+      closeMainlineDialog();
+      return;
+    }
+    isMainlineEditing = false;
+    renderMainlineDialog();
+  }
+
   function normalizeOrders() {
     state.habits
       .sort((a, b) => a.order - b.order)
@@ -320,6 +405,19 @@
     renderMain();
   }
 
+  async function saveMainline() {
+    const value = els.mainlineInput.value.trim();
+    if (!value) {
+      alert("请先写下你的主线。");
+      focusMainlineInput();
+      return;
+    }
+    state.mainline = value;
+    await persistAll();
+    isMainlineEditing = false;
+    renderMainlineDialog();
+  }
+
   function escapeHtml(value) {
     return value
       .replaceAll("&", "&amp;")
@@ -365,9 +463,7 @@
 
   const localProvider = {
     async init() {
-      const saved = loadLocalState();
-      state.habits = saved.habits || [];
-      state.completions = saved.completions || {};
+      hydrateStateFromSavedState();
       state.mode = "local";
       state.session = null;
     },
@@ -401,25 +497,30 @@
       const session = await getSessionOrNull();
       state.session = session;
       if (!session) {
-        state.habits = [];
-        state.completions = {};
+        hydrateStateFromSavedState();
+        state.mode = "local";
         return;
       }
 
-      const [{ data: habits, error: habitsError }, { data: completions, error: completionsError }] =
-        await Promise.all([
-          client
-            .from("habits")
-            .select("id,title,active,sort_order,created_at")
-            .order("sort_order", { ascending: true }),
-          client
-            .from("habit_completions")
-            .select("habit_id,completed_on")
-            .eq("completed_on", TODAY()),
-        ]);
+      const [
+        { data: habits, error: habitsError },
+        { data: completions, error: completionsError },
+        { data: mainlineRow, error: mainlineError },
+      ] = await Promise.all([
+        client
+          .from("habits")
+          .select("id,title,active,sort_order,created_at")
+          .order("sort_order", { ascending: true }),
+        client
+          .from("habit_completions")
+          .select("habit_id,completed_on")
+          .eq("completed_on", TODAY()),
+        client.from("user_mainlines").select("content").maybeSingle(),
+      ]);
 
       if (habitsError) throw habitsError;
       if (completionsError) throw completionsError;
+      if (mainlineError) throw mainlineError;
 
       state.habits = (habits || []).map((habit, index) => ({
         id: habit.id,
@@ -432,6 +533,7 @@
       state.completions = {
         [TODAY()]: (completions || []).map((item) => item.habit_id),
       };
+      state.mainline = typeof mainlineRow?.content === "string" ? mainlineRow.content : "";
       state.mode = "supabase";
     }
 
@@ -479,6 +581,22 @@
           const { error } = await client.from("habit_completions").insert(completionRows);
           if (error) throw error;
         }
+
+        const mainlineText = getMainlineText();
+        if (mainlineText) {
+          const { error } = await client.from("user_mainlines").upsert(
+            {
+              user_id: userId,
+              content: mainlineText,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id" },
+          );
+          if (error) throw error;
+        } else {
+          const { error } = await client.from("user_mainlines").delete().eq("user_id", userId);
+          if (error) throw error;
+        }
       },
       async signIn(email, password) {
         const { error } = await client.auth.signInWithPassword({ email, password });
@@ -495,8 +613,7 @@
         if (error) throw error;
         state.mode = "local";
         state.session = null;
-        state.habits = loadLocalState().habits || [];
-        state.completions = loadLocalState().completions || {};
+        hydrateStateFromSavedState();
       },
     };
   }
@@ -508,6 +625,7 @@
     saveLocalState();
     await provider.persist();
     renderMain();
+    renderMainlineDialog();
     renderSettings();
   }
 
@@ -519,6 +637,7 @@
     }
     await provider.init();
     renderMain();
+    renderMainlineDialog();
     renderSettings();
   }
 
@@ -537,6 +656,7 @@
       }
       await provider.persist();
       renderMain();
+      renderMainlineDialog();
       renderSettings();
     } catch (error) {
       alert(error.message || "认证失败");
@@ -544,6 +664,15 @@
   }
 
   function wireEvents() {
+    els.openMainline.addEventListener("click", openMainlineDialog);
+    els.mainlineClose.addEventListener("click", closeMainlineDialog);
+    els.mainlineEdit.addEventListener("click", startMainlineEdit);
+    els.saveMainline.addEventListener("click", saveMainline);
+    els.cancelMainlineEdit.addEventListener("click", cancelMainlineEdit);
+    els.mainlineDialog.addEventListener("close", () => {
+      isMainlineEditing = false;
+      renderMainlineDialog();
+    });
     els.openSettings.addEventListener("click", () => els.settingsDialog.showModal());
     els.completeTask.addEventListener("click", completeCurrentHabit);
     els.skipTask.addEventListener("click", skipCurrentHabit);
@@ -554,6 +683,7 @@
       try {
         await provider.signOut();
         renderMain();
+        renderMainlineDialog();
         renderSettings();
       } catch (error) {
         alert(error.message || "退出失败");
