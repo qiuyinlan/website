@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.27-mainlines" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.27-principles" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.04.27-mainlines" />
+    <link rel="stylesheet" href="./styles.css?v=2026.04.27-principles" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.04.27-mainlines"></script>
-    <script defer src="./app.js?v=2026.04.27-mainlines"></script>
+    <script defer src="./config.js?v=2026.04.27-principles"></script>
+    <script defer src="./app.js?v=2026.04.27-principles"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -52,6 +52,7 @@
         </div>
         <div class="topbar-actions">
           <button id="open-mainline" class="secondary-button" type="button">主线</button>
+          <button id="open-principles" class="secondary-button" type="button">原则</button>
           <button id="open-settings" class="ghost-button" type="button">设置</button>
         </div>
       </header>
@@ -160,6 +161,8 @@
             <h2>我的主线</h2>
           </div>
           <div class="mainline-actions">
+            <button id="move-mainline-up" class="ghost-button" type="button">上移</button>
+            <button id="move-mainline-down" class="ghost-button" type="button">下移</button>
             <button id="add-mainline" class="secondary-button" type="button">新增主线</button>
             <button id="delete-mainline" class="ghost-button" type="button">删除当前</button>
             <button id="mainline-close" class="ghost-button" type="button">关闭</button>
@@ -236,6 +239,72 @@
               <div class="mainline-actions">
                 <button id="save-mainline" class="primary-button" type="button">
                   保存当前主线
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="principles-dialog" class="mainline-dialog">
+      <div class="mainline-shell">
+        <header class="mainline-header">
+          <div>
+            <p class="eyebrow">Principles</p>
+            <h2>我的原则</h2>
+          </div>
+          <div class="mainline-actions">
+            <button id="move-principle-up" class="ghost-button" type="button">上移</button>
+            <button id="move-principle-down" class="ghost-button" type="button">下移</button>
+            <button id="add-principle" class="secondary-button" type="button">新增原则</button>
+            <button id="delete-principle" class="ghost-button" type="button">删除当前</button>
+            <button id="principles-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div class="mainline-workspace">
+          <section class="mainline-list-panel">
+            <div class="panel-header">
+              <h3>原则板块</h3>
+              <p id="principle-count" class="mainline-list-count">0 条</p>
+            </div>
+            <p id="principle-empty" class="mainline-empty">
+              你还没有添加原则板块，先点上方“新增原则”。
+            </p>
+            <ul id="principle-list" class="mainline-list"></ul>
+          </section>
+
+          <section class="mainline-editor-panel">
+            <p id="principle-editor-empty" class="mainline-editor-empty">
+              选中一个原则板块后，就可以填写标题，并往下面继续添加原则点。
+            </p>
+            <div id="principle-form" class="mainline-form" hidden>
+              <label class="mainline-label" for="principle-title-input">原则板块名称</label>
+              <input
+                id="principle-title-input"
+                class="mainline-title-input"
+                type="text"
+                maxlength="80"
+                placeholder="例如：工作原则"
+              />
+
+              <div class="panel-header">
+                <h3>原则点</h3>
+                <button id="add-principle-point" class="secondary-button" type="button">
+                  添加原则点
+                </button>
+              </div>
+
+              <p id="principle-points-empty" class="mainline-editor-hint">
+                还没有原则点，可以先写一条最常提醒自己的话。
+              </p>
+              <div id="principle-points" class="principle-point-list"></div>
+
+              <p class="mainline-editor-hint">保存后，这组原则会同步到你当前使用的存储方式里。</p>
+              <div class="mainline-actions">
+                <button id="save-principle" class="primary-button" type="button">
+                  保存当前原则
                 </button>
               </div>
             </div>

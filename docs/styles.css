@@ -466,6 +466,45 @@ textarea {
   font-size: 1rem;
 }
 
+.principle-point-list {
+  display: grid;
+  gap: 12px;
+}
+
+.principle-point-item {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(31, 27, 22, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 14px;
+}
+
+.principle-point-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.principle-point-index {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.principle-point-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.principle-point-input {
+  min-height: 96px;
+  padding: 16px 18px;
+  border-radius: 16px;
+}
+
 .habit-row-title {
   font-size: 1.05rem;
   font-weight: 600;

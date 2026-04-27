@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
-  const DEFAULT_APP_VERSION = "2026.04.27-mainlines";
+  const DEFAULT_APP_VERSION = "2026.04.27-principles";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
@@ -9,6 +9,7 @@
     habits: [],
     completions: {},
     mainlines: [],
+    principles: [],
     supabaseNotice: "",
     currentHabitId: null,
     skippedToday: [],
@@ -28,6 +29,8 @@
     mainlineDialog: document.getElementById("mainline-dialog"),
     openMainline: document.getElementById("open-mainline"),
     mainlineClose: document.getElementById("mainline-close"),
+    moveMainlineUp: document.getElementById("move-mainline-up"),
+    moveMainlineDown: document.getElementById("move-mainline-down"),
     addMainline: document.getElementById("add-mainline"),
     deleteMainline: document.getElementById("delete-mainline"),
     mainlineCount: document.getElementById("mainline-count"),
@@ -42,6 +45,23 @@
     mainlineHowWhereInput: document.getElementById("mainline-how-where-input"),
     mainlineCostInput: document.getElementById("mainline-cost-input"),
     saveMainline: document.getElementById("save-mainline"),
+    principlesDialog: document.getElementById("principles-dialog"),
+    openPrinciples: document.getElementById("open-principles"),
+    principlesClose: document.getElementById("principles-close"),
+    movePrincipleUp: document.getElementById("move-principle-up"),
+    movePrincipleDown: document.getElementById("move-principle-down"),
+    addPrinciple: document.getElementById("add-principle"),
+    deletePrinciple: document.getElementById("delete-principle"),
+    principleCount: document.getElementById("principle-count"),
+    principleEmpty: document.getElementById("principle-empty"),
+    principleList: document.getElementById("principle-list"),
+    principleEditorEmpty: document.getElementById("principle-editor-empty"),
+    principleForm: document.getElementById("principle-form"),
+    principleTitleInput: document.getElementById("principle-title-input"),
+    addPrinciplePoint: document.getElementById("add-principle-point"),
+    principlePointsEmpty: document.getElementById("principle-points-empty"),
+    principlePoints: document.getElementById("principle-points"),
+    savePrinciple: document.getElementById("save-principle"),
     openSettings: document.getElementById("open-settings"),
     closeSettings: document.getElementById("close-settings"),
     syncStatus: document.getElementById("sync-status"),
@@ -54,7 +74,9 @@
     addHabit: document.getElementById("add-habit"),
     habitList: document.getElementById("habit-list"),
   };
+
   let selectedMainlineId = null;
+  let selectedPrincipleId = null;
 
   function getAppVersion() {
     const version = window.APP_CONFIG?.version;
@@ -90,6 +112,7 @@
         completions: state.completions,
         mainlines: state.mainlines,
         mainline: state.mainlines[0]?.title || "",
+        principles: state.principles,
       }),
     );
   }
@@ -99,7 +122,9 @@
     state.completions =
       saved.completions && typeof saved.completions === "object" ? saved.completions : {};
     state.mainlines = parseMainlinesContent(saved.mainlines, saved.mainline);
-    selectedMainlineId = state.mainlines[0]?.id || null;
+    state.principles = parsePrinciplesContent(saved.principles);
+    selectedMainlineId = getSortedMainlines()[0]?.id || null;
+    selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
   }
 
   function getErrorMessage(error, fallback = "发生了未知错误。") {
@@ -109,7 +134,7 @@
     return fallback;
   }
 
-  function isMissingMainlineSchemaError(error) {
+  function isMissingContentTableError(error, tableName) {
     const detail = [
       error?.code,
       error?.message,
@@ -120,14 +145,21 @@
       .join(" ")
       .toLowerCase();
 
-    return detail.includes("user_mainlines") || error?.code === "PGRST205";
+    return detail.includes(tableName.toLowerCase()) || error?.code === "PGRST205";
   }
 
-  function getMainlineSchemaNotice() {
-    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线”同步需要重新执行最新的 supabase/schema.sql。";
+  function getContentSchemaNotice() {
+    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线/原则”同步需要重新执行最新的 supabase/schema.sql。";
   }
 
-  function createMainline(partial = {}) {
+  function createOrderedList(items) {
+    return items
+      .slice()
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      .map((item, index) => ({ ...item, order: index }));
+  }
+
+  function createMainline(partial = {}, fallbackOrder = 0) {
     return {
       id: typeof partial.id === "string" && partial.id.trim() ? partial.id : uid(),
       title: typeof partial.title === "string" ? partial.title.trim() : "",
@@ -145,31 +177,34 @@
         typeof partial.updatedAt === "string" && partial.updatedAt.trim()
           ? partial.updatedAt
           : new Date().toISOString(),
+      order: Number.isFinite(partial.order) ? partial.order : fallbackOrder,
     };
   }
 
   function createLegacyMainline(content) {
     const title = typeof content === "string" ? content.trim() : "";
-    return title ? [createMainline({ title })] : [];
+    return title ? [createMainline({ title }, 0)] : [];
   }
 
   function normalizeMainlineCollection(items) {
     if (!Array.isArray(items)) return [];
-    return items
-      .map((item) => {
-        if (typeof item === "string") {
-          return createMainline({ title: item });
-        }
-        if (!item || typeof item !== "object") return null;
-        return createMainline(item);
-      })
-      .filter(Boolean);
+    return createOrderedList(
+      items
+        .map((item, index) => {
+          if (typeof item === "string") {
+            return createMainline({ title: item }, index);
+          }
+          if (!item || typeof item !== "object") return null;
+          return createMainline(item, index);
+        })
+        .filter(Boolean),
+    );
   }
 
   function parseMainlinesContent(savedMainlines, legacyMainline = "") {
-    const normalizedMainlines = normalizeMainlineCollection(savedMainlines);
-    if (normalizedMainlines.length) {
-      return normalizedMainlines;
+    const mainlines = normalizeMainlineCollection(savedMainlines);
+    if (mainlines.length) {
+      return mainlines;
     }
 
     if (typeof legacyMainline === "string" && legacyMainline.trim()) {
@@ -205,8 +240,8 @@
     }
 
     return JSON.stringify({
-      version: 2,
-      items: state.mainlines.map((mainline) => ({
+      version: 3,
+      items: getSortedMainlines().map((mainline) => ({
         id: mainline.id,
         title: mainline.title,
         why: mainline.why,
@@ -216,18 +251,122 @@
         costOfNotDoing: mainline.costOfNotDoing,
         createdAt: mainline.createdAt,
         updatedAt: mainline.updatedAt,
+        order: mainline.order,
       })),
     });
   }
 
+  function createPrinciplePoint(partial = {}) {
+    return {
+      id: typeof partial.id === "string" && partial.id.trim() ? partial.id : uid(),
+      text: typeof partial.text === "string" ? partial.text : "",
+    };
+  }
+
+  function normalizePrinciplePoints(items) {
+    if (!Array.isArray(items)) return [];
+    return items
+      .map((item) => {
+        if (typeof item === "string") {
+          return createPrinciplePoint({ text: item });
+        }
+        if (!item || typeof item !== "object") return null;
+        return createPrinciplePoint(item);
+      })
+      .filter(Boolean);
+  }
+
+  function createPrinciple(partial = {}, fallbackOrder = 0) {
+    return {
+      id: typeof partial.id === "string" && partial.id.trim() ? partial.id : uid(),
+      title: typeof partial.title === "string" ? partial.title.trim() : "",
+      points: normalizePrinciplePoints(partial.points),
+      createdAt:
+        typeof partial.createdAt === "string" && partial.createdAt.trim()
+          ? partial.createdAt
+          : new Date().toISOString(),
+      updatedAt:
+        typeof partial.updatedAt === "string" && partial.updatedAt.trim()
+          ? partial.updatedAt
+          : new Date().toISOString(),
+      order: Number.isFinite(partial.order) ? partial.order : fallbackOrder,
+    };
+  }
+
+  function normalizePrincipleCollection(items) {
+    if (!Array.isArray(items)) return [];
+    return createOrderedList(
+      items
+        .map((item, index) => {
+          if (!item || typeof item !== "object") return null;
+          return createPrinciple(item, index);
+        })
+        .filter(Boolean),
+    );
+  }
+
+  function parsePrinciplesContent(savedPrinciples) {
+    return normalizePrincipleCollection(savedPrinciples);
+  }
+
+  function parsePrinciplesPayload(content) {
+    if (typeof content !== "string" || !content.trim()) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        return normalizePrincipleCollection(parsed);
+      }
+      if (parsed && typeof parsed === "object" && Array.isArray(parsed.items)) {
+        return normalizePrincipleCollection(parsed.items);
+      }
+    } catch {
+      return [];
+    }
+
+    return [];
+  }
+
+  function serializePrinciplesPayload() {
+    if (!state.principles.length) {
+      return "";
+    }
+
+    return JSON.stringify({
+      version: 1,
+      items: getSortedPrinciples().map((principle) => ({
+        id: principle.id,
+        title: principle.title,
+        points: principle.points.map((point) => ({
+          id: point.id,
+          text: point.text,
+        })),
+        createdAt: principle.createdAt,
+        updatedAt: principle.updatedAt,
+        order: principle.order,
+      })),
+    });
+  }
+
+  function getSortedMainlines() {
+    return state.mainlines.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  function getSortedPrinciples() {
+    return state.principles.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
   function ensureSelectedMainline() {
-    if (!state.mainlines.length) {
+    const sortedMainlines = getSortedMainlines();
+    if (!sortedMainlines.length) {
       selectedMainlineId = null;
       return null;
     }
 
     const selected =
-      state.mainlines.find((mainline) => mainline.id === selectedMainlineId) || state.mainlines[0];
+      sortedMainlines.find((mainline) => mainline.id === selectedMainlineId) || sortedMainlines[0];
     selectedMainlineId = selected.id;
     return selected;
   }
@@ -236,10 +375,34 @@
     return ensureSelectedMainline();
   }
 
+  function ensureSelectedPrinciple() {
+    const sortedPrinciples = getSortedPrinciples();
+    if (!sortedPrinciples.length) {
+      selectedPrincipleId = null;
+      return null;
+    }
+
+    const selected =
+      sortedPrinciples.find((principle) => principle.id === selectedPrincipleId) ||
+      sortedPrinciples[0];
+    selectedPrincipleId = selected.id;
+    return selected;
+  }
+
+  function getSelectedPrinciple() {
+    return ensureSelectedPrinciple();
+  }
+
   function getMainlineListLabel(mainline, index) {
     const title = typeof mainline?.title === "string" ? mainline.title.trim() : "";
     if (title) return title;
     return `未命名主线 ${index + 1}`;
+  }
+
+  function getPrincipleListLabel(principle, index) {
+    const title = typeof principle?.title === "string" ? principle.title.trim() : "";
+    if (title) return title;
+    return `未命名原则 ${index + 1}`;
   }
 
   function getTodayCompletions() {
@@ -304,7 +467,7 @@
       els.completeTask.disabled = true;
       els.skipTask.disabled = true;
     } else {
-      const currentIndex = activeHabits.findIndex((h) => h.id === nextHabit.id);
+      const currentIndex = activeHabits.findIndex((habit) => habit.id === nextHabit.id);
       els.taskOrder.textContent = `今天第 ${currentIndex + 1} 项`;
       els.taskTitle.textContent = nextHabit.title;
       els.taskHint.textContent = "只做这一个动作就好，完成后系统会自动跳到下一个。";
@@ -328,6 +491,7 @@
       els.todayList.appendChild(li);
       return;
     }
+
     activeHabits.forEach((habit) => {
       const isCompleted = completed.has(habit.id);
       const isSkipped = skipped.has(habit.id);
@@ -337,6 +501,7 @@
         <span class="today-check"></span>
         <span class="today-title">${escapeHtml(habit.title)}</span>
       `;
+
       const actions = document.createElement("div");
       actions.className = "today-item-actions";
 
@@ -372,6 +537,7 @@
         : setupStatus.ready
           ? "已检测到 Supabase 配置，当前尚未登录；登录后可同步到手机和电脑。"
           : setupStatus.message;
+
     els.syncStatus.textContent = state.supabaseNotice
       ? `${syncStatusText} ${state.supabaseNotice}`
       : syncStatusText;
@@ -415,14 +581,15 @@
 
   function renderMainlineDialog() {
     const selected = ensureSelectedMainline();
-    const hasMainlines = state.mainlines.length > 0;
+    const sortedMainlines = getSortedMainlines();
+    const selectedIndex = sortedMainlines.findIndex((mainline) => mainline.id === selected?.id);
 
-    els.mainlineCount.textContent = `${state.mainlines.length} 条`;
-    els.mainlineEmpty.hidden = hasMainlines;
-    els.mainlineList.hidden = !hasMainlines;
+    els.mainlineCount.textContent = `${sortedMainlines.length} 条`;
+    els.mainlineEmpty.hidden = sortedMainlines.length > 0;
+    els.mainlineList.hidden = sortedMainlines.length === 0;
     els.mainlineList.innerHTML = "";
 
-    state.mainlines.forEach((mainline, index) => {
+    sortedMainlines.forEach((mainline, index) => {
       const li = document.createElement("li");
       li.className = "mainline-list-item";
 
@@ -431,7 +598,7 @@
       button.className = `mainline-list-button${mainline.id === selected?.id ? " is-active" : ""}`;
       button.innerHTML = `
         <span class="mainline-list-title">${escapeHtml(getMainlineListLabel(mainline, index))}</span>
-        <span class="mainline-list-meta">${escapeHtml(mainline.why || "还没填写“为什么做”")}</span>
+        <span class="mainline-list-meta">${escapeHtml(mainline.why || "还没填写“为什么做”")} · 排序 ${index + 1}</span>
       `;
       button.addEventListener("click", () => selectMainline(mainline.id));
 
@@ -440,6 +607,9 @@
     });
 
     els.deleteMainline.disabled = !selected;
+    els.moveMainlineUp.disabled = !selected || selectedIndex <= 0;
+    els.moveMainlineDown.disabled =
+      !selected || selectedIndex < 0 || selectedIndex >= sortedMainlines.length - 1;
     els.mainlineEditorEmpty.hidden = Boolean(selected);
     els.mainlineForm.hidden = !selected;
 
@@ -455,12 +625,116 @@
     els.mainlineCostInput.value = selected.costOfNotDoing;
   }
 
+  function renderPrinciplesDialog() {
+    const selected = ensureSelectedPrinciple();
+    const sortedPrinciples = getSortedPrinciples();
+    const selectedIndex = sortedPrinciples.findIndex((principle) => principle.id === selected?.id);
+
+    els.principleCount.textContent = `${sortedPrinciples.length} 条`;
+    els.principleEmpty.hidden = sortedPrinciples.length > 0;
+    els.principleList.hidden = sortedPrinciples.length === 0;
+    els.principleList.innerHTML = "";
+
+    sortedPrinciples.forEach((principle, index) => {
+      const li = document.createElement("li");
+      li.className = "mainline-list-item";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `mainline-list-button${principle.id === selected?.id ? " is-active" : ""}`;
+      button.innerHTML = `
+        <span class="mainline-list-title">${escapeHtml(getPrincipleListLabel(principle, index))}</span>
+        <span class="mainline-list-meta">${principle.points.length} 条原则点 · 排序 ${index + 1}</span>
+      `;
+      button.addEventListener("click", () => selectPrinciple(principle.id));
+
+      li.appendChild(button);
+      els.principleList.appendChild(li);
+    });
+
+    els.deletePrinciple.disabled = !selected;
+    els.movePrincipleUp.disabled = !selected || selectedIndex <= 0;
+    els.movePrincipleDown.disabled =
+      !selected || selectedIndex < 0 || selectedIndex >= sortedPrinciples.length - 1;
+    els.principleEditorEmpty.hidden = Boolean(selected);
+    els.principleForm.hidden = !selected;
+
+    if (!selected) {
+      return;
+    }
+
+    els.principleTitleInput.value = selected.title;
+    renderPrinciplePoints(selected.points);
+  }
+
+  function renderPrinciplePoints(points) {
+    els.principlePoints.innerHTML = "";
+    els.principlePointsEmpty.hidden = points.length > 0;
+
+    points.forEach((point, index) => {
+      const item = document.createElement("div");
+      item.className = "principle-point-item";
+
+      const header = document.createElement("div");
+      header.className = "principle-point-header";
+
+      const label = document.createElement("span");
+      label.className = "principle-point-index";
+      label.textContent = `原则点 ${index + 1}`;
+      header.appendChild(label);
+
+      const actions = document.createElement("div");
+      actions.className = "principle-point-actions";
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "small-button danger";
+      deleteButton.textContent = "删";
+      deleteButton.setAttribute("aria-label", `删除原则点 ${index + 1}`);
+      deleteButton.addEventListener("click", () => {
+        deletePrinciplePoint(point.id);
+      });
+      actions.appendChild(deleteButton);
+
+      header.appendChild(actions);
+      item.appendChild(header);
+
+      const textarea = document.createElement("textarea");
+      textarea.className = "principle-point-input";
+      textarea.value = point.text;
+      textarea.placeholder = "例如：先保护最重要的那件事，再处理杂音。";
+      textarea.setAttribute("data-point-id", point.id);
+      item.appendChild(textarea);
+
+      els.principlePoints.appendChild(item);
+    });
+  }
+
   function focusMainlineTitleInput() {
     requestAnimationFrame(() => {
       if (els.mainlineForm.hidden) return;
       els.mainlineTitleInput.focus();
       const value = els.mainlineTitleInput.value;
       els.mainlineTitleInput.setSelectionRange(value.length, value.length);
+    });
+  }
+
+  function focusPrincipleTitleInput() {
+    requestAnimationFrame(() => {
+      if (els.principleForm.hidden) return;
+      els.principleTitleInput.focus();
+      const value = els.principleTitleInput.value;
+      els.principleTitleInput.setSelectionRange(value.length, value.length);
+    });
+  }
+
+  function focusPrinciplePointInput(pointId) {
+    requestAnimationFrame(() => {
+      const input = els.principlePoints.querySelector(`[data-point-id="${pointId}"]`);
+      if (!input) return;
+      input.focus();
+      const value = input.value;
+      input.setSelectionRange(value.length, value.length);
     });
   }
 
@@ -476,6 +750,24 @@
     selected.firstStep = els.mainlineFirstStepInput.value.trim();
     selected.howWhere = els.mainlineHowWhereInput.value.trim();
     selected.costOfNotDoing = els.mainlineCostInput.value.trim();
+    selected.updatedAt = new Date().toISOString();
+    return selected;
+  }
+
+  function updateSelectedPrincipleFromForm() {
+    const selected = getSelectedPrinciple();
+    if (!selected || els.principleForm.hidden) {
+      return selected;
+    }
+
+    selected.title = els.principleTitleInput.value.trim();
+    selected.points = Array.from(els.principlePoints.querySelectorAll("[data-point-id]")).map(
+      (input) =>
+        createPrinciplePoint({
+          id: input.getAttribute("data-point-id"),
+          text: input.value.trim(),
+        }),
+    );
     selected.updatedAt = new Date().toISOString();
     return selected;
   }
@@ -498,35 +790,34 @@
     }
   }
 
+  function openPrinciplesDialog() {
+    ensureSelectedPrinciple();
+    renderPrinciplesDialog();
+    if (!els.principlesDialog.open) {
+      els.principlesDialog.showModal();
+    }
+    if (getSelectedPrinciple()) {
+      focusPrincipleTitleInput();
+    }
+  }
+
+  function closePrinciplesDialog() {
+    updateSelectedPrincipleFromForm();
+    if (els.principlesDialog.open) {
+      els.principlesDialog.close();
+    }
+  }
+
   function selectMainline(id) {
     updateSelectedMainlineFromForm();
     selectedMainlineId = id;
     renderMainlineDialog();
   }
 
-  async function addMainline() {
-    updateSelectedMainlineFromForm();
-    const nextNumber = state.mainlines.length + 1;
-    const mainline = createMainline({
-      title: `新的主线 ${nextNumber}`,
-    });
-    state.mainlines.push(mainline);
-    selectedMainlineId = mainline.id;
-    await persistAll();
-    focusMainlineTitleInput();
-  }
-
-  async function deleteSelectedMainline() {
-    const selected = getSelectedMainline();
-    if (!selected) return;
-    const selectedIndex = state.mainlines.findIndex((mainline) => mainline.id === selected.id);
-    if (!confirm(`确定删除“${getMainlineListLabel(selected, Math.max(selectedIndex, 0))}”吗？`)) {
-      return;
-    }
-
-    state.mainlines = state.mainlines.filter((mainline) => mainline.id !== selected.id);
-    selectedMainlineId = state.mainlines[0]?.id || null;
-    await persistAll();
+  function selectPrinciple(id) {
+    updateSelectedPrincipleFromForm();
+    selectedPrincipleId = id;
+    renderPrinciplesDialog();
   }
 
   function normalizeOrders() {
@@ -535,6 +826,9 @@
       .forEach((habit, index) => {
         habit.order = index;
       });
+
+    state.mainlines = createOrderedList(state.mainlines);
+    state.principles = createOrderedList(state.principles);
   }
 
   async function addHabit() {
@@ -558,9 +852,9 @@
     const nextIndex = index + delta;
     if (nextIndex < 0 || nextIndex >= sorted.length) return;
     [sorted[index], sorted[nextIndex]] = [sorted[nextIndex], sorted[index]];
-    sorted.forEach((habit, idx) => {
+    sorted.forEach((habit, order) => {
       const target = state.habits.find((item) => item.id === habit.id);
-      if (target) target.order = idx;
+      if (target) target.order = order;
     });
     await persistAll();
   }
@@ -581,6 +875,119 @@
     });
     normalizeOrders();
     await persistAll();
+  }
+
+  async function addMainline() {
+    updateSelectedMainlineFromForm();
+    const mainline = createMainline(
+      {
+        title: `新的主线 ${state.mainlines.length + 1}`,
+        order: state.mainlines.length,
+      },
+      state.mainlines.length,
+    );
+    state.mainlines.push(mainline);
+    selectedMainlineId = mainline.id;
+    await persistAll();
+    focusMainlineTitleInput();
+  }
+
+  async function moveMainline(delta) {
+    updateSelectedMainlineFromForm();
+    const sortedMainlines = getSortedMainlines();
+    const index = sortedMainlines.findIndex((mainline) => mainline.id === selectedMainlineId);
+    if (index < 0) return;
+    const nextIndex = index + delta;
+    if (nextIndex < 0 || nextIndex >= sortedMainlines.length) return;
+    [sortedMainlines[index], sortedMainlines[nextIndex]] = [
+      sortedMainlines[nextIndex],
+      sortedMainlines[index],
+    ];
+    sortedMainlines.forEach((mainline, order) => {
+      const target = state.mainlines.find((item) => item.id === mainline.id);
+      if (target) target.order = order;
+    });
+    await persistAll();
+  }
+
+  async function deleteSelectedMainline() {
+    const selected = getSelectedMainline();
+    if (!selected) return;
+    const selectedIndex = getSortedMainlines().findIndex((mainline) => mainline.id === selected.id);
+    if (!confirm(`确定删除“${getMainlineListLabel(selected, Math.max(selectedIndex, 0))}”吗？`)) {
+      return;
+    }
+
+    state.mainlines = state.mainlines.filter((mainline) => mainline.id !== selected.id);
+    selectedMainlineId = getSortedMainlines()[0]?.id || null;
+    await persistAll();
+  }
+
+  async function addPrinciple() {
+    updateSelectedPrincipleFromForm();
+    const principle = createPrinciple(
+      {
+        title: `新的原则 ${state.principles.length + 1}`,
+        order: state.principles.length,
+      },
+      state.principles.length,
+    );
+    state.principles.push(principle);
+    selectedPrincipleId = principle.id;
+    await persistAll();
+    focusPrincipleTitleInput();
+  }
+
+  async function movePrinciple(delta) {
+    updateSelectedPrincipleFromForm();
+    const sortedPrinciples = getSortedPrinciples();
+    const index = sortedPrinciples.findIndex((principle) => principle.id === selectedPrincipleId);
+    if (index < 0) return;
+    const nextIndex = index + delta;
+    if (nextIndex < 0 || nextIndex >= sortedPrinciples.length) return;
+    [sortedPrinciples[index], sortedPrinciples[nextIndex]] = [
+      sortedPrinciples[nextIndex],
+      sortedPrinciples[index],
+    ];
+    sortedPrinciples.forEach((principle, order) => {
+      const target = state.principles.find((item) => item.id === principle.id);
+      if (target) target.order = order;
+    });
+    await persistAll();
+  }
+
+  async function deleteSelectedPrinciple() {
+    const selected = getSelectedPrinciple();
+    if (!selected) return;
+    const selectedIndex = getSortedPrinciples().findIndex((principle) => principle.id === selected.id);
+    if (!confirm(`确定删除“${getPrincipleListLabel(selected, Math.max(selectedIndex, 0))}”吗？`)) {
+      return;
+    }
+
+    state.principles = state.principles.filter((principle) => principle.id !== selected.id);
+    selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
+    await persistAll();
+  }
+
+  function addPrinciplePoint() {
+    const selected = updateSelectedPrincipleFromForm();
+    if (!selected) {
+      return;
+    }
+
+    const point = createPrinciplePoint();
+    selected.points.push(point);
+    selected.updatedAt = new Date().toISOString();
+    renderPrinciplesDialog();
+    focusPrinciplePointInput(point.id);
+  }
+
+  function deletePrinciplePoint(pointId) {
+    const selected = updateSelectedPrincipleFromForm();
+    if (!selected) return;
+    selected.points = selected.points.filter((point) => point.id !== pointId);
+    selected.updatedAt = new Date().toISOString();
+    renderPrinciplesDialog();
   }
 
   async function completeCurrentHabit() {
@@ -618,6 +1025,20 @@
     if (!selected.title) {
       alert("请先写主线名称。");
       focusMainlineTitleInput();
+      return;
+    }
+    await persistAll();
+  }
+
+  async function savePrinciple() {
+    const selected = updateSelectedPrincipleFromForm();
+    if (!selected) {
+      alert("请先新增一个原则板块。");
+      return;
+    }
+    if (!selected.title) {
+      alert("请先写原则板块名称。");
+      focusPrincipleTitleInput();
       return;
     }
     await persistAll();
@@ -692,29 +1113,39 @@
       config.supabaseAnonKey,
     );
 
-    async function syncMainlineOrWarn(userId) {
-      const mainlinesPayload = serializeMainlinesPayload();
-
+    async function syncContentCollection(tableName, payload, userId) {
       try {
-        if (mainlinesPayload) {
-          const { error } = await client.from("user_mainlines").upsert(
+        if (payload) {
+          const { error } = await client.from(tableName).upsert(
             {
               user_id: userId,
-              content: mainlinesPayload,
+              content: payload,
               updated_at: new Date().toISOString(),
             },
             { onConflict: "user_id" },
           );
           if (error) throw error;
         } else {
-          const { error } = await client.from("user_mainlines").delete().eq("user_id", userId);
+          const { error } = await client.from(tableName).delete().eq("user_id", userId);
           if (error) throw error;
         }
-        state.supabaseNotice = "";
+        return { missingSchema: false };
       } catch (error) {
-        if (isMissingMainlineSchemaError(error)) {
-          state.supabaseNotice = getMainlineSchemaNotice();
-          return;
+        if (isMissingContentTableError(error, tableName)) {
+          return { missingSchema: true };
+        }
+        throw error;
+      }
+    }
+
+    async function fetchContentCollection(tableName) {
+      try {
+        const { data, error } = await client.from(tableName).select("content").maybeSingle();
+        if (error) throw error;
+        return { missingSchema: false, content: data?.content || "" };
+      } catch (error) {
+        if (isMissingContentTableError(error, tableName)) {
+          return { missingSchema: true, content: "" };
         }
         throw error;
       }
@@ -730,6 +1161,7 @@
       const savedState = loadLocalState();
       const session = await getSessionOrNull();
       state.session = session;
+
       if (!session) {
         hydrateStateFromSavedState();
         state.mode = "local";
@@ -739,15 +1171,15 @@
 
       const [{ data: habits, error: habitsError }, { data: completions, error: completionsError }] =
         await Promise.all([
-        client
-          .from("habits")
-          .select("id,title,active,sort_order,created_at")
-          .order("sort_order", { ascending: true }),
-        client
-          .from("habit_completions")
-          .select("habit_id,completed_on")
-          .eq("completed_on", TODAY()),
-      ]);
+          client
+            .from("habits")
+            .select("id,title,active,sort_order,created_at")
+            .order("sort_order", { ascending: true }),
+          client
+            .from("habit_completions")
+            .select("habit_id,completed_on")
+            .eq("completed_on", TODAY()),
+        ]);
 
       if (habitsError) throw habitsError;
       if (completionsError) throw completionsError;
@@ -764,25 +1196,24 @@
         [TODAY()]: (completions || []).map((item) => item.habit_id),
       };
 
-      const { data: mainlineRow, error: mainlineError } = await client
-        .from("user_mainlines")
-        .select("content")
-        .maybeSingle();
+      const [mainlineResult, principleResult] = await Promise.all([
+        fetchContentCollection("user_mainlines"),
+        fetchContentCollection("user_principles"),
+      ]);
 
-      if (mainlineError) {
-        if (isMissingMainlineSchemaError(mainlineError)) {
-          state.mainlines = parseMainlinesContent(savedState.mainlines, savedState.mainline);
-          selectedMainlineId = state.mainlines[0]?.id || null;
-          state.supabaseNotice = getMainlineSchemaNotice();
-        } else {
-          throw mainlineError;
-        }
-      } else {
-        state.mainlines = parseMainlinesPayload(mainlineRow?.content);
-        selectedMainlineId = state.mainlines[0]?.id || null;
-        state.supabaseNotice = "";
-      }
+      state.mainlines = mainlineResult.missingSchema
+        ? parseMainlinesContent(savedState.mainlines, savedState.mainline)
+        : parseMainlinesPayload(mainlineResult.content);
+      state.principles = principleResult.missingSchema
+        ? parsePrinciplesContent(savedState.principles)
+        : parsePrinciplesPayload(principleResult.content);
 
+      selectedMainlineId = getSortedMainlines()[0]?.id || null;
+      selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
+      state.supabaseNotice =
+        mainlineResult.missingSchema || principleResult.missingSchema
+          ? getContentSchemaNotice()
+          : "";
       state.mode = "supabase";
     }
 
@@ -798,7 +1229,6 @@
         }
 
         const userId = session.user.id;
-
         const remoteHabits = state.habits.map((habit, index) => ({
           id: habit.id,
           user_id: userId,
@@ -831,7 +1261,15 @@
           if (error) throw error;
         }
 
-        await syncMainlineOrWarn(userId);
+        const [mainlineSync, principleSync] = await Promise.all([
+          syncContentCollection("user_mainlines", serializeMainlinesPayload(), userId),
+          syncContentCollection("user_principles", serializePrinciplesPayload(), userId),
+        ]);
+
+        state.supabaseNotice =
+          mainlineSync.missingSchema || principleSync.missingSchema
+            ? getContentSchemaNotice()
+            : "";
       },
       async signIn(email, password) {
         const { error } = await client.auth.signInWithPassword({ email, password });
@@ -861,15 +1299,16 @@
     await provider.persist();
     renderMain();
     renderMainlineDialog();
+    renderPrinciplesDialog();
     renderSettings();
   }
 
   async function initProvider() {
     const setupStatus = getSupabaseSetupStatus();
     if (setupStatus.ready) {
-      const config = window.APP_CONFIG || {};
-      provider = createSupabaseProvider(config);
+      provider = createSupabaseProvider(window.APP_CONFIG || {});
     }
+
     try {
       await provider.init();
     } catch (error) {
@@ -878,8 +1317,10 @@
       await provider.init();
       state.supabaseNotice = `Supabase 初始化失败，已切回本地模式：${getErrorMessage(error)}`;
     }
+
     renderMain();
     renderMainlineDialog();
+    renderPrinciplesDialog();
     renderSettings();
   }
 
@@ -890,6 +1331,7 @@
       alert("请先输入邮箱和密码。");
       return;
     }
+
     try {
       if (action === "signin") {
         await provider.signIn(email, password);
@@ -899,6 +1341,7 @@
       await provider.persist();
       renderMain();
       renderMainlineDialog();
+      renderPrinciplesDialog();
       renderSettings();
     } catch (error) {
       alert(error.message || "认证失败");
@@ -908,6 +1351,8 @@
   function wireEvents() {
     els.openMainline.addEventListener("click", openMainlineDialog);
     els.mainlineClose.addEventListener("click", closeMainlineDialog);
+    els.moveMainlineUp.addEventListener("click", () => moveMainline(-1));
+    els.moveMainlineDown.addEventListener("click", () => moveMainline(1));
     els.addMainline.addEventListener("click", addMainline);
     els.deleteMainline.addEventListener("click", deleteSelectedMainline);
     els.saveMainline.addEventListener("click", saveMainline);
@@ -915,6 +1360,20 @@
       updateSelectedMainlineFromForm();
       renderMainlineDialog();
     });
+
+    els.openPrinciples.addEventListener("click", openPrinciplesDialog);
+    els.principlesClose.addEventListener("click", closePrinciplesDialog);
+    els.movePrincipleUp.addEventListener("click", () => movePrinciple(-1));
+    els.movePrincipleDown.addEventListener("click", () => movePrinciple(1));
+    els.addPrinciple.addEventListener("click", addPrinciple);
+    els.deletePrinciple.addEventListener("click", deleteSelectedPrinciple);
+    els.addPrinciplePoint.addEventListener("click", addPrinciplePoint);
+    els.savePrinciple.addEventListener("click", savePrinciple);
+    els.principlesDialog.addEventListener("close", () => {
+      updateSelectedPrincipleFromForm();
+      renderPrinciplesDialog();
+    });
+
     els.openSettings.addEventListener("click", () => els.settingsDialog.showModal());
     els.completeTask.addEventListener("click", completeCurrentHabit);
     els.skipTask.addEventListener("click", skipCurrentHabit);
@@ -926,6 +1385,7 @@
         await provider.signOut();
         renderMain();
         renderMainlineDialog();
+        renderPrinciplesDialog();
         renderSettings();
       } catch (error) {
         alert(error.message || "退出失败");
