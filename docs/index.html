@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.24-mainline" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.27-mainlines" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.04.24-mainline" />
+    <link rel="stylesheet" href="./styles.css?v=2026.04.27-mainlines" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.04.24-mainline"></script>
-    <script defer src="./app.js?v=2026.04.24-mainline"></script>
+    <script defer src="./config.js?v=2026.04.27-mainlines"></script>
+    <script defer src="./app.js?v=2026.04.27-mainlines"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -160,35 +160,87 @@
             <h2>我的主线</h2>
           </div>
           <div class="mainline-actions">
-            <button id="mainline-edit" class="secondary-button" type="button">修改</button>
+            <button id="add-mainline" class="secondary-button" type="button">新增主线</button>
+            <button id="delete-mainline" class="ghost-button" type="button">删除当前</button>
             <button id="mainline-close" class="ghost-button" type="button">关闭</button>
           </div>
         </header>
 
-        <section id="mainline-display-panel" class="mainline-panel">
-          <p id="mainline-empty" class="mainline-empty">你还没有写主线。</p>
-          <p id="mainline-display" class="mainline-display"></p>
-          <p id="mainline-display-hint" class="mainline-display-hint">
-            把最重要的那一句放大看一遍，提醒自己不要跑偏。
-          </p>
-        </section>
+        <div class="mainline-workspace">
+          <section class="mainline-list-panel">
+            <div class="panel-header">
+              <h3>主线列表</h3>
+              <p id="mainline-count" class="mainline-list-count">0 条</p>
+            </div>
+            <p id="mainline-empty" class="mainline-empty">
+              你还没有添加主线，先点上方“新增主线”。
+            </p>
+            <ul id="mainline-list" class="mainline-list"></ul>
+          </section>
 
-        <section id="mainline-editor-panel" class="mainline-panel mainline-editor-panel">
-          <label class="mainline-label" for="mainline-input">主线内容</label>
-          <textarea
-            id="mainline-input"
-            class="mainline-input"
-            maxlength="160"
-            placeholder="例如：先守住主线，再谈扩展。"
-          ></textarea>
-          <p class="mainline-editor-hint">建议写成一句你愿意反复提醒自己的话。</p>
-          <div class="mainline-actions">
-            <button id="save-mainline" class="primary-button" type="button">保存主线</button>
-            <button id="cancel-mainline-edit" class="ghost-button" type="button">
-              取消
-            </button>
-          </div>
-        </section>
+          <section id="mainline-editor-panel" class="mainline-editor-panel">
+            <p id="mainline-editor-empty" class="mainline-editor-empty">
+              选中一条主线后，就可以填写为什么做、做成什么样、第一步是什么。
+            </p>
+            <div id="mainline-form" class="mainline-form" hidden>
+              <label class="mainline-label" for="mainline-title-input">主线名称</label>
+              <input
+                id="mainline-title-input"
+                class="mainline-title-input"
+                type="text"
+                maxlength="80"
+                placeholder="例如：把英语重新拉回主线"
+              />
+
+              <label class="mainline-label" for="mainline-why-input">为什么做</label>
+              <textarea
+                id="mainline-why-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="这件事为什么重要？它解决什么问题？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-outcome-input">做成什么样</label>
+              <textarea
+                id="mainline-outcome-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="你希望最后达到什么状态？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-first-step-input">第一步是什么</label>
+              <textarea
+                id="mainline-first-step-input"
+                class="mainline-input"
+                maxlength="240"
+                placeholder="先做的最小动作是什么？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-how-where-input">怎么做，在哪做</label>
+              <textarea
+                id="mainline-how-where-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="怎么推进？在什么场景、什么地点做？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-cost-input">不做的代价是什么</label>
+              <textarea
+                id="mainline-cost-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="如果继续不做，会失去什么？"
+              ></textarea>
+
+              <p class="mainline-editor-hint">保存后，这条主线会同步到你当前使用的存储方式里。</p>
+              <div class="mainline-actions">
+                <button id="save-mainline" class="primary-button" type="button">
+                  保存当前主线
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </dialog>
   </body>

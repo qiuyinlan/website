@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
-  const DEFAULT_APP_VERSION = "2026.04.24-mainline";
+  const DEFAULT_APP_VERSION = "2026.04.27-mainlines";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
@@ -8,7 +8,8 @@
     session: null,
     habits: [],
     completions: {},
-    mainline: "",
+    mainlines: [],
+    supabaseNotice: "",
     currentHabitId: null,
     skippedToday: [],
   };
@@ -27,15 +28,20 @@
     mainlineDialog: document.getElementById("mainline-dialog"),
     openMainline: document.getElementById("open-mainline"),
     mainlineClose: document.getElementById("mainline-close"),
-    mainlineEdit: document.getElementById("mainline-edit"),
-    mainlineDisplayPanel: document.getElementById("mainline-display-panel"),
-    mainlineDisplay: document.getElementById("mainline-display"),
+    addMainline: document.getElementById("add-mainline"),
+    deleteMainline: document.getElementById("delete-mainline"),
+    mainlineCount: document.getElementById("mainline-count"),
     mainlineEmpty: document.getElementById("mainline-empty"),
-    mainlineDisplayHint: document.getElementById("mainline-display-hint"),
-    mainlineEditorPanel: document.getElementById("mainline-editor-panel"),
-    mainlineInput: document.getElementById("mainline-input"),
+    mainlineList: document.getElementById("mainline-list"),
+    mainlineEditorEmpty: document.getElementById("mainline-editor-empty"),
+    mainlineForm: document.getElementById("mainline-form"),
+    mainlineTitleInput: document.getElementById("mainline-title-input"),
+    mainlineWhyInput: document.getElementById("mainline-why-input"),
+    mainlineOutcomeInput: document.getElementById("mainline-outcome-input"),
+    mainlineFirstStepInput: document.getElementById("mainline-first-step-input"),
+    mainlineHowWhereInput: document.getElementById("mainline-how-where-input"),
+    mainlineCostInput: document.getElementById("mainline-cost-input"),
     saveMainline: document.getElementById("save-mainline"),
-    cancelMainlineEdit: document.getElementById("cancel-mainline-edit"),
     openSettings: document.getElementById("open-settings"),
     closeSettings: document.getElementById("close-settings"),
     syncStatus: document.getElementById("sync-status"),
@@ -48,7 +54,7 @@
     addHabit: document.getElementById("add-habit"),
     habitList: document.getElementById("habit-list"),
   };
-  let isMainlineEditing = false;
+  let selectedMainlineId = null;
 
   function getAppVersion() {
     const version = window.APP_CONFIG?.version;
@@ -82,7 +88,8 @@
       JSON.stringify({
         habits: state.habits,
         completions: state.completions,
-        mainline: state.mainline,
+        mainlines: state.mainlines,
+        mainline: state.mainlines[0]?.title || "",
       }),
     );
   }
@@ -91,11 +98,148 @@
     state.habits = Array.isArray(saved.habits) ? saved.habits : [];
     state.completions =
       saved.completions && typeof saved.completions === "object" ? saved.completions : {};
-    state.mainline = typeof saved.mainline === "string" ? saved.mainline : "";
+    state.mainlines = parseMainlinesContent(saved.mainlines, saved.mainline);
+    selectedMainlineId = state.mainlines[0]?.id || null;
   }
 
-  function getMainlineText() {
-    return typeof state.mainline === "string" ? state.mainline.trim() : "";
+  function getErrorMessage(error, fallback = "发生了未知错误。") {
+    if (typeof error?.message === "string" && error.message.trim()) {
+      return error.message.trim();
+    }
+    return fallback;
+  }
+
+  function isMissingMainlineSchemaError(error) {
+    const detail = [
+      error?.code,
+      error?.message,
+      error?.details,
+      error?.hint,
+    ]
+      .filter((value) => typeof value === "string" && value.trim())
+      .join(" ")
+      .toLowerCase();
+
+    return detail.includes("user_mainlines") || error?.code === "PGRST205";
+  }
+
+  function getMainlineSchemaNotice() {
+    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线”同步需要重新执行最新的 supabase/schema.sql。";
+  }
+
+  function createMainline(partial = {}) {
+    return {
+      id: typeof partial.id === "string" && partial.id.trim() ? partial.id : uid(),
+      title: typeof partial.title === "string" ? partial.title.trim() : "",
+      why: typeof partial.why === "string" ? partial.why.trim() : "",
+      outcome: typeof partial.outcome === "string" ? partial.outcome.trim() : "",
+      firstStep: typeof partial.firstStep === "string" ? partial.firstStep.trim() : "",
+      howWhere: typeof partial.howWhere === "string" ? partial.howWhere.trim() : "",
+      costOfNotDoing:
+        typeof partial.costOfNotDoing === "string" ? partial.costOfNotDoing.trim() : "",
+      createdAt:
+        typeof partial.createdAt === "string" && partial.createdAt.trim()
+          ? partial.createdAt
+          : new Date().toISOString(),
+      updatedAt:
+        typeof partial.updatedAt === "string" && partial.updatedAt.trim()
+          ? partial.updatedAt
+          : new Date().toISOString(),
+    };
+  }
+
+  function createLegacyMainline(content) {
+    const title = typeof content === "string" ? content.trim() : "";
+    return title ? [createMainline({ title })] : [];
+  }
+
+  function normalizeMainlineCollection(items) {
+    if (!Array.isArray(items)) return [];
+    return items
+      .map((item) => {
+        if (typeof item === "string") {
+          return createMainline({ title: item });
+        }
+        if (!item || typeof item !== "object") return null;
+        return createMainline(item);
+      })
+      .filter(Boolean);
+  }
+
+  function parseMainlinesContent(savedMainlines, legacyMainline = "") {
+    const normalizedMainlines = normalizeMainlineCollection(savedMainlines);
+    if (normalizedMainlines.length) {
+      return normalizedMainlines;
+    }
+
+    if (typeof legacyMainline === "string" && legacyMainline.trim()) {
+      return createLegacyMainline(legacyMainline);
+    }
+
+    return [];
+  }
+
+  function parseMainlinesPayload(content) {
+    if (typeof content !== "string" || !content.trim()) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        return normalizeMainlineCollection(parsed);
+      }
+      if (parsed && typeof parsed === "object" && Array.isArray(parsed.items)) {
+        return normalizeMainlineCollection(parsed.items);
+      }
+    } catch {
+      return createLegacyMainline(content);
+    }
+
+    return [];
+  }
+
+  function serializeMainlinesPayload() {
+    if (!state.mainlines.length) {
+      return "";
+    }
+
+    return JSON.stringify({
+      version: 2,
+      items: state.mainlines.map((mainline) => ({
+        id: mainline.id,
+        title: mainline.title,
+        why: mainline.why,
+        outcome: mainline.outcome,
+        firstStep: mainline.firstStep,
+        howWhere: mainline.howWhere,
+        costOfNotDoing: mainline.costOfNotDoing,
+        createdAt: mainline.createdAt,
+        updatedAt: mainline.updatedAt,
+      })),
+    });
+  }
+
+  function ensureSelectedMainline() {
+    if (!state.mainlines.length) {
+      selectedMainlineId = null;
+      return null;
+    }
+
+    const selected =
+      state.mainlines.find((mainline) => mainline.id === selectedMainlineId) || state.mainlines[0];
+    selectedMainlineId = selected.id;
+    return selected;
+  }
+
+  function getSelectedMainline() {
+    return ensureSelectedMainline();
+  }
+
+  function getMainlineListLabel(mainline, index) {
+    const title = typeof mainline?.title === "string" ? mainline.title.trim() : "";
+    if (title) return title;
+    return `未命名主线 ${index + 1}`;
   }
 
   function getTodayCompletions() {
@@ -222,12 +366,15 @@
     els.habitList.innerHTML = "";
     const activeCount = getActiveHabits().length;
     const setupStatus = getSupabaseSetupStatus();
-    els.syncStatus.textContent =
+    const syncStatusText =
       state.mode === "supabase"
         ? `已连接 Supabase，同步账号：${state.session?.user?.email || "未知"}`
         : setupStatus.ready
           ? "已检测到 Supabase 配置，当前尚未登录；登录后可同步到手机和电脑。"
           : setupStatus.message;
+    els.syncStatus.textContent = state.supabaseNotice
+      ? `${syncStatusText} ${state.supabaseNotice}`
+      : syncStatusText;
 
     if (!state.habits.length) {
       const li = document.createElement("li");
@@ -267,62 +414,119 @@
   }
 
   function renderMainlineDialog() {
-    const mainlineText = getMainlineText();
-    const hasMainline = Boolean(mainlineText);
+    const selected = ensureSelectedMainline();
+    const hasMainlines = state.mainlines.length > 0;
 
-    els.mainlineDisplay.textContent = mainlineText;
-    els.mainlineEmpty.hidden = hasMainline;
-    els.mainlineDisplay.hidden = !hasMainline;
-    els.mainlineDisplayHint.textContent = hasMainline
-      ? "把最重要的那一句放大看一遍，提醒自己不要跑偏。"
-      : "你还没有写主线，点右下方保存后，它就会在这里放大展示。";
-    els.mainlineEdit.hidden = isMainlineEditing || !hasMainline;
-    els.mainlineDisplayPanel.classList.toggle("is-visible", !isMainlineEditing);
-    els.mainlineEditorPanel.classList.toggle("is-visible", isMainlineEditing);
-    els.cancelMainlineEdit.textContent = hasMainline ? "取消" : "稍后再写";
-    if (isMainlineEditing) {
-      els.mainlineInput.value = state.mainline;
+    els.mainlineCount.textContent = `${state.mainlines.length} 条`;
+    els.mainlineEmpty.hidden = hasMainlines;
+    els.mainlineList.hidden = !hasMainlines;
+    els.mainlineList.innerHTML = "";
+
+    state.mainlines.forEach((mainline, index) => {
+      const li = document.createElement("li");
+      li.className = "mainline-list-item";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `mainline-list-button${mainline.id === selected?.id ? " is-active" : ""}`;
+      button.innerHTML = `
+        <span class="mainline-list-title">${escapeHtml(getMainlineListLabel(mainline, index))}</span>
+        <span class="mainline-list-meta">${escapeHtml(mainline.why || "还没填写“为什么做”")}</span>
+      `;
+      button.addEventListener("click", () => selectMainline(mainline.id));
+
+      li.appendChild(button);
+      els.mainlineList.appendChild(li);
+    });
+
+    els.deleteMainline.disabled = !selected;
+    els.mainlineEditorEmpty.hidden = Boolean(selected);
+    els.mainlineForm.hidden = !selected;
+
+    if (!selected) {
+      return;
     }
+
+    els.mainlineTitleInput.value = selected.title;
+    els.mainlineWhyInput.value = selected.why;
+    els.mainlineOutcomeInput.value = selected.outcome;
+    els.mainlineFirstStepInput.value = selected.firstStep;
+    els.mainlineHowWhereInput.value = selected.howWhere;
+    els.mainlineCostInput.value = selected.costOfNotDoing;
   }
 
-  function focusMainlineInput() {
+  function focusMainlineTitleInput() {
     requestAnimationFrame(() => {
-      els.mainlineInput.focus();
-      const value = els.mainlineInput.value;
-      els.mainlineInput.setSelectionRange(value.length, value.length);
+      if (els.mainlineForm.hidden) return;
+      els.mainlineTitleInput.focus();
+      const value = els.mainlineTitleInput.value;
+      els.mainlineTitleInput.setSelectionRange(value.length, value.length);
     });
   }
 
+  function updateSelectedMainlineFromForm() {
+    const selected = getSelectedMainline();
+    if (!selected || els.mainlineForm.hidden) {
+      return selected;
+    }
+
+    selected.title = els.mainlineTitleInput.value.trim();
+    selected.why = els.mainlineWhyInput.value.trim();
+    selected.outcome = els.mainlineOutcomeInput.value.trim();
+    selected.firstStep = els.mainlineFirstStepInput.value.trim();
+    selected.howWhere = els.mainlineHowWhereInput.value.trim();
+    selected.costOfNotDoing = els.mainlineCostInput.value.trim();
+    selected.updatedAt = new Date().toISOString();
+    return selected;
+  }
+
   function openMainlineDialog() {
-    isMainlineEditing = !getMainlineText();
+    ensureSelectedMainline();
     renderMainlineDialog();
     if (!els.mainlineDialog.open) {
       els.mainlineDialog.showModal();
     }
-    if (isMainlineEditing) {
-      focusMainlineInput();
+    if (getSelectedMainline()) {
+      focusMainlineTitleInput();
     }
   }
 
   function closeMainlineDialog() {
+    updateSelectedMainlineFromForm();
     if (els.mainlineDialog.open) {
       els.mainlineDialog.close();
     }
   }
 
-  function startMainlineEdit() {
-    isMainlineEditing = true;
+  function selectMainline(id) {
+    updateSelectedMainlineFromForm();
+    selectedMainlineId = id;
     renderMainlineDialog();
-    focusMainlineInput();
   }
 
-  function cancelMainlineEdit() {
-    if (!getMainlineText()) {
-      closeMainlineDialog();
+  async function addMainline() {
+    updateSelectedMainlineFromForm();
+    const nextNumber = state.mainlines.length + 1;
+    const mainline = createMainline({
+      title: `新的主线 ${nextNumber}`,
+    });
+    state.mainlines.push(mainline);
+    selectedMainlineId = mainline.id;
+    await persistAll();
+    focusMainlineTitleInput();
+  }
+
+  async function deleteSelectedMainline() {
+    const selected = getSelectedMainline();
+    if (!selected) return;
+    const selectedIndex = state.mainlines.findIndex((mainline) => mainline.id === selected.id);
+    if (!confirm(`确定删除“${getMainlineListLabel(selected, Math.max(selectedIndex, 0))}”吗？`)) {
       return;
     }
-    isMainlineEditing = false;
-    renderMainlineDialog();
+
+    state.mainlines = state.mainlines.filter((mainline) => mainline.id !== selected.id);
+    selectedMainlineId = state.mainlines[0]?.id || null;
+    await persistAll();
   }
 
   function normalizeOrders() {
@@ -406,16 +610,17 @@
   }
 
   async function saveMainline() {
-    const value = els.mainlineInput.value.trim();
-    if (!value) {
-      alert("请先写下你的主线。");
-      focusMainlineInput();
+    const selected = updateSelectedMainlineFromForm();
+    if (!selected) {
+      alert("请先新增一条主线。");
       return;
     }
-    state.mainline = value;
+    if (!selected.title) {
+      alert("请先写主线名称。");
+      focusMainlineTitleInput();
+      return;
+    }
     await persistAll();
-    isMainlineEditing = false;
-    renderMainlineDialog();
   }
 
   function escapeHtml(value) {
@@ -487,6 +692,34 @@
       config.supabaseAnonKey,
     );
 
+    async function syncMainlineOrWarn(userId) {
+      const mainlinesPayload = serializeMainlinesPayload();
+
+      try {
+        if (mainlinesPayload) {
+          const { error } = await client.from("user_mainlines").upsert(
+            {
+              user_id: userId,
+              content: mainlinesPayload,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id" },
+          );
+          if (error) throw error;
+        } else {
+          const { error } = await client.from("user_mainlines").delete().eq("user_id", userId);
+          if (error) throw error;
+        }
+        state.supabaseNotice = "";
+      } catch (error) {
+        if (isMissingMainlineSchemaError(error)) {
+          state.supabaseNotice = getMainlineSchemaNotice();
+          return;
+        }
+        throw error;
+      }
+    }
+
     async function getSessionOrNull() {
       const { data, error } = await client.auth.getSession();
       if (error) throw error;
@@ -494,19 +727,18 @@
     }
 
     async function fetchHabits() {
+      const savedState = loadLocalState();
       const session = await getSessionOrNull();
       state.session = session;
       if (!session) {
         hydrateStateFromSavedState();
         state.mode = "local";
+        state.supabaseNotice = "";
         return;
       }
 
-      const [
-        { data: habits, error: habitsError },
-        { data: completions, error: completionsError },
-        { data: mainlineRow, error: mainlineError },
-      ] = await Promise.all([
+      const [{ data: habits, error: habitsError }, { data: completions, error: completionsError }] =
+        await Promise.all([
         client
           .from("habits")
           .select("id,title,active,sort_order,created_at")
@@ -515,12 +747,10 @@
           .from("habit_completions")
           .select("habit_id,completed_on")
           .eq("completed_on", TODAY()),
-        client.from("user_mainlines").select("content").maybeSingle(),
       ]);
 
       if (habitsError) throw habitsError;
       if (completionsError) throw completionsError;
-      if (mainlineError) throw mainlineError;
 
       state.habits = (habits || []).map((habit, index) => ({
         id: habit.id,
@@ -533,7 +763,26 @@
       state.completions = {
         [TODAY()]: (completions || []).map((item) => item.habit_id),
       };
-      state.mainline = typeof mainlineRow?.content === "string" ? mainlineRow.content : "";
+
+      const { data: mainlineRow, error: mainlineError } = await client
+        .from("user_mainlines")
+        .select("content")
+        .maybeSingle();
+
+      if (mainlineError) {
+        if (isMissingMainlineSchemaError(mainlineError)) {
+          state.mainlines = parseMainlinesContent(savedState.mainlines, savedState.mainline);
+          selectedMainlineId = state.mainlines[0]?.id || null;
+          state.supabaseNotice = getMainlineSchemaNotice();
+        } else {
+          throw mainlineError;
+        }
+      } else {
+        state.mainlines = parseMainlinesPayload(mainlineRow?.content);
+        selectedMainlineId = state.mainlines[0]?.id || null;
+        state.supabaseNotice = "";
+      }
+
       state.mode = "supabase";
     }
 
@@ -582,21 +831,7 @@
           if (error) throw error;
         }
 
-        const mainlineText = getMainlineText();
-        if (mainlineText) {
-          const { error } = await client.from("user_mainlines").upsert(
-            {
-              user_id: userId,
-              content: mainlineText,
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: "user_id" },
-          );
-          if (error) throw error;
-        } else {
-          const { error } = await client.from("user_mainlines").delete().eq("user_id", userId);
-          if (error) throw error;
-        }
+        await syncMainlineOrWarn(userId);
       },
       async signIn(email, password) {
         const { error } = await client.auth.signInWithPassword({ email, password });
@@ -635,7 +870,14 @@
       const config = window.APP_CONFIG || {};
       provider = createSupabaseProvider(config);
     }
-    await provider.init();
+    try {
+      await provider.init();
+    } catch (error) {
+      console.error("Supabase init failed:", error);
+      provider = localProvider;
+      await provider.init();
+      state.supabaseNotice = `Supabase 初始化失败，已切回本地模式：${getErrorMessage(error)}`;
+    }
     renderMain();
     renderMainlineDialog();
     renderSettings();
@@ -666,11 +908,11 @@
   function wireEvents() {
     els.openMainline.addEventListener("click", openMainlineDialog);
     els.mainlineClose.addEventListener("click", closeMainlineDialog);
-    els.mainlineEdit.addEventListener("click", startMainlineEdit);
+    els.addMainline.addEventListener("click", addMainline);
+    els.deleteMainline.addEventListener("click", deleteSelectedMainline);
     els.saveMainline.addEventListener("click", saveMainline);
-    els.cancelMainlineEdit.addEventListener("click", cancelMainlineEdit);
     els.mainlineDialog.addEventListener("close", () => {
-      isMainlineEditing = false;
+      updateSelectedMainlineFromForm();
       renderMainlineDialog();
     });
     els.openSettings.addEventListener("click", () => els.settingsDialog.showModal());
