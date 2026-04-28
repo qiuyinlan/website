@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
-  const DEFAULT_APP_VERSION = "2026.04.28-interests";
+  const DEFAULT_APP_VERSION = "2026.04.28-autogrow";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
