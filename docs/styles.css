@@ -301,7 +301,8 @@ textarea {
   background: rgba(255, 255, 255, 0.94);
   color: var(--ink);
   line-height: 1.45;
-  resize: vertical;
+  resize: none;
+  overflow: hidden;
 }
 
 .settings-dialog {

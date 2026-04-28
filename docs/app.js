@@ -107,6 +107,21 @@
     els.appVersion.textContent = `版本 v${getAppVersion()}`;
   }
 
+  function autoResizeTextarea(textarea) {
+    if (!(textarea instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
+
+  function refreshAutoResizeTextareas(scope = document) {
+    scope.querySelectorAll("textarea").forEach((textarea) => {
+      autoResizeTextarea(textarea);
+    });
+  }
+
   function uid() {
     if (crypto.randomUUID) return crypto.randomUUID();
     return `habit-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -743,6 +758,7 @@
     els.mainlineFirstStepInput.value = selected.firstStep;
     els.mainlineHowWhereInput.value = selected.howWhere;
     els.mainlineCostInput.value = selected.costOfNotDoing;
+    refreshAutoResizeTextareas(els.mainlineForm);
   }
 
   function renderPrinciplesDialog() {
@@ -785,6 +801,7 @@
 
     els.principleTitleInput.value = selected.title;
     renderPrinciplePoints(selected.points);
+    refreshAutoResizeTextareas(els.principleForm);
   }
 
   function renderInterestsDialog() {
@@ -826,6 +843,7 @@
     }
 
     els.interestInput.value = selected.content;
+    refreshAutoResizeTextareas(els.interestForm);
   }
 
   function renderPrinciplePoints(points) {
@@ -869,6 +887,8 @@
 
       els.principlePoints.appendChild(item);
     });
+
+    refreshAutoResizeTextareas(els.principlePoints);
   }
 
   function focusMainlineTitleInput() {
@@ -1682,6 +1702,12 @@
         alert(error.message || "退出失败");
       }
     });
+
+    document.addEventListener("input", (event) => {
+      if (event.target instanceof HTMLTextAreaElement) {
+        autoResizeTextarea(event.target);
+      }
+    });
   }
 
   document.addEventListener("keydown", (event) => {
@@ -1693,4 +1719,5 @@
   wireEvents();
   renderAppVersion();
   initProvider();
+  refreshAutoResizeTextareas();
 })();
