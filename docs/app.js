@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
-  const DEFAULT_APP_VERSION = "2026.04.27-principles";
+  const DEFAULT_APP_VERSION = "2026.04.28-interests";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
@@ -10,6 +10,7 @@
     completions: {},
     mainlines: [],
     principles: [],
+    interests: [],
     supabaseNotice: "",
     currentHabitId: null,
     skippedToday: [],
@@ -62,6 +63,20 @@
     principlePointsEmpty: document.getElementById("principle-points-empty"),
     principlePoints: document.getElementById("principle-points"),
     savePrinciple: document.getElementById("save-principle"),
+    interestsDialog: document.getElementById("interests-dialog"),
+    openInterests: document.getElementById("open-interests"),
+    interestsClose: document.getElementById("interests-close"),
+    moveInterestUp: document.getElementById("move-interest-up"),
+    moveInterestDown: document.getElementById("move-interest-down"),
+    addInterest: document.getElementById("add-interest"),
+    deleteInterest: document.getElementById("delete-interest"),
+    interestCount: document.getElementById("interest-count"),
+    interestEmpty: document.getElementById("interest-empty"),
+    interestList: document.getElementById("interest-list"),
+    interestEditorEmpty: document.getElementById("interest-editor-empty"),
+    interestForm: document.getElementById("interest-form"),
+    interestInput: document.getElementById("interest-input"),
+    saveInterest: document.getElementById("save-interest"),
     openSettings: document.getElementById("open-settings"),
     closeSettings: document.getElementById("close-settings"),
     syncStatus: document.getElementById("sync-status"),
@@ -77,6 +92,7 @@
 
   let selectedMainlineId = null;
   let selectedPrincipleId = null;
+  let selectedInterestId = null;
 
   function getAppVersion() {
     const version = window.APP_CONFIG?.version;
@@ -113,6 +129,7 @@
         mainlines: state.mainlines,
         mainline: state.mainlines[0]?.title || "",
         principles: state.principles,
+        interests: state.interests,
       }),
     );
   }
@@ -123,8 +140,10 @@
       saved.completions && typeof saved.completions === "object" ? saved.completions : {};
     state.mainlines = parseMainlinesContent(saved.mainlines, saved.mainline);
     state.principles = parsePrinciplesContent(saved.principles);
+    state.interests = parseInterestsContent(saved.interests);
     selectedMainlineId = getSortedMainlines()[0]?.id || null;
     selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
+    selectedInterestId = getSortedInterests()[0]?.id || null;
   }
 
   function getErrorMessage(error, fallback = "发生了未知错误。") {
@@ -149,7 +168,7 @@
   }
 
   function getContentSchemaNotice() {
-    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线/原则”同步需要重新执行最新的 supabase/schema.sql。";
+    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线/原则/兴趣”同步需要重新执行最新的 supabase/schema.sql。";
   }
 
   function createOrderedList(items) {
@@ -293,6 +312,22 @@
     };
   }
 
+  function createInterest(partial = {}, fallbackOrder = 0) {
+    return {
+      id: typeof partial.id === "string" && partial.id.trim() ? partial.id : uid(),
+      content: typeof partial.content === "string" ? partial.content.trim() : "",
+      createdAt:
+        typeof partial.createdAt === "string" && partial.createdAt.trim()
+          ? partial.createdAt
+          : new Date().toISOString(),
+      updatedAt:
+        typeof partial.updatedAt === "string" && partial.updatedAt.trim()
+          ? partial.updatedAt
+          : new Date().toISOString(),
+      order: Number.isFinite(partial.order) ? partial.order : fallbackOrder,
+    };
+  }
+
   function normalizePrincipleCollection(items) {
     if (!Array.isArray(items)) return [];
     return createOrderedList(
@@ -307,6 +342,45 @@
 
   function parsePrinciplesContent(savedPrinciples) {
     return normalizePrincipleCollection(savedPrinciples);
+  }
+
+  function normalizeInterestCollection(items) {
+    if (!Array.isArray(items)) return [];
+    return createOrderedList(
+      items
+        .map((item, index) => {
+          if (typeof item === "string") {
+            return createInterest({ content: item }, index);
+          }
+          if (!item || typeof item !== "object") return null;
+          return createInterest(item, index);
+        })
+        .filter(Boolean),
+    );
+  }
+
+  function parseInterestsContent(savedInterests) {
+    return normalizeInterestCollection(savedInterests);
+  }
+
+  function parseInterestsPayload(content) {
+    if (typeof content !== "string" || !content.trim()) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        return normalizeInterestCollection(parsed);
+      }
+      if (parsed && typeof parsed === "object" && Array.isArray(parsed.items)) {
+        return normalizeInterestCollection(parsed.items);
+      }
+    } catch {
+      return normalizeInterestCollection([content]);
+    }
+
+    return [];
   }
 
   function parsePrinciplesPayload(content) {
@@ -350,12 +424,33 @@
     });
   }
 
+  function serializeInterestsPayload() {
+    if (!state.interests.length) {
+      return "";
+    }
+
+    return JSON.stringify({
+      version: 1,
+      items: getSortedInterests().map((interest) => ({
+        id: interest.id,
+        content: interest.content,
+        createdAt: interest.createdAt,
+        updatedAt: interest.updatedAt,
+        order: interest.order,
+      })),
+    });
+  }
+
   function getSortedMainlines() {
     return state.mainlines.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
 
   function getSortedPrinciples() {
     return state.principles.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  function getSortedInterests() {
+    return state.interests.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
 
   function ensureSelectedMainline() {
@@ -393,6 +488,23 @@
     return ensureSelectedPrinciple();
   }
 
+  function ensureSelectedInterest() {
+    const sortedInterests = getSortedInterests();
+    if (!sortedInterests.length) {
+      selectedInterestId = null;
+      return null;
+    }
+
+    const selected =
+      sortedInterests.find((interest) => interest.id === selectedInterestId) || sortedInterests[0];
+    selectedInterestId = selected.id;
+    return selected;
+  }
+
+  function getSelectedInterest() {
+    return ensureSelectedInterest();
+  }
+
   function getMainlineListLabel(mainline, index) {
     const title = typeof mainline?.title === "string" ? mainline.title.trim() : "";
     if (title) return title;
@@ -403,6 +515,14 @@
     const title = typeof principle?.title === "string" ? principle.title.trim() : "";
     if (title) return title;
     return `未命名原则 ${index + 1}`;
+  }
+
+  function getInterestListLabel(interest, index) {
+    const content = typeof interest?.content === "string" ? interest.content.trim() : "";
+    if (content) {
+      return content.length > 22 ? `${content.slice(0, 22)}...` : content;
+    }
+    return `未命名兴趣 ${index + 1}`;
   }
 
   function getTodayCompletions() {
@@ -667,6 +787,47 @@
     renderPrinciplePoints(selected.points);
   }
 
+  function renderInterestsDialog() {
+    const selected = ensureSelectedInterest();
+    const sortedInterests = getSortedInterests();
+    const selectedIndex = sortedInterests.findIndex((interest) => interest.id === selected?.id);
+
+    els.interestCount.textContent = `${sortedInterests.length} 条`;
+    els.interestEmpty.hidden = sortedInterests.length > 0;
+    els.interestList.hidden = sortedInterests.length === 0;
+    els.interestList.innerHTML = "";
+
+    sortedInterests.forEach((interest, index) => {
+      const li = document.createElement("li");
+      li.className = "mainline-list-item";
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `mainline-list-button${interest.id === selected?.id ? " is-active" : ""}`;
+      button.innerHTML = `
+        <span class="mainline-list-title">${escapeHtml(getInterestListLabel(interest, index))}</span>
+        <span class="mainline-list-meta">排序 ${index + 1}</span>
+      `;
+      button.addEventListener("click", () => selectInterest(interest.id));
+
+      li.appendChild(button);
+      els.interestList.appendChild(li);
+    });
+
+    els.deleteInterest.disabled = !selected;
+    els.moveInterestUp.disabled = !selected || selectedIndex <= 0;
+    els.moveInterestDown.disabled =
+      !selected || selectedIndex < 0 || selectedIndex >= sortedInterests.length - 1;
+    els.interestEditorEmpty.hidden = Boolean(selected);
+    els.interestForm.hidden = !selected;
+
+    if (!selected) {
+      return;
+    }
+
+    els.interestInput.value = selected.content;
+  }
+
   function renderPrinciplePoints(points) {
     els.principlePoints.innerHTML = "";
     els.principlePointsEmpty.hidden = points.length > 0;
@@ -738,6 +899,15 @@
     });
   }
 
+  function focusInterestInput() {
+    requestAnimationFrame(() => {
+      if (els.interestForm.hidden) return;
+      els.interestInput.focus();
+      const value = els.interestInput.value;
+      els.interestInput.setSelectionRange(value.length, value.length);
+    });
+  }
+
   function updateSelectedMainlineFromForm() {
     const selected = getSelectedMainline();
     if (!selected || els.mainlineForm.hidden) {
@@ -768,6 +938,17 @@
           text: input.value.trim(),
         }),
     );
+    selected.updatedAt = new Date().toISOString();
+    return selected;
+  }
+
+  function updateSelectedInterestFromForm() {
+    const selected = getSelectedInterest();
+    if (!selected || els.interestForm.hidden) {
+      return selected;
+    }
+
+    selected.content = els.interestInput.value.trim();
     selected.updatedAt = new Date().toISOString();
     return selected;
   }
@@ -808,6 +989,24 @@
     }
   }
 
+  function openInterestsDialog() {
+    ensureSelectedInterest();
+    renderInterestsDialog();
+    if (!els.interestsDialog.open) {
+      els.interestsDialog.showModal();
+    }
+    if (getSelectedInterest()) {
+      focusInterestInput();
+    }
+  }
+
+  function closeInterestsDialog() {
+    updateSelectedInterestFromForm();
+    if (els.interestsDialog.open) {
+      els.interestsDialog.close();
+    }
+  }
+
   function selectMainline(id) {
     updateSelectedMainlineFromForm();
     selectedMainlineId = id;
@@ -820,6 +1019,12 @@
     renderPrinciplesDialog();
   }
 
+  function selectInterest(id) {
+    updateSelectedInterestFromForm();
+    selectedInterestId = id;
+    renderInterestsDialog();
+  }
+
   function normalizeOrders() {
     state.habits
       .sort((a, b) => a.order - b.order)
@@ -829,6 +1034,7 @@
 
     state.mainlines = createOrderedList(state.mainlines);
     state.principles = createOrderedList(state.principles);
+    state.interests = createOrderedList(state.interests);
   }
 
   async function addHabit() {
@@ -990,6 +1196,52 @@
     renderPrinciplesDialog();
   }
 
+  async function addInterest() {
+    updateSelectedInterestFromForm();
+    const interest = createInterest(
+      {
+        content: `新的兴趣 ${state.interests.length + 1}`,
+        order: state.interests.length,
+      },
+      state.interests.length,
+    );
+    state.interests.push(interest);
+    selectedInterestId = interest.id;
+    await persistAll();
+    focusInterestInput();
+  }
+
+  async function moveInterest(delta) {
+    updateSelectedInterestFromForm();
+    const sortedInterests = getSortedInterests();
+    const index = sortedInterests.findIndex((interest) => interest.id === selectedInterestId);
+    if (index < 0) return;
+    const nextIndex = index + delta;
+    if (nextIndex < 0 || nextIndex >= sortedInterests.length) return;
+    [sortedInterests[index], sortedInterests[nextIndex]] = [
+      sortedInterests[nextIndex],
+      sortedInterests[index],
+    ];
+    sortedInterests.forEach((interest, order) => {
+      const target = state.interests.find((item) => item.id === interest.id);
+      if (target) target.order = order;
+    });
+    await persistAll();
+  }
+
+  async function deleteSelectedInterest() {
+    const selected = getSelectedInterest();
+    if (!selected) return;
+    const selectedIndex = getSortedInterests().findIndex((interest) => interest.id === selected.id);
+    if (!confirm(`确定删除“${getInterestListLabel(selected, Math.max(selectedIndex, 0))}”吗？`)) {
+      return;
+    }
+
+    state.interests = state.interests.filter((interest) => interest.id !== selected.id);
+    selectedInterestId = getSortedInterests()[0]?.id || null;
+    await persistAll();
+  }
+
   async function completeCurrentHabit() {
     if (!state.currentHabitId) return;
     const completed = new Set(getTodayCompletions());
@@ -1039,6 +1291,20 @@
     if (!selected.title) {
       alert("请先写原则板块名称。");
       focusPrincipleTitleInput();
+      return;
+    }
+    await persistAll();
+  }
+
+  async function saveInterest() {
+    const selected = updateSelectedInterestFromForm();
+    if (!selected) {
+      alert("请先新增一条兴趣。");
+      return;
+    }
+    if (!selected.content) {
+      alert("请先写兴趣内容。");
+      focusInterestInput();
       return;
     }
     await persistAll();
@@ -1196,9 +1462,10 @@
         [TODAY()]: (completions || []).map((item) => item.habit_id),
       };
 
-      const [mainlineResult, principleResult] = await Promise.all([
+      const [mainlineResult, principleResult, interestResult] = await Promise.all([
         fetchContentCollection("user_mainlines"),
         fetchContentCollection("user_principles"),
+        fetchContentCollection("user_interests"),
       ]);
 
       state.mainlines = mainlineResult.missingSchema
@@ -1207,11 +1474,17 @@
       state.principles = principleResult.missingSchema
         ? parsePrinciplesContent(savedState.principles)
         : parsePrinciplesPayload(principleResult.content);
+      state.interests = interestResult.missingSchema
+        ? parseInterestsContent(savedState.interests)
+        : parseInterestsPayload(interestResult.content);
 
       selectedMainlineId = getSortedMainlines()[0]?.id || null;
       selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
+      selectedInterestId = getSortedInterests()[0]?.id || null;
       state.supabaseNotice =
-        mainlineResult.missingSchema || principleResult.missingSchema
+        mainlineResult.missingSchema ||
+        principleResult.missingSchema ||
+        interestResult.missingSchema
           ? getContentSchemaNotice()
           : "";
       state.mode = "supabase";
@@ -1261,13 +1534,16 @@
           if (error) throw error;
         }
 
-        const [mainlineSync, principleSync] = await Promise.all([
+        const [mainlineSync, principleSync, interestSync] = await Promise.all([
           syncContentCollection("user_mainlines", serializeMainlinesPayload(), userId),
           syncContentCollection("user_principles", serializePrinciplesPayload(), userId),
+          syncContentCollection("user_interests", serializeInterestsPayload(), userId),
         ]);
 
         state.supabaseNotice =
-          mainlineSync.missingSchema || principleSync.missingSchema
+          mainlineSync.missingSchema ||
+          principleSync.missingSchema ||
+          interestSync.missingSchema
             ? getContentSchemaNotice()
             : "";
       },
@@ -1300,6 +1576,7 @@
     renderMain();
     renderMainlineDialog();
     renderPrinciplesDialog();
+    renderInterestsDialog();
     renderSettings();
   }
 
@@ -1342,6 +1619,7 @@
       renderMain();
       renderMainlineDialog();
       renderPrinciplesDialog();
+      renderInterestsDialog();
       renderSettings();
     } catch (error) {
       alert(error.message || "认证失败");
@@ -1374,6 +1652,18 @@
       renderPrinciplesDialog();
     });
 
+    els.openInterests.addEventListener("click", openInterestsDialog);
+    els.interestsClose.addEventListener("click", closeInterestsDialog);
+    els.moveInterestUp.addEventListener("click", () => moveInterest(-1));
+    els.moveInterestDown.addEventListener("click", () => moveInterest(1));
+    els.addInterest.addEventListener("click", addInterest);
+    els.deleteInterest.addEventListener("click", deleteSelectedInterest);
+    els.saveInterest.addEventListener("click", saveInterest);
+    els.interestsDialog.addEventListener("close", () => {
+      updateSelectedInterestFromForm();
+      renderInterestsDialog();
+    });
+
     els.openSettings.addEventListener("click", () => els.settingsDialog.showModal());
     els.completeTask.addEventListener("click", completeCurrentHabit);
     els.skipTask.addEventListener("click", skipCurrentHabit);
@@ -1386,6 +1676,7 @@
         renderMain();
         renderMainlineDialog();
         renderPrinciplesDialog();
+        renderInterestsDialog();
         renderSettings();
       } catch (error) {
         alert(error.message || "退出失败");

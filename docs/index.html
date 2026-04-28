@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.27-principles" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.28-interests" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.04.27-principles" />
+    <link rel="stylesheet" href="./styles.css?v=2026.04.28-interests" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.04.27-principles"></script>
-    <script defer src="./app.js?v=2026.04.27-principles"></script>
+    <script defer src="./config.js?v=2026.04.28-interests"></script>
+    <script defer src="./app.js?v=2026.04.28-interests"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -53,6 +53,7 @@
         <div class="topbar-actions">
           <button id="open-mainline" class="secondary-button" type="button">主线</button>
           <button id="open-principles" class="secondary-button" type="button">原则</button>
+          <button id="open-interests" class="secondary-button" type="button">兴趣</button>
           <button id="open-settings" class="ghost-button" type="button">设置</button>
         </div>
       </header>
@@ -305,6 +306,59 @@
               <div class="mainline-actions">
                 <button id="save-principle" class="primary-button" type="button">
                   保存当前原则
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="interests-dialog" class="mainline-dialog">
+      <div class="mainline-shell">
+        <header class="mainline-header">
+          <div>
+            <p class="eyebrow">Interests</p>
+            <h2>我的兴趣</h2>
+          </div>
+          <div class="mainline-actions">
+            <button id="move-interest-up" class="ghost-button" type="button">上移</button>
+            <button id="move-interest-down" class="ghost-button" type="button">下移</button>
+            <button id="add-interest" class="secondary-button" type="button">新增兴趣</button>
+            <button id="delete-interest" class="ghost-button" type="button">删除当前</button>
+            <button id="interests-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div class="mainline-workspace">
+          <section class="mainline-list-panel">
+            <div class="panel-header">
+              <h3>兴趣列表</h3>
+              <p id="interest-count" class="mainline-list-count">0 条</p>
+            </div>
+            <p id="interest-empty" class="mainline-empty">
+              你还没有添加兴趣，先点上方“新增兴趣”。
+            </p>
+            <ul id="interest-list" class="mainline-list"></ul>
+          </section>
+
+          <section class="mainline-editor-panel">
+            <p id="interest-editor-empty" class="mainline-editor-empty">
+              选中一条兴趣后，就可以写下你真正感兴趣的事情。
+            </p>
+            <div id="interest-form" class="mainline-form" hidden>
+              <label class="mainline-label" for="interest-input">兴趣内容</label>
+              <textarea
+                id="interest-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="例如：真正想长期钻研的主题、想持续接近的人事物。"
+              ></textarea>
+
+              <p class="mainline-editor-hint">保存后，这条兴趣会同步到你当前使用的存储方式里。</p>
+              <div class="mainline-actions">
+                <button id="save-interest" class="primary-button" type="button">
+                  保存当前兴趣
                 </button>
               </div>
             </div>

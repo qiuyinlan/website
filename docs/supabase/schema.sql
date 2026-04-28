@@ -30,10 +30,17 @@ create table if not exists public.user_principles (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.user_interests (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  content text not null check (char_length(btrim(content)) > 0),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.habits enable row level security;
 alter table public.habit_completions enable row level security;
 alter table public.user_mainlines enable row level security;
 alter table public.user_principles enable row level security;
+alter table public.user_interests enable row level security;
 
 drop policy if exists "users_manage_own_habits" on public.habits;
 create policy "users_manage_own_habits"
@@ -59,6 +66,13 @@ with check (auth.uid() = user_id);
 drop policy if exists "users_manage_own_principles" on public.user_principles;
 create policy "users_manage_own_principles"
 on public.user_principles
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+drop policy if exists "users_manage_own_interests" on public.user_interests;
+create policy "users_manage_own_interests"
+on public.user_interests
 for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
