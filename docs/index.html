@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.04.28-autogrow" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.05.14-drag-all" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.04.28-autogrow" />
+    <link rel="stylesheet" href="./styles.css?v=2026.05.14-drag-all" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.04.28-autogrow"></script>
-    <script defer src="./app.js?v=2026.04.28-autogrow"></script>
+    <script defer src="./config.js?v=2026.05.14-drag-all"></script>
+    <script defer src="./app.js?v=2026.05.14-drag-all"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -147,7 +147,7 @@
         <section class="panel">
           <div class="panel-header">
             <h3>我的习惯列表</h3>
-            <p>可排序、停用和删除。</p>
+            <p>可直接编辑、拖动排序、停用和删除。</p>
           </div>
           <ul id="habit-list" class="habit-list"></ul>
         </section>
@@ -162,8 +162,6 @@
             <h2>我的主线</h2>
           </div>
           <div class="mainline-actions">
-            <button id="move-mainline-up" class="ghost-button" type="button">上移</button>
-            <button id="move-mainline-down" class="ghost-button" type="button">下移</button>
             <button id="add-mainline" class="secondary-button" type="button">新增主线</button>
             <button id="delete-mainline" class="ghost-button" type="button">删除当前</button>
             <button id="mainline-close" class="ghost-button" type="button">关闭</button>
@@ -256,8 +254,6 @@
             <h2>我的原则</h2>
           </div>
           <div class="mainline-actions">
-            <button id="move-principle-up" class="ghost-button" type="button">上移</button>
-            <button id="move-principle-down" class="ghost-button" type="button">下移</button>
             <button id="add-principle" class="secondary-button" type="button">新增原则</button>
             <button id="delete-principle" class="ghost-button" type="button">删除当前</button>
             <button id="principles-close" class="ghost-button" type="button">关闭</button>
@@ -322,8 +318,6 @@
             <h2>我的兴趣</h2>
           </div>
           <div class="mainline-actions">
-            <button id="move-interest-up" class="ghost-button" type="button">上移</button>
-            <button id="move-interest-down" class="ghost-button" type="button">下移</button>
             <button id="add-interest" class="secondary-button" type="button">新增兴趣</button>
             <button id="delete-interest" class="ghost-button" type="button">删除当前</button>
             <button id="interests-close" class="ghost-button" type="button">关闭</button>

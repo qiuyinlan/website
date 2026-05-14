@@ -249,7 +249,21 @@ h3,
 }
 
 .habit-item {
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.habit-item-main {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.habit-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .today-item.done .today-title {
@@ -262,6 +276,17 @@ h3,
   height: 18px;
   border-radius: 50%;
   border: 2px solid var(--accent);
+  padding: 0;
+  background: transparent;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.today-check:not(:disabled):hover {
+  transform: scale(1.06);
+}
+
+.today-check:disabled {
+  cursor: default;
 }
 
 .today-item.done .today-check {
@@ -403,6 +428,10 @@ textarea {
 
 .mainline-list-item {
   margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
 }
 
 .mainline-list-button {
@@ -415,6 +444,11 @@ textarea {
   border: 1px solid rgba(31, 27, 22, 0.1);
   background: rgba(255, 255, 255, 0.9);
   color: var(--ink);
+}
+
+.mainline-drag-handle {
+  align-self: stretch;
+  min-width: 44px;
 }
 
 .mainline-list-button.is-active {
@@ -512,6 +546,15 @@ textarea {
   color: var(--ink);
 }
 
+.habit-title-editor {
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(31, 27, 22, 0.1);
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .habit-row-meta {
   font-size: 0.9rem;
   color: var(--muted);
@@ -529,6 +572,37 @@ textarea {
   min-width: auto;
   padding: 0 12px;
   color: var(--accent-strong);
+}
+
+.drag-handle {
+  cursor: grab;
+  touch-action: none;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.habit-item.is-dragging,
+.mainline-list-item.is-dragging {
+  position: fixed;
+  z-index: 40;
+  margin: 0;
+  box-shadow: 0 22px 48px rgba(20, 16, 12, 0.18);
+  transform: rotate(1deg);
+}
+
+.drag-sort-placeholder {
+  border-style: dashed;
+  border-color: rgba(43, 106, 74, 0.36);
+  background: rgba(223, 238, 229, 0.4);
+}
+
+body.habit-dragging,
+body.habit-dragging * {
+  user-select: none;
+}
+
+body.habit-dragging .drag-handle {
+  cursor: grabbing;
 }
 
 .danger {
@@ -570,7 +644,11 @@ textarea {
   }
 
   .habit-item {
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr;
+  }
+
+  .habit-item-actions {
+    justify-content: flex-start;
   }
 
   .today-item {
@@ -595,6 +673,10 @@ textarea {
   .mainline-list-panel,
   .mainline-editor-panel {
     padding: 18px;
+  }
+
+  .mainline-list-item {
+    grid-template-columns: 1fr auto;
   }
 
   .mainline-input {

@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "micro-habit-local-state-v1";
-  const DEFAULT_APP_VERSION = "2026.04.28-autogrow";
+  const DEFAULT_APP_VERSION = "2026.05.14-drag-all";
   const TODAY = () => new Date().toISOString().slice(0, 10);
 
   const state = {
@@ -30,8 +30,6 @@
     mainlineDialog: document.getElementById("mainline-dialog"),
     openMainline: document.getElementById("open-mainline"),
     mainlineClose: document.getElementById("mainline-close"),
-    moveMainlineUp: document.getElementById("move-mainline-up"),
-    moveMainlineDown: document.getElementById("move-mainline-down"),
     addMainline: document.getElementById("add-mainline"),
     deleteMainline: document.getElementById("delete-mainline"),
     mainlineCount: document.getElementById("mainline-count"),
@@ -49,8 +47,6 @@
     principlesDialog: document.getElementById("principles-dialog"),
     openPrinciples: document.getElementById("open-principles"),
     principlesClose: document.getElementById("principles-close"),
-    movePrincipleUp: document.getElementById("move-principle-up"),
-    movePrincipleDown: document.getElementById("move-principle-down"),
     addPrinciple: document.getElementById("add-principle"),
     deletePrinciple: document.getElementById("delete-principle"),
     principleCount: document.getElementById("principle-count"),
@@ -66,8 +62,6 @@
     interestsDialog: document.getElementById("interests-dialog"),
     openInterests: document.getElementById("open-interests"),
     interestsClose: document.getElementById("interests-close"),
-    moveInterestUp: document.getElementById("move-interest-up"),
-    moveInterestDown: document.getElementById("move-interest-down"),
     addInterest: document.getElementById("add-interest"),
     deleteInterest: document.getElementById("delete-interest"),
     interestCount: document.getElementById("interest-count"),
@@ -93,6 +87,17 @@
   let selectedMainlineId = null;
   let selectedPrincipleId = null;
   let selectedInterestId = null;
+  const listDrag = {
+    kind: null,
+    pointerId: null,
+    item: null,
+    handle: null,
+    placeholder: null,
+    list: null,
+    itemSelector: "",
+    onReorder: null,
+    offsetY: 0,
+  };
 
   function getAppVersion() {
     const version = window.APP_CONFIG?.version;
@@ -549,9 +554,11 @@
   }
 
   function getActiveHabits() {
-    return state.habits
-      .filter((habit) => habit.active !== false)
-      .sort((a, b) => a.order - b.order);
+    return getSortedHabits().filter((habit) => habit.active !== false);
+  }
+
+  function getSortedHabits() {
+    return state.habits.slice().sort((a, b) => a.order - b.order);
   }
 
   function getPendingHabits() {
@@ -632,10 +639,26 @@
       const isSkipped = skipped.has(habit.id);
       const li = document.createElement("li");
       li.className = `today-item${isCompleted ? " done" : ""}`;
-      li.innerHTML = `
-        <span class="today-check"></span>
-        <span class="today-title">${escapeHtml(habit.title)}</span>
-      `;
+      const checkButton = document.createElement("button");
+      checkButton.type = "button";
+      checkButton.className = "today-check";
+      checkButton.setAttribute(
+        "aria-label",
+        isCompleted ? `${habit.title} 已完成` : `把 ${habit.title} 标记为已完成`,
+      );
+      checkButton.disabled = isCompleted;
+      if (!isCompleted) {
+        checkButton.addEventListener("click", () => {
+          markHabitComplete(habit.id);
+        });
+      }
+
+      const title = document.createElement("span");
+      title.className = "today-title";
+      title.textContent = habit.title;
+
+      li.appendChild(checkButton);
+      li.appendChild(title);
 
       const actions = document.createElement("div");
       actions.className = "today-item-actions";
@@ -685,24 +708,45 @@
       return;
     }
 
-    state.habits
-      .slice()
-      .sort((a, b) => a.order - b.order)
-      .forEach((habit, index) => {
+    getSortedHabits().forEach((habit, index) => {
         const li = document.createElement("li");
-        li.className = "habit-item";
+        li.className = "habit-item sortable-item";
+        li.dataset.dragId = habit.id;
         li.innerHTML = `
-          <div>
-            <div class="habit-row-title">${escapeHtml(habit.title)}</div>
-            <div class="habit-row-meta">${habit.active === false ? "已停用" : "启用中"} · 排序 ${index + 1}</div>
+          <div class="habit-item-main">
+            <input
+              class="habit-title-editor"
+              type="text"
+              maxlength="80"
+              value="${escapeHtml(habit.title)}"
+              aria-label="编辑习惯内容"
+            />
+            <div class="habit-row-meta">${habit.active === false ? "已停用 · " : ""}拖动排序 ${index + 1}</div>
           </div>
-          <button class="small-button move-up" type="button" aria-label="上移">↑</button>
-          <button class="small-button toggle-active" type="button" aria-label="切换启用">${habit.active === false ? "启用" : "停用"}</button>
-          <button class="small-button danger delete-habit" type="button" aria-label="删除">删</button>
+          <div class="habit-item-actions">
+            <button class="small-button toggle-active" type="button" aria-label="切换启用">${habit.active === false ? "启用" : "停用"}</button>
+            <button class="small-button danger delete-habit" type="button" aria-label="删除">删</button>
+            <button class="small-button drag-handle" type="button" aria-label="拖动排序" title="拖动排序">≡</button>
+          </div>
         `;
-        li.querySelector(".move-up").addEventListener("click", () => moveHabit(habit.id, -1));
+        const titleInput = li.querySelector(".habit-title-editor");
+        const dragHandle = li.querySelector(".drag-handle");
+        titleInput.addEventListener("blur", () =>
+          queueHabitTitleSave(habit.id, titleInput.value),
+        );
+        titleInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            titleInput.blur();
+          }
+          if (event.key === "Escape") {
+            titleInput.value = habit.title;
+            titleInput.blur();
+          }
+        });
         li.querySelector(".toggle-active").addEventListener("click", () => toggleHabit(habit.id));
         li.querySelector(".delete-habit").addEventListener("click", () => deleteHabit(habit.id));
+        dragHandle.addEventListener("pointerdown", (event) => startHabitDrag(event, li, habit.id));
         els.habitList.appendChild(li);
       });
 
@@ -717,7 +761,6 @@
   function renderMainlineDialog() {
     const selected = ensureSelectedMainline();
     const sortedMainlines = getSortedMainlines();
-    const selectedIndex = sortedMainlines.findIndex((mainline) => mainline.id === selected?.id);
 
     els.mainlineCount.textContent = `${sortedMainlines.length} 条`;
     els.mainlineEmpty.hidden = sortedMainlines.length > 0;
@@ -726,25 +769,25 @@
 
     sortedMainlines.forEach((mainline, index) => {
       const li = document.createElement("li");
-      li.className = "mainline-list-item";
-
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `mainline-list-button${mainline.id === selected?.id ? " is-active" : ""}`;
-      button.innerHTML = `
-        <span class="mainline-list-title">${escapeHtml(getMainlineListLabel(mainline, index))}</span>
-        <span class="mainline-list-meta">${escapeHtml(mainline.why || "还没填写“为什么做”")} · 排序 ${index + 1}</span>
+      li.className = "mainline-list-item sortable-item";
+      li.dataset.dragId = mainline.id;
+      li.innerHTML = `
+        <button type="button" class="mainline-list-button${mainline.id === selected?.id ? " is-active" : ""}">
+          <span class="mainline-list-title">${escapeHtml(getMainlineListLabel(mainline, index))}</span>
+          <span class="mainline-list-meta">${escapeHtml(mainline.why || "还没填写“为什么做”")} · 拖动排序 ${index + 1}</span>
+        </button>
+        <button class="small-button drag-handle mainline-drag-handle" type="button" aria-label="拖动排序" title="拖动排序">≡</button>
       `;
+      const button = li.querySelector(".mainline-list-button");
+      const dragHandle = li.querySelector(".drag-handle");
       button.addEventListener("click", () => selectMainline(mainline.id));
-
-      li.appendChild(button);
+      dragHandle.addEventListener("pointerdown", (event) =>
+        startMainlineDrag(event, li),
+      );
       els.mainlineList.appendChild(li);
     });
 
     els.deleteMainline.disabled = !selected;
-    els.moveMainlineUp.disabled = !selected || selectedIndex <= 0;
-    els.moveMainlineDown.disabled =
-      !selected || selectedIndex < 0 || selectedIndex >= sortedMainlines.length - 1;
     els.mainlineEditorEmpty.hidden = Boolean(selected);
     els.mainlineForm.hidden = !selected;
 
@@ -764,7 +807,6 @@
   function renderPrinciplesDialog() {
     const selected = ensureSelectedPrinciple();
     const sortedPrinciples = getSortedPrinciples();
-    const selectedIndex = sortedPrinciples.findIndex((principle) => principle.id === selected?.id);
 
     els.principleCount.textContent = `${sortedPrinciples.length} 条`;
     els.principleEmpty.hidden = sortedPrinciples.length > 0;
@@ -773,25 +815,25 @@
 
     sortedPrinciples.forEach((principle, index) => {
       const li = document.createElement("li");
-      li.className = "mainline-list-item";
-
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `mainline-list-button${principle.id === selected?.id ? " is-active" : ""}`;
-      button.innerHTML = `
-        <span class="mainline-list-title">${escapeHtml(getPrincipleListLabel(principle, index))}</span>
-        <span class="mainline-list-meta">${principle.points.length} 条原则点 · 排序 ${index + 1}</span>
+      li.className = "mainline-list-item sortable-item";
+      li.dataset.dragId = principle.id;
+      li.innerHTML = `
+        <button type="button" class="mainline-list-button${principle.id === selected?.id ? " is-active" : ""}">
+          <span class="mainline-list-title">${escapeHtml(getPrincipleListLabel(principle, index))}</span>
+          <span class="mainline-list-meta">${principle.points.length} 条原则点 · 拖动排序 ${index + 1}</span>
+        </button>
+        <button class="small-button drag-handle mainline-drag-handle" type="button" aria-label="拖动排序" title="拖动排序">≡</button>
       `;
+      const button = li.querySelector(".mainline-list-button");
+      const dragHandle = li.querySelector(".drag-handle");
       button.addEventListener("click", () => selectPrinciple(principle.id));
-
-      li.appendChild(button);
+      dragHandle.addEventListener("pointerdown", (event) =>
+        startPrincipleDrag(event, li),
+      );
       els.principleList.appendChild(li);
     });
 
     els.deletePrinciple.disabled = !selected;
-    els.movePrincipleUp.disabled = !selected || selectedIndex <= 0;
-    els.movePrincipleDown.disabled =
-      !selected || selectedIndex < 0 || selectedIndex >= sortedPrinciples.length - 1;
     els.principleEditorEmpty.hidden = Boolean(selected);
     els.principleForm.hidden = !selected;
 
@@ -807,7 +849,6 @@
   function renderInterestsDialog() {
     const selected = ensureSelectedInterest();
     const sortedInterests = getSortedInterests();
-    const selectedIndex = sortedInterests.findIndex((interest) => interest.id === selected?.id);
 
     els.interestCount.textContent = `${sortedInterests.length} 条`;
     els.interestEmpty.hidden = sortedInterests.length > 0;
@@ -816,25 +857,25 @@
 
     sortedInterests.forEach((interest, index) => {
       const li = document.createElement("li");
-      li.className = "mainline-list-item";
-
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `mainline-list-button${interest.id === selected?.id ? " is-active" : ""}`;
-      button.innerHTML = `
-        <span class="mainline-list-title">${escapeHtml(getInterestListLabel(interest, index))}</span>
-        <span class="mainline-list-meta">排序 ${index + 1}</span>
+      li.className = "mainline-list-item sortable-item";
+      li.dataset.dragId = interest.id;
+      li.innerHTML = `
+        <button type="button" class="mainline-list-button${interest.id === selected?.id ? " is-active" : ""}">
+          <span class="mainline-list-title">${escapeHtml(getInterestListLabel(interest, index))}</span>
+          <span class="mainline-list-meta">拖动排序 ${index + 1}</span>
+        </button>
+        <button class="small-button drag-handle mainline-drag-handle" type="button" aria-label="拖动排序" title="拖动排序">≡</button>
       `;
+      const button = li.querySelector(".mainline-list-button");
+      const dragHandle = li.querySelector(".drag-handle");
       button.addEventListener("click", () => selectInterest(interest.id));
-
-      li.appendChild(button);
+      dragHandle.addEventListener("pointerdown", (event) =>
+        startInterestDrag(event, li),
+      );
       els.interestList.appendChild(li);
     });
 
     els.deleteInterest.disabled = !selected;
-    els.moveInterestUp.disabled = !selected || selectedIndex <= 0;
-    els.moveInterestDown.disabled =
-      !selected || selectedIndex < 0 || selectedIndex >= sortedInterests.length - 1;
     els.interestEditorEmpty.hidden = Boolean(selected);
     els.interestForm.hidden = !selected;
 
@@ -1071,6 +1112,68 @@
     await persistAll();
   }
 
+  function queueHabitTitleSave(id, nextTitle) {
+    window.setTimeout(() => {
+      saveHabitTitle(id, nextTitle);
+    }, 0);
+  }
+
+  async function saveHabitTitle(id, nextTitle) {
+    const habit = state.habits.find((item) => item.id === id);
+    if (!habit) return;
+    const title = nextTitle.trim();
+    if (!title) {
+      if (listDrag.item) return;
+      renderSettings();
+      return;
+    }
+    if (title === habit.title) {
+      return;
+    }
+    habit.title = title;
+    if (listDrag.item) {
+      return;
+    }
+    await persistAll();
+  }
+
+  async function reorderHabits(nextIds) {
+    await reorderCollection(state.habits, nextIds, renderSettings);
+  }
+
+  async function reorderMainlines(nextIds) {
+    updateSelectedMainlineFromForm();
+    await reorderCollection(state.mainlines, nextIds, renderMainlineDialog);
+  }
+
+  async function reorderPrinciples(nextIds) {
+    updateSelectedPrincipleFromForm();
+    await reorderCollection(state.principles, nextIds, renderPrinciplesDialog);
+  }
+
+  async function reorderInterests(nextIds) {
+    updateSelectedInterestFromForm();
+    await reorderCollection(state.interests, nextIds, renderInterestsDialog);
+  }
+
+  async function reorderCollection(items, nextIds, renderFallback) {
+    const nextOrder = new Map(nextIds.map((id, index) => [id, index]));
+    let changed = false;
+
+    items.forEach((item) => {
+      const order = nextOrder.get(item.id);
+      if (order === undefined || item.order === order) return;
+      item.order = order;
+      changed = true;
+    });
+
+    if (changed) {
+      await persistAll();
+    } else {
+      renderFallback();
+    }
+  }
+
   async function moveHabit(id, delta) {
     const sorted = state.habits.slice().sort((a, b) => a.order - b.order);
     const index = sorted.findIndex((habit) => habit.id === id);
@@ -1101,6 +1204,147 @@
     });
     normalizeOrders();
     await persistAll();
+  }
+
+  function startHabitDrag(event, item) {
+    startListDrag(event, {
+      list: els.habitList,
+      item,
+      itemSelector: ".habit-item.sortable-item[data-drag-id]",
+      onReorder: reorderHabits,
+    });
+  }
+
+  function startMainlineDrag(event, item) {
+    updateSelectedMainlineFromForm();
+    startListDrag(event, {
+      list: els.mainlineList,
+      item,
+      itemSelector: ".mainline-list-item.sortable-item[data-drag-id]",
+      onReorder: reorderMainlines,
+    });
+  }
+
+  function startPrincipleDrag(event, item) {
+    updateSelectedPrincipleFromForm();
+    startListDrag(event, {
+      list: els.principleList,
+      item,
+      itemSelector: ".mainline-list-item.sortable-item[data-drag-id]",
+      onReorder: reorderPrinciples,
+    });
+  }
+
+  function startInterestDrag(event, item) {
+    updateSelectedInterestFromForm();
+    startListDrag(event, {
+      list: els.interestList,
+      item,
+      itemSelector: ".mainline-list-item.sortable-item[data-drag-id]",
+      onReorder: reorderInterests,
+    });
+  }
+
+  function startListDrag(event, { list, item, itemSelector, onReorder }) {
+    if (event.button !== 0 || listDrag.item || !list || list.querySelectorAll(itemSelector).length < 2) {
+      return;
+    }
+
+    const rect = item.getBoundingClientRect();
+    const placeholder = document.createElement("li");
+    placeholder.className = `${item.className} drag-sort-placeholder`;
+    placeholder.style.height = `${rect.height}px`;
+
+    listDrag.pointerId = event.pointerId;
+    listDrag.item = item;
+    listDrag.handle = event.currentTarget;
+    listDrag.placeholder = placeholder;
+    listDrag.list = list;
+    listDrag.itemSelector = itemSelector;
+    listDrag.onReorder = onReorder;
+    listDrag.offsetY = event.clientY - rect.top;
+
+    item.after(placeholder);
+    item.classList.add("is-dragging");
+    item.style.height = `${rect.height}px`;
+    item.style.width = `${rect.width}px`;
+    item.style.left = `${rect.left}px`;
+    item.style.top = `${rect.top}px`;
+    document.body.classList.add("habit-dragging");
+
+    if (listDrag.handle instanceof HTMLElement) {
+      listDrag.handle.setPointerCapture(event.pointerId);
+    }
+
+    updateListDragPosition(event.clientY);
+    document.addEventListener("pointermove", handleListDragMove);
+    document.addEventListener("pointerup", handleListDragEnd);
+    document.addEventListener("pointercancel", handleListDragEnd);
+  }
+
+  function updateListDragPosition(clientY) {
+    if (!listDrag.item || !listDrag.placeholder || !listDrag.list) return;
+
+    listDrag.item.style.top = `${clientY - listDrag.offsetY}px`;
+
+    const siblings = Array.from(listDrag.list.querySelectorAll(listDrag.itemSelector)).filter(
+      (element) => element !== listDrag.item,
+    );
+    const nextSibling = siblings.find((element) => {
+      const rect = element.getBoundingClientRect();
+      return clientY < rect.top + rect.height / 2;
+    });
+
+    if (nextSibling) {
+      listDrag.list.insertBefore(listDrag.placeholder, nextSibling);
+    } else {
+      listDrag.list.appendChild(listDrag.placeholder);
+    }
+  }
+
+  function handleListDragMove(event) {
+    if (event.pointerId !== listDrag.pointerId) return;
+    event.preventDefault();
+    updateListDragPosition(event.clientY);
+  }
+
+  async function handleListDragEnd(event) {
+    if (event.pointerId !== listDrag.pointerId || !listDrag.item || !listDrag.placeholder) {
+      return;
+    }
+
+    document.removeEventListener("pointermove", handleListDragMove);
+    document.removeEventListener("pointerup", handleListDragEnd);
+    document.removeEventListener("pointercancel", handleListDragEnd);
+
+    if (listDrag.handle instanceof HTMLElement && listDrag.handle.hasPointerCapture(event.pointerId)) {
+      listDrag.handle.releasePointerCapture(event.pointerId);
+    }
+
+    const { item, placeholder, list, itemSelector, onReorder } = listDrag;
+    placeholder.replaceWith(item);
+    item.classList.remove("is-dragging");
+    item.style.height = "";
+    item.style.width = "";
+    item.style.left = "";
+    item.style.top = "";
+    document.body.classList.remove("habit-dragging");
+
+    const nextIds = Array.from(list.querySelectorAll(itemSelector)).map(
+      (element) => element.dataset.dragId,
+    );
+
+    listDrag.kind = null;
+    listDrag.pointerId = null;
+    listDrag.item = null;
+    listDrag.handle = null;
+    listDrag.placeholder = null;
+    listDrag.list = null;
+    listDrag.itemSelector = "";
+    listDrag.onReorder = null;
+    listDrag.offsetY = 0;
+
+    await onReorder(nextIds);
   }
 
   async function addMainline() {
@@ -1264,10 +1508,15 @@
 
   async function completeCurrentHabit() {
     if (!state.currentHabitId) return;
+    await markHabitComplete(state.currentHabitId);
+  }
+
+  async function markHabitComplete(id) {
     const completed = new Set(getTodayCompletions());
-    completed.add(state.currentHabitId);
+    if (completed.has(id)) return;
+    completed.add(id);
     setTodayCompletions(Array.from(completed));
-    state.skippedToday = state.skippedToday.filter((id) => id !== state.currentHabitId);
+    state.skippedToday = state.skippedToday.filter((habitId) => habitId !== id);
     await persistAll();
   }
 
@@ -1649,8 +1898,6 @@
   function wireEvents() {
     els.openMainline.addEventListener("click", openMainlineDialog);
     els.mainlineClose.addEventListener("click", closeMainlineDialog);
-    els.moveMainlineUp.addEventListener("click", () => moveMainline(-1));
-    els.moveMainlineDown.addEventListener("click", () => moveMainline(1));
     els.addMainline.addEventListener("click", addMainline);
     els.deleteMainline.addEventListener("click", deleteSelectedMainline);
     els.saveMainline.addEventListener("click", saveMainline);
@@ -1661,8 +1908,6 @@
 
     els.openPrinciples.addEventListener("click", openPrinciplesDialog);
     els.principlesClose.addEventListener("click", closePrinciplesDialog);
-    els.movePrincipleUp.addEventListener("click", () => movePrinciple(-1));
-    els.movePrincipleDown.addEventListener("click", () => movePrinciple(1));
     els.addPrinciple.addEventListener("click", addPrinciple);
     els.deletePrinciple.addEventListener("click", deleteSelectedPrinciple);
     els.addPrinciplePoint.addEventListener("click", addPrinciplePoint);
@@ -1674,8 +1919,6 @@
 
     els.openInterests.addEventListener("click", openInterestsDialog);
     els.interestsClose.addEventListener("click", closeInterestsDialog);
-    els.moveInterestUp.addEventListener("click", () => moveInterest(-1));
-    els.moveInterestDown.addEventListener("click", () => moveInterest(1));
     els.addInterest.addEventListener("click", addInterest);
     els.deleteInterest.addEventListener("click", deleteSelectedInterest);
     els.saveInterest.addEventListener("click", saveInterest);
