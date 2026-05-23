@@ -2044,6 +2044,7 @@
     timerTotal = 0;
     timerPaused = false;
     timerEls.pauseBtn.disabled = false;
+    timerEls.pauseBtn.textContent = "暂停";
     timerEls.setup.hidden = false;
     timerEls.running.hidden = true;
   }
@@ -2061,4 +2062,127 @@
   timerEls.durationInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") startTimer();
   });
+
+  // --- DoneList ---
+  const DONELIST_KEY = "micro-habit-donelist-v1";
+  const donelistEls = {
+    dialog: document.getElementById("donelist-dialog"),
+    openBtn: document.getElementById("open-donelist"),
+    closeBtn: document.getElementById("donelist-close"),
+    copyBtn: document.getElementById("donelist-copy"),
+    morning: document.getElementById("donelist-morning"),
+    afternoon: document.getElementById("donelist-afternoon"),
+    evening: document.getElementById("donelist-evening"),
+  };
+
+  let donelistSaveTimer = null;
+
+  function loadDonelist() {
+    try {
+      const raw = localStorage.getItem(DONELIST_KEY);
+      if (!raw) return { date: "", morning: "", afternoon: "", evening: "" };
+      const data = JSON.parse(raw);
+      if (data.date !== TODAY()) {
+        localStorage.removeItem(DONELIST_KEY);
+        return { date: TODAY(), morning: "", afternoon: "", evening: "" };
+      }
+      return data;
+    } catch {
+      return { date: TODAY(), morning: "", afternoon: "", evening: "" };
+    }
+  }
+
+  function saveDonelist() {
+    const data = {
+      date: TODAY(),
+      morning: donelistEls.morning.value,
+      afternoon: donelistEls.afternoon.value,
+      evening: donelistEls.evening.value,
+    };
+    localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
+    syncDonelistToSupabase(data);
+  }
+
+  function debounceSaveDonelist() {
+    clearTimeout(donelistSaveTimer);
+    donelistSaveTimer = setTimeout(saveDonelist, 800);
+  }
+
+  async function syncDonelistToSupabase(data) {
+    if (state.mode !== "supabase" || !state.session) return;
+    const config = window.APP_CONFIG || {};
+    if (!config.supabaseUrl || !config.supabaseAnonKey) return;
+    try {
+      const client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+      const content = JSON.stringify(data);
+      await client.from("user_donelist").upsert(
+        { user_id: state.session.user.id, content, updated_at: new Date().toISOString() },
+        { onConflict: "user_id" },
+      );
+    } catch {}
+  }
+
+  async function loadDonelistFromSupabase() {
+    if (state.mode !== "supabase" || !state.session) return null;
+    const config = window.APP_CONFIG || {};
+    if (!config.supabaseUrl || !config.supabaseAnonKey) return null;
+    try {
+      const client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+      const { data } = await client.from("user_donelist").select("content").maybeSingle();
+      if (!data?.content) return null;
+      const parsed = JSON.parse(data.content);
+      if (parsed.date !== TODAY()) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function renderDonelist(data) {
+    donelistEls.morning.value = data.morning || "";
+    donelistEls.afternoon.value = data.afternoon || "";
+    donelistEls.evening.value = data.evening || "";
+    autoResizeTextarea(donelistEls.morning);
+    autoResizeTextarea(donelistEls.afternoon);
+    autoResizeTextarea(donelistEls.evening);
+  }
+
+  async function openDonelist() {
+    let data = loadDonelist();
+    if (state.mode === "supabase" && state.session) {
+      const remote = await loadDonelistFromSupabase();
+      if (remote) {
+        data = remote;
+        localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
+      }
+    }
+    renderDonelist(data);
+    if (!donelistEls.dialog.open) donelistEls.dialog.showModal();
+  }
+
+  function copyDonelist() {
+    const morning = donelistEls.morning.value.trim();
+    const afternoon = donelistEls.afternoon.value.trim();
+    const evening = donelistEls.evening.value.trim();
+    const parts = [];
+    if (morning) parts.push(`早上:\n${morning}`);
+    if (afternoon) parts.push(`中午:\n${afternoon}`);
+    if (evening) parts.push(`晚上:\n${evening}`);
+    const text = parts.join("\n\n") || "今天还没有记录。";
+    navigator.clipboard.writeText(text).then(() => {
+      const original = donelistEls.copyBtn.textContent;
+      donelistEls.copyBtn.textContent = "已复制";
+      setTimeout(() => { donelistEls.copyBtn.textContent = original; }, 1500);
+    });
+  }
+
+  donelistEls.openBtn.addEventListener("click", openDonelist);
+  donelistEls.closeBtn.addEventListener("click", () => {
+    saveDonelist();
+    donelistEls.dialog.close();
+  });
+  donelistEls.copyBtn.addEventListener("click", copyDonelist);
+  donelistEls.morning.addEventListener("input", debounceSaveDonelist);
+  donelistEls.afternoon.addEventListener("input", debounceSaveDonelist);
+  donelistEls.evening.addEventListener("input", debounceSaveDonelist);
 })();

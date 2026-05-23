@@ -51,6 +51,7 @@
           <p id="app-version" class="app-version">版本读取中</p>
         </div>
         <div class="topbar-actions">
+          <button id="open-donelist" class="donelist-button" type="button">日志</button>
           <button id="open-mainline" class="secondary-button" type="button">主线</button>
           <button id="open-principles" class="secondary-button" type="button">原则</button>
           <button id="open-interests" class="secondary-button" type="button">兴趣</button>
@@ -86,6 +87,36 @@
         </section>
       </main>
     </div>
+
+    <dialog id="donelist-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Done List</p>
+            <h2>今日日志</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <button id="donelist-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="donelist-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">早上</h3>
+          <textarea id="donelist-morning" class="donelist-input" placeholder="早上做了什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">中午</h3>
+          <textarea id="donelist-afternoon" class="donelist-input" placeholder="中午做了什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">晚上</h3>
+          <textarea id="donelist-evening" class="donelist-input" placeholder="晚上做了什么..."></textarea>
+        </section>
+      </div>
+    </dialog>
 
     <dialog id="settings-dialog" class="settings-dialog">
       <form method="dialog" class="settings-shell">
