@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.05.14-drag-all" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.05.23-timer" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.05.14-drag-all" />
+    <link rel="stylesheet" href="./styles.css?v=2026.05.23-timer" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.05.14-drag-all"></script>
-    <script defer src="./app.js?v=2026.05.14-drag-all"></script>
+    <script defer src="./config.js?v=2026.05.23-timer"></script>
+    <script defer src="./app.js?v=2026.05.23-timer"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -54,6 +54,7 @@
           <button id="open-mainline" class="secondary-button" type="button">主线</button>
           <button id="open-principles" class="secondary-button" type="button">原则</button>
           <button id="open-interests" class="secondary-button" type="button">兴趣</button>
+          <button id="open-timer" class="secondary-button" type="button">计时</button>
           <button id="open-settings" class="ghost-button" type="button">设置</button>
         </div>
       </header>
@@ -307,6 +308,46 @@
             </div>
           </section>
         </div>
+      </div>
+    </dialog>
+
+    <dialog id="timer-dialog" class="settings-dialog">
+      <div class="settings-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Timer</p>
+            <h2>倒计时</h2>
+          </div>
+          <button id="timer-close" class="ghost-button" type="button">关闭</button>
+        </header>
+
+        <section class="panel">
+          <div id="timer-setup" class="timer-setup">
+            <div class="timer-form">
+              <label>
+                任务名称
+                <input id="timer-task-input" type="text" maxlength="80" placeholder="例如：专注阅读" />
+              </label>
+              <label>
+                时长（分钟）
+                <input id="timer-duration-input" type="number" min="1" max="180" placeholder="25" />
+              </label>
+            </div>
+            <button id="timer-start" class="primary-button" type="button">开始计时</button>
+          </div>
+
+          <div id="timer-running" class="timer-running" hidden>
+            <p id="timer-task-name" class="timer-task-name"></p>
+            <p id="timer-display" class="timer-display">00:00</p>
+            <div class="timer-progress-bar">
+              <div id="timer-progress" class="timer-progress"></div>
+            </div>
+            <div class="timer-actions">
+              <button id="timer-pause" class="secondary-button" type="button">暂停</button>
+              <button id="timer-reset" class="ghost-button" type="button">重置</button>
+            </div>
+          </div>
+        </section>
       </div>
     </dialog>
 

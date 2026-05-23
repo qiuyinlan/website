@@ -1963,4 +1963,102 @@
   renderAppVersion();
   initProvider();
   refreshAutoResizeTextareas();
+
+  const timerEls = {
+    dialog: document.getElementById("timer-dialog"),
+    openBtn: document.getElementById("open-timer"),
+    closeBtn: document.getElementById("timer-close"),
+    setup: document.getElementById("timer-setup"),
+    running: document.getElementById("timer-running"),
+    taskInput: document.getElementById("timer-task-input"),
+    durationInput: document.getElementById("timer-duration-input"),
+    startBtn: document.getElementById("timer-start"),
+    pauseBtn: document.getElementById("timer-pause"),
+    resetBtn: document.getElementById("timer-reset"),
+    taskName: document.getElementById("timer-task-name"),
+    display: document.getElementById("timer-display"),
+    progress: document.getElementById("timer-progress"),
+  };
+
+  let timerInterval = null;
+  let timerRemaining = 0;
+  let timerTotal = 0;
+  let timerPaused = false;
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+  function updateTimerDisplay() {
+    timerEls.display.textContent = formatTime(timerRemaining);
+    const pct = timerTotal > 0 ? ((timerTotal - timerRemaining) / timerTotal) * 100 : 0;
+    timerEls.progress.style.width = `${100 - pct}%`;
+  }
+
+  function startTimer() {
+    const task = timerEls.taskInput.value.trim() || "专注任务";
+    const minutes = parseInt(timerEls.durationInput.value, 10);
+    if (!minutes || minutes < 1) {
+      alert("请输入有效的时长（至少 1 分钟）。");
+      return;
+    }
+
+    timerTotal = minutes * 60;
+    timerRemaining = timerTotal;
+    timerPaused = false;
+    timerEls.taskName.textContent = task;
+    timerEls.pauseBtn.textContent = "暂停";
+    timerEls.setup.hidden = true;
+    timerEls.running.hidden = false;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(() => {
+      if (timerPaused) return;
+      timerRemaining--;
+      updateTimerDisplay();
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerEls.display.textContent = "完成！";
+        timerEls.progress.style.width = "0%";
+        timerEls.pauseBtn.disabled = true;
+        if (Notification.permission === "granted") {
+          new Notification("倒计时结束", { body: `「${task}」已完成！` });
+        }
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    if (timerRemaining <= 0) return;
+    timerPaused = !timerPaused;
+    timerEls.pauseBtn.textContent = timerPaused ? "继续" : "暂停";
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerRemaining = 0;
+    timerTotal = 0;
+    timerPaused = false;
+    timerEls.pauseBtn.disabled = false;
+    timerEls.setup.hidden = false;
+    timerEls.running.hidden = true;
+  }
+
+  timerEls.openBtn.addEventListener("click", () => {
+    if (!timerEls.dialog.open) timerEls.dialog.showModal();
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  });
+  timerEls.closeBtn.addEventListener("click", () => timerEls.dialog.close());
+  timerEls.startBtn.addEventListener("click", startTimer);
+  timerEls.pauseBtn.addEventListener("click", pauseTimer);
+  timerEls.resetBtn.addEventListener("click", resetTimer);
+  timerEls.durationInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") startTimer();
+  });
 })();
