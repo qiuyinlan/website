@@ -35,12 +35,12 @@
         }
       })();
     </script>
-    <link rel="manifest" href="./manifest.webmanifest?v=2026.05.23-timer" />
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.05.23-diary" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.05.23-timer" />
+    <link rel="stylesheet" href="./styles.css?v=2026.05.23-diary" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script defer src="./config.js?v=2026.05.23-timer"></script>
-    <script defer src="./app.js?v=2026.05.23-timer"></script>
+    <script defer src="./config.js?v=2026.05.23-diary"></script>
+    <script defer src="./app.js?v=2026.05.23-diary"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -92,8 +92,8 @@
       <div class="settings-shell donelist-shell">
         <header class="settings-header">
           <div>
-            <p class="eyebrow">Done List</p>
-            <h2>今日日志</h2>
+            <p class="eyebrow">Self Awareness Diary</p>
+            <h2>自我觉察日记</h2>
           </div>
           <div class="donelist-header-actions">
             <button id="donelist-copy" class="secondary-button" type="button">复制全部</button>
@@ -102,18 +102,60 @@
         </header>
 
         <section class="panel donelist-section">
-          <h3 class="donelist-period-title">早上</h3>
-          <textarea id="donelist-morning" class="donelist-input" placeholder="早上做了什么..."></textarea>
+          <h3 class="donelist-period-title">饮食</h3>
+          <textarea id="donelist-diet" class="donelist-input" placeholder="今天吃了什么..."></textarea>
         </section>
 
         <section class="panel donelist-section">
-          <h3 class="donelist-period-title">中午</h3>
-          <textarea id="donelist-afternoon" class="donelist-input" placeholder="中午做了什么..."></textarea>
+          <h3 class="donelist-period-title">正向链接（生活中的美好）</h3>
+          <textarea id="donelist-positive" class="donelist-input" placeholder="今天遇到的美好事物..."></textarea>
         </section>
 
         <section class="panel donelist-section">
-          <h3 class="donelist-period-title">晚上</h3>
-          <textarea id="donelist-evening" class="donelist-input" placeholder="晚上做了什么..."></textarea>
+          <h3 class="donelist-period-title">具体事件</h3>
+          <label class="donelist-sub-label">早上</label>
+          <textarea id="donelist-morning" class="donelist-input donelist-sub-input" placeholder="早上做了什么..."></textarea>
+          <label class="donelist-sub-label">中午</label>
+          <textarea id="donelist-afternoon" class="donelist-input donelist-sub-input" placeholder="中午做了什么..."></textarea>
+          <label class="donelist-sub-label">晚上</label>
+          <textarea id="donelist-evening" class="donelist-input donelist-sub-input" placeholder="晚上做了什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">感谢</h3>
+          <textarea id="donelist-gratitude" class="donelist-input" placeholder="今天想感谢什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">夸夸自己</h3>
+          <textarea id="donelist-self-praise" class="donelist-input" placeholder="今天做得好的地方..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">复盘</h3>
+          <textarea id="donelist-review" class="donelist-input" placeholder="今天的收获和反思..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">身体</h3>
+          <textarea id="donelist-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">情绪</h3>
+          <p class="donelist-hint">如果不好~我选择 1️⃣接纳自己的情绪，看见了其中的礼物 2️⃣换个角度思考问题</p>
+          <textarea id="donelist-emotion" class="donelist-input" placeholder="今天情绪如何..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">情绪急救包</h3>
+          <p class="donelist-hint">1️⃣听歌 2️⃣画画</p>
+          <textarea id="donelist-emotion-kit" class="donelist-input" placeholder="让自己平静下来的方式..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">自由发泄区</h3>
+          <textarea id="donelist-vent" class="donelist-input" placeholder="随便写点什么..."></textarea>
         </section>
       </div>
     </dialog>

@@ -723,6 +723,24 @@ body.habit-dragging .drag-handle {
   padding: 16px 18px;
 }
 
+.donelist-sub-label {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.donelist-sub-input {
+  min-height: 72px;
+}
+
+.donelist-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 @media (max-width: 900px) {
   body {
     padding: 16px;

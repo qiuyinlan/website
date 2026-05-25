@@ -2064,41 +2064,81 @@
   });
 
   // --- DoneList ---
-  const DONELIST_KEY = "micro-habit-donelist-v1";
+  const DONELIST_KEY = "micro-habit-donelist-v2";
   const donelistEls = {
     dialog: document.getElementById("donelist-dialog"),
     openBtn: document.getElementById("open-donelist"),
     closeBtn: document.getElementById("donelist-close"),
     copyBtn: document.getElementById("donelist-copy"),
+    diet: document.getElementById("donelist-diet"),
+    positive: document.getElementById("donelist-positive"),
     morning: document.getElementById("donelist-morning"),
     afternoon: document.getElementById("donelist-afternoon"),
     evening: document.getElementById("donelist-evening"),
+    gratitude: document.getElementById("donelist-gratitude"),
+    selfPraise: document.getElementById("donelist-self-praise"),
+    review: document.getElementById("donelist-review"),
+    body: document.getElementById("donelist-body"),
+    emotion: document.getElementById("donelist-emotion"),
+    emotionKit: document.getElementById("donelist-emotion-kit"),
+    vent: document.getElementById("donelist-vent"),
   };
 
   let donelistSaveTimer = null;
 
+  function freshDonelist() {
+    return {
+      date: TODAY(),
+      diet: "",
+      positive: "",
+      morning: "",
+      afternoon: "",
+      evening: "",
+      gratitude: "",
+      selfPraise: "",
+      review: "",
+      body: "",
+      emotion: "",
+      emotionKit: "",
+      vent: "",
+    };
+  }
+
   function loadDonelist() {
     try {
       const raw = localStorage.getItem(DONELIST_KEY);
-      if (!raw) return { date: "", morning: "", afternoon: "", evening: "" };
+      if (!raw) return freshDonelist();
       const data = JSON.parse(raw);
       if (data.date !== TODAY()) {
         localStorage.removeItem(DONELIST_KEY);
-        return { date: TODAY(), morning: "", afternoon: "", evening: "" };
+        return freshDonelist();
       }
-      return data;
+      return { ...freshDonelist(), ...data };
     } catch {
-      return { date: TODAY(), morning: "", afternoon: "", evening: "" };
+      return freshDonelist();
     }
   }
 
-  function saveDonelist() {
-    const data = {
+  function collectDonelistData() {
+    return {
       date: TODAY(),
+      diet: donelistEls.diet.value,
+      positive: donelistEls.positive.value,
       morning: donelistEls.morning.value,
       afternoon: donelistEls.afternoon.value,
       evening: donelistEls.evening.value,
+      gratitude: donelistEls.gratitude.value,
+      selfPraise: donelistEls.selfPraise.value,
+      review: donelistEls.review.value,
+      body: donelistEls.body.value,
+      emotion: donelistEls.emotion.value,
+      emotionKit: donelistEls.emotionKit.value,
+      vent: donelistEls.vent.value,
     };
+  }
+
+  function saveDonelist() {
+    const data = collectDonelistData();
     localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
     syncDonelistToSupabase(data);
   }
@@ -2132,19 +2172,28 @@
       if (!data?.content) return null;
       const parsed = JSON.parse(data.content);
       if (parsed.date !== TODAY()) return null;
-      return parsed;
+      return { ...freshDonelist(), ...parsed };
     } catch {
       return null;
     }
   }
 
   function renderDonelist(data) {
+    donelistEls.diet.value = data.diet || "";
+    donelistEls.positive.value = data.positive || "";
     donelistEls.morning.value = data.morning || "";
     donelistEls.afternoon.value = data.afternoon || "";
     donelistEls.evening.value = data.evening || "";
-    autoResizeTextarea(donelistEls.morning);
-    autoResizeTextarea(donelistEls.afternoon);
-    autoResizeTextarea(donelistEls.evening);
+    donelistEls.gratitude.value = data.gratitude || "";
+    donelistEls.selfPraise.value = data.selfPraise || "";
+    donelistEls.review.value = data.review || "";
+    donelistEls.body.value = data.body || "";
+    donelistEls.emotion.value = data.emotion || "";
+    donelistEls.emotionKit.value = data.emotionKit || "";
+    donelistEls.vent.value = data.vent || "";
+    Object.values(donelistEls).forEach((el) => {
+      if (el instanceof HTMLTextAreaElement) autoResizeTextarea(el);
+    });
   }
 
   async function openDonelist() {
@@ -2161,14 +2210,39 @@
   }
 
   function copyDonelist() {
-    const morning = donelistEls.morning.value.trim();
-    const afternoon = donelistEls.afternoon.value.trim();
-    const evening = donelistEls.evening.value.trim();
+    const d = new Date();
+    const dateStr = `#日记/${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+    const fields = [
+      { label: "饮食", value: donelistEls.diet.value },
+      { label: "正向链接（生活中的美好）", value: donelistEls.positive.value },
+      { label: "具体事件", value: null, subs: [
+        { label: "早上", value: donelistEls.morning.value },
+        { label: "中午", value: donelistEls.afternoon.value },
+        { label: "晚上", value: donelistEls.evening.value },
+      ]},
+      { label: "感谢", value: donelistEls.gratitude.value },
+      { label: "夸夸自己", value: donelistEls.selfPraise.value },
+      { label: "复盘", value: donelistEls.review.value },
+      { label: "身体", value: donelistEls.body.value },
+      { label: "情绪", value: donelistEls.emotion.value },
+      { label: "情绪急救包", value: donelistEls.emotionKit.value },
+      { label: "自由发泄区", value: donelistEls.vent.value },
+    ];
+
     const parts = [];
-    if (morning) parts.push(`早上:\n${morning}`);
-    if (afternoon) parts.push(`中午:\n${afternoon}`);
-    if (evening) parts.push(`晚上:\n${evening}`);
-    const text = parts.join("\n\n") || "今天还没有记录。";
+    fields.forEach((f) => {
+      if (f.subs) {
+        const subParts = f.subs.filter((s) => s.value.trim()).map((s) => `${s.label}:\n${s.value.trim()}`);
+        if (subParts.length) {
+          parts.push(`• ${f.label}:\n${subParts.join("\n")}`);
+        }
+      } else {
+        const v = f.value.trim();
+        if (v) parts.push(`• ${f.label}:\n${v}`);
+      }
+    });
+
+    const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n今天还没有记录。`;
     navigator.clipboard.writeText(text).then(() => {
       const original = donelistEls.copyBtn.textContent;
       donelistEls.copyBtn.textContent = "已复制";
@@ -2182,7 +2256,6 @@
     donelistEls.dialog.close();
   });
   donelistEls.copyBtn.addEventListener("click", copyDonelist);
-  donelistEls.morning.addEventListener("input", debounceSaveDonelist);
-  donelistEls.afternoon.addEventListener("input", debounceSaveDonelist);
-  donelistEls.evening.addEventListener("input", debounceSaveDonelist);
+  const donelistFields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent];
+  donelistFields.forEach((el) => el.addEventListener("input", debounceSaveDonelist));
 })();
