@@ -2229,7 +2229,7 @@
       { label: "复盘", value: donelistEls.review.value },
       { label: "身体", value: donelistEls.body.value },
       { label: "情绪", value: donelistEls.emotion.value },
-      { label: "情绪急救包", value: donelistEls.emotionKit.value },
+      { label: "今天我又进步啦", value: donelistEls.emotionKit.value },
       { label: "自由发泄区", value: donelistEls.vent.value },
     ];
 
