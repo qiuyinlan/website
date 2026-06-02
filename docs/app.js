@@ -2082,6 +2082,7 @@
     emotion: document.getElementById("donelist-emotion"),
     emotionKit: document.getElementById("donelist-emotion-kit"),
     vent: document.getElementById("donelist-vent"),
+    tomorrowPlan: document.getElementById("donelist-tomorrow-plan"),
   };
 
   let donelistSaveTimer = null;
@@ -2101,6 +2102,7 @@
       emotion: "",
       emotionKit: "",
       vent: "",
+      tomorrowPlan: false,
     };
   }
 
@@ -2134,6 +2136,7 @@
       emotion: donelistEls.emotion.value,
       emotionKit: donelistEls.emotionKit.value,
       vent: donelistEls.vent.value,
+      tomorrowPlan: donelistEls.tomorrowPlan.checked,
     };
   }
 
@@ -2191,6 +2194,7 @@
     donelistEls.emotion.value = data.emotion || "";
     donelistEls.emotionKit.value = data.emotionKit || "";
     donelistEls.vent.value = data.vent || "";
+    donelistEls.tomorrowPlan.checked = data.tomorrowPlan === true;
     Object.values(donelistEls).forEach((el) => {
       if (el instanceof HTMLTextAreaElement) autoResizeTextarea(el);
     });
@@ -2242,11 +2246,38 @@
       }
     });
 
+    const checked = donelistEls.tomorrowPlan.checked ? "✓" : "✗";
+    parts.push(`• 明日计划: ${checked} 已自己 / AI 辅助列出了明天的计划`);
+
     const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n今天还没有记录。`;
-    navigator.clipboard.writeText(text).then(() => {
+    const doCopy = () => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand("copy");
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+        document.body.removeChild(ta);
+      });
+    };
+    doCopy().then(() => {
       const original = donelistEls.copyBtn.textContent;
       donelistEls.copyBtn.textContent = "已复制";
       setTimeout(() => { donelistEls.copyBtn.textContent = original; }, 1500);
+    }).catch(() => {
+      alert("复制失败，请手动全选后 Ctrl+C 复制。");
     });
   }
 
@@ -2258,4 +2289,5 @@
   donelistEls.copyBtn.addEventListener("click", copyDonelist);
   const donelistFields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent];
   donelistFields.forEach((el) => el.addEventListener("input", debounceSaveDonelist));
+  donelistEls.tomorrowPlan.addEventListener("change", debounceSaveDonelist);
 })();
