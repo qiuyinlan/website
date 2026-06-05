@@ -52,6 +52,8 @@
         </div>
         <div class="topbar-actions">
           <button id="open-donelist" class="donelist-button" type="button">日志</button>
+          <button id="open-weekly-review" class="review-button weekly-button" type="button">周复盘</button>
+          <button id="open-monthly-review" class="review-button monthly-button" type="button">月复盘</button>
           <button id="open-mainline" class="secondary-button" type="button">主线</button>
           <button id="open-principles" class="secondary-button" type="button">原则</button>
           <button id="open-interests" class="secondary-button" type="button">兴趣</button>
@@ -158,11 +160,113 @@
         </section>
 
         <section class="panel donelist-section">
-          <label class="donelist-checkbox-label">
-            <input id="donelist-tomorrow-plan" type="checkbox" />
-            <span>已经自己 或 AI 辅助列出了明天的计划</span>
-          </label>
-          <p class="donelist-hint" style="margin-top:4px">列了计划，明天就有主心骨啦，会很开心哦</p>
+          <h3 class="donelist-period-title">明日计划</h3>
+          <textarea id="donelist-tomorrow-plan" class="donelist-input" placeholder="明天的计划是什么..."></textarea>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="weekly-review-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Weekly Review</p>
+            <h2>周复盘</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <button id="weekly-review-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="weekly-review-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本周事件</h3>
+          <textarea id="weekly-events" class="donelist-input" placeholder="这周发生了什么事情..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">身体</h3>
+          <textarea id="weekly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">感恩的事情</h3>
+          <textarea id="weekly-gratitude" class="donelist-input" placeholder="这周想感恩什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本周进步</h3>
+          <textarea id="weekly-progress" class="donelist-input" placeholder="这周进步了什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本周收获知识</h3>
+          <textarea id="weekly-knowledge" class="donelist-input" placeholder="这周学到了什么新知识..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本周反思</h3>
+          <textarea id="weekly-reflection" class="donelist-input" placeholder="这周的收获和反思..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">下周计划</h3>
+          <textarea id="weekly-next-plan" class="donelist-input" placeholder="下周的计划是什么..."></textarea>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="monthly-review-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Monthly Review</p>
+            <h2>月复盘</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <button id="monthly-review-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="monthly-review-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本月的关键词</h3>
+          <textarea id="monthly-keywords" class="donelist-input" placeholder="用几个关键词概括这个月..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本月事件</h3>
+          <textarea id="monthly-events" class="donelist-input" placeholder="这个月发生了什么事情..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">身体</h3>
+          <textarea id="monthly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">感恩的事情</h3>
+          <textarea id="monthly-gratitude" class="donelist-input" placeholder="这个月想感恩什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本月进步</h3>
+          <textarea id="monthly-progress" class="donelist-input" placeholder="这个月进步了什么..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本月收获知识</h3>
+          <textarea id="monthly-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">本月反思</h3>
+          <textarea id="monthly-reflection" class="donelist-input" placeholder="这个月的收获和反思..."></textarea>
+        </section>
+
+        <section class="panel donelist-section">
+          <h3 class="donelist-period-title">下月计划</h3>
+          <textarea id="monthly-next-plan" class="donelist-input" placeholder="下个月的计划是什么..."></textarea>
         </section>
       </div>
     </dialog>

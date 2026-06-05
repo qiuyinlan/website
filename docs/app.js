@@ -2102,7 +2102,7 @@
       emotion: "",
       emotionKit: "",
       vent: "",
-      tomorrowPlan: false,
+      tomorrowPlan: "",
     };
   }
 
@@ -2136,7 +2136,7 @@
       emotion: donelistEls.emotion.value,
       emotionKit: donelistEls.emotionKit.value,
       vent: donelistEls.vent.value,
-      tomorrowPlan: donelistEls.tomorrowPlan.checked,
+      tomorrowPlan: donelistEls.tomorrowPlan.value,
     };
   }
 
@@ -2194,7 +2194,7 @@
     donelistEls.emotion.value = data.emotion || "";
     donelistEls.emotionKit.value = data.emotionKit || "";
     donelistEls.vent.value = data.vent || "";
-    donelistEls.tomorrowPlan.checked = data.tomorrowPlan === true;
+    donelistEls.tomorrowPlan.value = data.tomorrowPlan || "";
     Object.values(donelistEls).forEach((el) => {
       if (el instanceof HTMLTextAreaElement) autoResizeTextarea(el);
     });
@@ -2246,8 +2246,8 @@
       }
     });
 
-    const checked = donelistEls.tomorrowPlan.checked ? "✓" : "✗";
-    parts.push(`• 明日计划: ${checked} 已自己 / AI 辅助列出了明天的计划`);
+    const planVal = donelistEls.tomorrowPlan.value.trim();
+    if (planVal) parts.push(`• 明日计划:\n${planVal}`);
 
     const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n今天还没有记录。`;
     const doCopy = () => {
@@ -2287,7 +2287,321 @@
     donelistEls.dialog.close();
   });
   donelistEls.copyBtn.addEventListener("click", copyDonelist);
-  const donelistFields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent];
+  const donelistFields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
   donelistFields.forEach((el) => el.addEventListener("input", debounceSaveDonelist));
-  donelistEls.tomorrowPlan.addEventListener("change", debounceSaveDonelist);
+
+  // --- Weekly Review ---
+  const WEEKLY_REVIEW_KEY = "micro-habit-weekly-review-v1";
+
+  function getWeekOfMonth(date) {
+    return Math.ceil(date.getDate() / 7);
+  }
+
+  function weeklyReviewDateKey(date) {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${getWeekOfMonth(date)}`;
+  }
+
+  const weeklyEls = {
+    dialog: document.getElementById("weekly-review-dialog"),
+    openBtn: document.getElementById("open-weekly-review"),
+    closeBtn: document.getElementById("weekly-review-close"),
+    copyBtn: document.getElementById("weekly-review-copy"),
+    events: document.getElementById("weekly-events"),
+    body: document.getElementById("weekly-body"),
+    gratitude: document.getElementById("weekly-gratitude"),
+    progress: document.getElementById("weekly-progress"),
+    knowledge: document.getElementById("weekly-knowledge"),
+    reflection: document.getElementById("weekly-reflection"),
+    nextPlan: document.getElementById("weekly-next-plan"),
+  };
+
+  let weeklySaveTimer = null;
+
+  function freshWeeklyReview() {
+    return {
+      dateKey: weeklyReviewDateKey(new Date()),
+      events: "",
+      body: "",
+      gratitude: "",
+      progress: "",
+      knowledge: "",
+      reflection: "",
+      nextPlan: "",
+    };
+  }
+
+  function loadWeeklyReview() {
+    try {
+      const raw = localStorage.getItem(WEEKLY_REVIEW_KEY);
+      if (!raw) return freshWeeklyReview();
+      const data = JSON.parse(raw);
+      if (data.dateKey !== weeklyReviewDateKey(new Date())) {
+        localStorage.removeItem(WEEKLY_REVIEW_KEY);
+        return freshWeeklyReview();
+      }
+      return { ...freshWeeklyReview(), ...data };
+    } catch {
+      return freshWeeklyReview();
+    }
+  }
+
+  function collectWeeklyData() {
+    return {
+      dateKey: weeklyReviewDateKey(new Date()),
+      events: weeklyEls.events.value,
+      body: weeklyEls.body.value,
+      gratitude: weeklyEls.gratitude.value,
+      progress: weeklyEls.progress.value,
+      knowledge: weeklyEls.knowledge.value,
+      reflection: weeklyEls.reflection.value,
+      nextPlan: weeklyEls.nextPlan.value,
+    };
+  }
+
+  function saveWeeklyReview() {
+    const data = collectWeeklyData();
+    localStorage.setItem(WEEKLY_REVIEW_KEY, JSON.stringify(data));
+  }
+
+  function debounceSaveWeekly() {
+    clearTimeout(weeklySaveTimer);
+    weeklySaveTimer = setTimeout(saveWeeklyReview, 800);
+  }
+
+  function renderWeeklyReview(data) {
+    weeklyEls.events.value = data.events || "";
+    weeklyEls.body.value = data.body || "";
+    weeklyEls.gratitude.value = data.gratitude || "";
+    weeklyEls.progress.value = data.progress || "";
+    weeklyEls.knowledge.value = data.knowledge || "";
+    weeklyEls.reflection.value = data.reflection || "";
+    weeklyEls.nextPlan.value = data.nextPlan || "";
+    [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan].forEach((el) => {
+      if (el) autoResizeTextarea(el);
+    });
+  }
+
+  function openWeeklyReview() {
+    const data = loadWeeklyReview();
+    renderWeeklyReview(data);
+    if (!weeklyEls.dialog.open) weeklyEls.dialog.showModal();
+  }
+
+  function copyWeeklyReview() {
+    const d = new Date();
+    const dateStr = `#${d.getFullYear()}/${d.getMonth() + 1}.${getWeekOfMonth(d)}`;
+    const fields = [
+      { label: "本周事件", value: weeklyEls.events.value },
+      { label: "身体", value: weeklyEls.body.value },
+      { label: "感恩的事情", value: weeklyEls.gratitude.value },
+      { label: "本周进步", value: weeklyEls.progress.value },
+      { label: "本周收获知识", value: weeklyEls.knowledge.value },
+      { label: "本周反思", value: weeklyEls.reflection.value },
+      { label: "下周计划", value: weeklyEls.nextPlan.value },
+    ];
+
+    const parts = [];
+    fields.forEach((f) => {
+      const v = f.value.trim();
+      if (v) parts.push(`• ${f.label}:\n${v}`);
+    });
+
+    const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n这周还没有记录。`;
+    const doCopy = () => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand("copy");
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+        document.body.removeChild(ta);
+      });
+    };
+    doCopy().then(() => {
+      const original = weeklyEls.copyBtn.textContent;
+      weeklyEls.copyBtn.textContent = "已复制";
+      setTimeout(() => { weeklyEls.copyBtn.textContent = original; }, 1500);
+    }).catch(() => {
+      alert("复制失败，请手动全选后 Ctrl+C 复制。");
+    });
+  }
+
+  weeklyEls.openBtn.addEventListener("click", openWeeklyReview);
+  weeklyEls.closeBtn.addEventListener("click", () => {
+    saveWeeklyReview();
+    weeklyEls.dialog.close();
+  });
+  weeklyEls.copyBtn.addEventListener("click", copyWeeklyReview);
+  const weeklyFields = [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
+  weeklyFields.forEach((el) => el.addEventListener("input", debounceSaveWeekly));
+
+  // --- Monthly Review ---
+  const MONTHLY_REVIEW_KEY = "micro-habit-monthly-review-v1";
+
+  function monthlyReviewDateKey(date) {
+    return `${date.getFullYear()}-${date.getMonth() + 1}`;
+  }
+
+  const monthlyEls = {
+    dialog: document.getElementById("monthly-review-dialog"),
+    openBtn: document.getElementById("open-monthly-review"),
+    closeBtn: document.getElementById("monthly-review-close"),
+    copyBtn: document.getElementById("monthly-review-copy"),
+    keywords: document.getElementById("monthly-keywords"),
+    events: document.getElementById("monthly-events"),
+    body: document.getElementById("monthly-body"),
+    gratitude: document.getElementById("monthly-gratitude"),
+    progress: document.getElementById("monthly-progress"),
+    knowledge: document.getElementById("monthly-knowledge"),
+    reflection: document.getElementById("monthly-reflection"),
+    nextPlan: document.getElementById("monthly-next-plan"),
+  };
+
+  let monthlySaveTimer = null;
+
+  function freshMonthlyReview() {
+    return {
+      dateKey: monthlyReviewDateKey(new Date()),
+      keywords: "",
+      events: "",
+      body: "",
+      gratitude: "",
+      progress: "",
+      knowledge: "",
+      reflection: "",
+      nextPlan: "",
+    };
+  }
+
+  function loadMonthlyReview() {
+    try {
+      const raw = localStorage.getItem(MONTHLY_REVIEW_KEY);
+      if (!raw) return freshMonthlyReview();
+      const data = JSON.parse(raw);
+      if (data.dateKey !== monthlyReviewDateKey(new Date())) {
+        localStorage.removeItem(MONTHLY_REVIEW_KEY);
+        return freshMonthlyReview();
+      }
+      return { ...freshMonthlyReview(), ...data };
+    } catch {
+      return freshMonthlyReview();
+    }
+  }
+
+  function collectMonthlyData() {
+    return {
+      dateKey: monthlyReviewDateKey(new Date()),
+      keywords: monthlyEls.keywords.value,
+      events: monthlyEls.events.value,
+      body: monthlyEls.body.value,
+      gratitude: monthlyEls.gratitude.value,
+      progress: monthlyEls.progress.value,
+      knowledge: monthlyEls.knowledge.value,
+      reflection: monthlyEls.reflection.value,
+      nextPlan: monthlyEls.nextPlan.value,
+    };
+  }
+
+  function saveMonthlyReview() {
+    const data = collectMonthlyData();
+    localStorage.setItem(MONTHLY_REVIEW_KEY, JSON.stringify(data));
+  }
+
+  function debounceSaveMonthly() {
+    clearTimeout(monthlySaveTimer);
+    monthlySaveTimer = setTimeout(saveMonthlyReview, 800);
+  }
+
+  function renderMonthlyReview(data) {
+    monthlyEls.keywords.value = data.keywords || "";
+    monthlyEls.events.value = data.events || "";
+    monthlyEls.body.value = data.body || "";
+    monthlyEls.gratitude.value = data.gratitude || "";
+    monthlyEls.progress.value = data.progress || "";
+    monthlyEls.knowledge.value = data.knowledge || "";
+    monthlyEls.reflection.value = data.reflection || "";
+    monthlyEls.nextPlan.value = data.nextPlan || "";
+    [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan].forEach((el) => {
+      if (el) autoResizeTextarea(el);
+    });
+  }
+
+  function openMonthlyReview() {
+    const data = loadMonthlyReview();
+    renderMonthlyReview(data);
+    if (!monthlyEls.dialog.open) monthlyEls.dialog.showModal();
+  }
+
+  function copyMonthlyReview() {
+    const d = new Date();
+    const dateStr = `#${d.getFullYear()}/${d.getMonth() + 1}`;
+    const fields = [
+      { label: "本月的关键词", value: monthlyEls.keywords.value },
+      { label: "本月事件", value: monthlyEls.events.value },
+      { label: "身体", value: monthlyEls.body.value },
+      { label: "感恩的事情", value: monthlyEls.gratitude.value },
+      { label: "本月进步", value: monthlyEls.progress.value },
+      { label: "本月收获知识", value: monthlyEls.knowledge.value },
+      { label: "本月反思", value: monthlyEls.reflection.value },
+      { label: "下月计划", value: monthlyEls.nextPlan.value },
+    ];
+
+    const parts = [];
+    fields.forEach((f) => {
+      const v = f.value.trim();
+      if (v) parts.push(`• ${f.label}:\n${v}`);
+    });
+
+    const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n这个月还没有记录。`;
+    const doCopy = () => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand("copy");
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+        document.body.removeChild(ta);
+      });
+    };
+    doCopy().then(() => {
+      const original = monthlyEls.copyBtn.textContent;
+      monthlyEls.copyBtn.textContent = "已复制";
+      setTimeout(() => { monthlyEls.copyBtn.textContent = original; }, 1500);
+    }).catch(() => {
+      alert("复制失败，请手动全选后 Ctrl+C 复制。");
+    });
+  }
+
+  monthlyEls.openBtn.addEventListener("click", openMonthlyReview);
+  monthlyEls.closeBtn.addEventListener("click", () => {
+    saveMonthlyReview();
+    monthlyEls.dialog.close();
+  });
+  monthlyEls.copyBtn.addEventListener("click", copyMonthlyReview);
+  const monthlyFields = [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
+  monthlyFields.forEach((el) => el.addEventListener("input", debounceSaveMonthly));
 })();

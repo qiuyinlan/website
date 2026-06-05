@@ -693,6 +693,36 @@ body.habit-dragging .drag-handle {
   background: #8a3514;
 }
 
+.review-button {
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 0 18px;
+  color: white;
+  font-weight: 600;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.review-button:hover {
+  transform: translateY(-1px);
+}
+
+.weekly-button {
+  background: #2b6a4a;
+}
+
+.weekly-button:hover {
+  background: #194c32;
+}
+
+.monthly-button {
+  background: #3a5a8c;
+}
+
+.monthly-button:hover {
+  background: #1f3a5c;
+}
+
 .donelist-shell {
   max-height: min(88vh, 900px);
   overflow-y: auto;
