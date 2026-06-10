@@ -99,9 +99,22 @@
           </div>
           <div class="donelist-header-actions">
             <button id="donelist-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="donelist-clear" class="secondary-button danger-button" type="button">清空</button>
+            <button id="donelist-goto-history" class="secondary-button" type="button">回顾</button>
             <button id="donelist-close" class="ghost-button" type="button">关闭</button>
           </div>
         </header>
+
+        <div id="donelist-nav" class="donelist-nav">
+          <button class="donelist-nav-btn" id="donelist-prev-month">◀</button>
+          <span class="donelist-nav-num"><span id="donelist-cur-month">6</span>月</span>
+          <button class="donelist-nav-btn" id="donelist-next-month">▶</button>
+          <span class="donelist-nav-spacer"></span>
+          <button class="donelist-nav-btn" id="donelist-prev-day">◀</button>
+          <span class="donelist-nav-num"><span id="donelist-cur-day">9</span>日</span>
+          <button class="donelist-nav-btn" id="donelist-next-day">▶</button>
+          <span id="donelist-nav-weekday" class="donelist-nav-weekday">周二</span>
+        </div>
 
         <section class="panel donelist-section">
           <h3 class="donelist-period-title">饮食</h3>
@@ -175,9 +188,21 @@
           </div>
           <div class="donelist-header-actions">
             <button id="weekly-review-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="weekly-review-clear" class="secondary-button danger-button" type="button">清空</button>
+            <button id="weekly-review-goto-history" class="secondary-button" type="button">回顾</button>
             <button id="weekly-review-close" class="ghost-button" type="button">关闭</button>
           </div>
         </header>
+
+        <div id="weekly-nav" class="donelist-nav">
+          <button class="donelist-nav-btn" id="weekly-prev-month">◀</button>
+          <span class="donelist-nav-num"><span id="weekly-cur-month">6</span>月</span>
+          <button class="donelist-nav-btn" id="weekly-next-month">▶</button>
+          <span class="donelist-nav-spacer"></span>
+          <button class="donelist-nav-btn" id="weekly-prev-week">◀</button>
+          <span class="donelist-nav-num"><span id="weekly-cur-week">2</span>周</span>
+          <button class="donelist-nav-btn" id="weekly-next-week">▶</button>
+        </div>
 
         <section class="panel donelist-section">
           <h3 class="donelist-period-title">本周事件</h3>
@@ -225,9 +250,21 @@
           </div>
           <div class="donelist-header-actions">
             <button id="monthly-review-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="monthly-review-clear" class="secondary-button danger-button" type="button">清空</button>
+            <button id="monthly-review-goto-history" class="secondary-button" type="button">回顾</button>
             <button id="monthly-review-close" class="ghost-button" type="button">关闭</button>
           </div>
         </header>
+
+        <div id="monthly-nav" class="donelist-nav">
+          <button class="donelist-nav-btn" id="monthly-prev-year">◀</button>
+          <span class="donelist-nav-num"><span id="monthly-cur-year">2026</span>年</span>
+          <button class="donelist-nav-btn" id="monthly-next-year">▶</button>
+          <span class="donelist-nav-spacer"></span>
+          <button class="donelist-nav-btn" id="monthly-prev-month">◀</button>
+          <span class="donelist-nav-num"><span id="monthly-cur-month">6</span>月</span>
+          <button class="donelist-nav-btn" id="monthly-next-month">▶</button>
+        </div>
 
         <section class="panel donelist-section">
           <h3 class="donelist-period-title">本月的关键词</h3>
@@ -582,6 +619,33 @@
               </div>
             </div>
           </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="history-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">History</p>
+            <h2>历史回顾</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <div class="history-tabs">
+              <button id="history-tab-day" class="history-tab is-active" type="button">日</button>
+              <button id="history-tab-week" class="history-tab" type="button">周</button>
+              <button id="history-tab-month" class="history-tab" type="button">月</button>
+            </div>
+            <button id="history-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div id="history-nav" class="history-nav">
+          <!-- 动态渲染导航栏 -->
+        </div>
+
+        <div id="history-content" class="history-edit-area">
+          <!-- 动态渲染 textarea -->
         </div>
       </div>
     </dialog>

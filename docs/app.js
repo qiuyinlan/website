@@ -2065,6 +2065,8 @@
 
   // --- DoneList ---
   const DONELIST_KEY = "micro-habit-donelist-v2";
+  const WEEKDAY_NAMES = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  function daysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
   const donelistEls = {
     dialog: document.getElementById("donelist-dialog"),
     openBtn: document.getElementById("open-donelist"),
@@ -2106,7 +2108,22 @@
     };
   }
 
+  function donelistDateKey(dateStr) {
+    return `donelist-${dateStr}`;
+  }
+
   function loadDonelist() {
+    // 优先读按日期存的 key
+    const dateKey = donelistDateKey(TODAY());
+    try {
+      const raw = localStorage.getItem(dateKey);
+      if (raw) {
+        const data = JSON.parse(raw);
+        return { ...freshDonelist(), ...data };
+      }
+    } catch {}
+
+    // 兼容旧 key
     try {
       const raw = localStorage.getItem(DONELIST_KEY);
       if (!raw) return freshDonelist();
@@ -2115,9 +2132,23 @@
         localStorage.removeItem(DONELIST_KEY);
         return freshDonelist();
       }
-      return { ...freshDonelist(), ...data };
+      // 迁移到新 key
+      const merged = { ...freshDonelist(), ...data };
+      localStorage.setItem(dateKey, JSON.stringify(merged));
+      return merged;
     } catch {
       return freshDonelist();
+    }
+  }
+
+  function loadDonelistForDate(dateStr) {
+    const key = donelistDateKey(dateStr);
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      return { ...freshDonelist(), ...JSON.parse(raw) };
+    } catch {
+      return null;
     }
   }
 
@@ -2143,6 +2174,7 @@
   function saveDonelist() {
     const data = collectDonelistData();
     localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
+    localStorage.setItem(donelistDateKey(TODAY()), JSON.stringify(data));
     syncDonelistToSupabase(data);
   }
 
@@ -2281,17 +2313,29 @@
     });
   }
 
+  function clearDonelist() {
+    if (!confirm("确定要清空今天的所有日志记录吗？此操作不可恢复！")) return;
+    const fields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
+    fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    saveDonelist();
+  }
+
   donelistEls.openBtn.addEventListener("click", openDonelist);
   donelistEls.closeBtn.addEventListener("click", () => {
     saveDonelist();
     donelistEls.dialog.close();
   });
   donelistEls.copyBtn.addEventListener("click", copyDonelist);
+  document.getElementById("donelist-clear").addEventListener("click", clearDonelist);
   const donelistFields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
   donelistFields.forEach((el) => el.addEventListener("input", debounceSaveDonelist));
 
   // --- Weekly Review ---
-  const WEEKLY_REVIEW_KEY = "micro-habit-weekly-review-v1";
+  const WEEKLY_REVIEW_PREFIX = "weekly-review-";
+
+  function weeklyReviewStorageKey(dateKey) {
+    return `${WEEKLY_REVIEW_PREFIX}${dateKey}`;
+  }
 
   function getWeekOfMonth(date) {
     return Math.ceil(date.getDate() / 7);
@@ -2331,17 +2375,25 @@
   }
 
   function loadWeeklyReview() {
+    const currentKey = weeklyReviewDateKey(new Date());
+    const storageKey = weeklyReviewStorageKey(currentKey);
     try {
-      const raw = localStorage.getItem(WEEKLY_REVIEW_KEY);
+      const raw = localStorage.getItem(storageKey);
       if (!raw) return freshWeeklyReview();
-      const data = JSON.parse(raw);
-      if (data.dateKey !== weeklyReviewDateKey(new Date())) {
-        localStorage.removeItem(WEEKLY_REVIEW_KEY);
-        return freshWeeklyReview();
-      }
-      return { ...freshWeeklyReview(), ...data };
+      return { ...freshWeeklyReview(), ...JSON.parse(raw) };
     } catch {
       return freshWeeklyReview();
+    }
+  }
+
+  function loadWeeklyReviewForKey(dateKey) {
+    const storageKey = weeklyReviewStorageKey(dateKey);
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) return null;
+      return { ...freshWeeklyReview(), ...JSON.parse(raw) };
+    } catch {
+      return null;
     }
   }
 
@@ -2360,7 +2412,7 @@
 
   function saveWeeklyReview() {
     const data = collectWeeklyData();
-    localStorage.setItem(WEEKLY_REVIEW_KEY, JSON.stringify(data));
+    localStorage.setItem(weeklyReviewStorageKey(data.dateKey), JSON.stringify(data));
   }
 
   function debounceSaveWeekly() {
@@ -2438,17 +2490,29 @@
     });
   }
 
+  function clearWeeklyReview() {
+    if (!confirm("确定要清空本周复盘的所有记录吗？此操作不可恢复！")) return;
+    const fields = [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
+    fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    saveWeeklyReview();
+  }
+
   weeklyEls.openBtn.addEventListener("click", openWeeklyReview);
   weeklyEls.closeBtn.addEventListener("click", () => {
     saveWeeklyReview();
     weeklyEls.dialog.close();
   });
   weeklyEls.copyBtn.addEventListener("click", copyWeeklyReview);
+  document.getElementById("weekly-review-clear").addEventListener("click", clearWeeklyReview);
   const weeklyFields = [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
   weeklyFields.forEach((el) => el.addEventListener("input", debounceSaveWeekly));
 
   // --- Monthly Review ---
-  const MONTHLY_REVIEW_KEY = "micro-habit-monthly-review-v1";
+  const MONTHLY_REVIEW_PREFIX = "monthly-review-";
+
+  function monthlyReviewStorageKey(dateKey) {
+    return `${MONTHLY_REVIEW_PREFIX}${dateKey}`;
+  }
 
   function monthlyReviewDateKey(date) {
     return `${date.getFullYear()}-${date.getMonth() + 1}`;
@@ -2486,17 +2550,25 @@
   }
 
   function loadMonthlyReview() {
+    const currentKey = monthlyReviewDateKey(new Date());
+    const storageKey = monthlyReviewStorageKey(currentKey);
     try {
-      const raw = localStorage.getItem(MONTHLY_REVIEW_KEY);
+      const raw = localStorage.getItem(storageKey);
       if (!raw) return freshMonthlyReview();
-      const data = JSON.parse(raw);
-      if (data.dateKey !== monthlyReviewDateKey(new Date())) {
-        localStorage.removeItem(MONTHLY_REVIEW_KEY);
-        return freshMonthlyReview();
-      }
-      return { ...freshMonthlyReview(), ...data };
+      return { ...freshMonthlyReview(), ...JSON.parse(raw) };
     } catch {
       return freshMonthlyReview();
+    }
+  }
+
+  function loadMonthlyReviewForKey(dateKey) {
+    const storageKey = monthlyReviewStorageKey(dateKey);
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) return null;
+      return { ...freshMonthlyReview(), ...JSON.parse(raw) };
+    } catch {
+      return null;
     }
   }
 
@@ -2516,7 +2588,7 @@
 
   function saveMonthlyReview() {
     const data = collectMonthlyData();
-    localStorage.setItem(MONTHLY_REVIEW_KEY, JSON.stringify(data));
+    localStorage.setItem(monthlyReviewStorageKey(data.dateKey), JSON.stringify(data));
   }
 
   function debounceSaveMonthly() {
@@ -2596,12 +2668,563 @@
     });
   }
 
+  function clearMonthlyReview() {
+    if (!confirm("确定要清空本月复盘的所有记录吗？此操作不可恢复！")) return;
+    const fields = [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
+    fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    saveMonthlyReview();
+  }
+
   monthlyEls.openBtn.addEventListener("click", openMonthlyReview);
   monthlyEls.closeBtn.addEventListener("click", () => {
     saveMonthlyReview();
     monthlyEls.dialog.close();
   });
   monthlyEls.copyBtn.addEventListener("click", copyMonthlyReview);
+  document.getElementById("monthly-review-clear").addEventListener("click", clearMonthlyReview);
   const monthlyFields = [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
   monthlyFields.forEach((el) => el.addEventListener("input", debounceSaveMonthly));
+
+  // ========== In-dialog Date Navigation ==========
+
+  // --- Donelist navigation ---
+  let donelistViewDate = TODAY();
+
+  function donelistYear() { return parseInt(donelistViewDate.slice(0, 4)); }
+  function donelistMonth() { return parseInt(donelistViewDate.slice(5, 7)); }
+  function donelistDay() { return parseInt(donelistViewDate.slice(8, 10)); }
+
+  function renderDonelistNav() {
+    var y = donelistYear(), m = donelistMonth(), d = donelistDay();
+    document.getElementById("donelist-cur-month").textContent = m;
+    document.getElementById("donelist-cur-day").textContent = d;
+    var wd = new Date(y, m - 1, d).getDay();
+    document.getElementById("donelist-nav-weekday").textContent = WEEKDAY_NAMES[wd];
+  }
+
+  function donelistSaveAndLoad(dateStr) {
+    // save current data before navigating away
+    var data = collectDonelistData();
+    localStorage.setItem(donelistDateKey(donelistViewDate), JSON.stringify(data));
+    localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
+    // load new date
+    donelistViewDate = dateStr;
+    var loaded = loadDonelistForDate(dateStr);
+    renderDonelist(loaded || freshDonelist());
+    renderDonelistNav();
+  }
+
+  function donelistPrevMonth() {
+    var y = donelistYear(), m = donelistMonth(), d = donelistDay();
+    m--; if (m < 1) { m = 12; y--; }
+    d = Math.min(d, daysInMonth(y, m));
+    donelistSaveAndLoad(`${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`);
+  }
+  function donelistNextMonth() {
+    var y = donelistYear(), m = donelistMonth(), d = donelistDay();
+    m++; if (m > 12) { m = 1; y++; }
+    d = Math.min(d, daysInMonth(y, m));
+    var ds = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    if (ds > TODAY()) return;
+    donelistSaveAndLoad(ds);
+  }
+  function donelistPrevDay() {
+    var y = donelistYear(), m = donelistMonth(), d = donelistDay();
+    d--; if (d < 1) { m--; if (m < 1) { m = 12; y--; } d = daysInMonth(y, m); }
+    donelistSaveAndLoad(`${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`);
+  }
+  function donelistNextDay() {
+    var y = donelistYear(), m = donelistMonth(), d = donelistDay();
+    d++;
+    if (d > daysInMonth(y, m)) { d = 1; m++; if (m > 12) { m = 1; y++; } }
+    var ds = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    if (ds > TODAY()) return;
+    donelistSaveAndLoad(ds);
+  }
+
+  // Override collectDonelistData to use view date
+  var _origCollectDonelistData = collectDonelistData;
+  collectDonelistData = function () {
+    var d = _origCollectDonelistData();
+    d.date = donelistViewDate;
+    return d;
+  };
+
+  // --- Weekly navigation ---
+  let weeklyViewKey = weeklyReviewDateKey(new Date());
+
+  function weeklyParseKey() {
+    var parts = weeklyViewKey.split("-");
+    return { y: parseInt(parts[0]), m: parseInt(parts[1]), w: parseInt(parts[2]) };
+  }
+
+  function renderWeeklyNav() {
+    var p = weeklyParseKey();
+    document.getElementById("weekly-cur-month").textContent = p.m;
+    document.getElementById("weekly-cur-week").textContent = p.w;
+  }
+
+  function weeklySaveAndLoad(key) {
+    var data = collectWeeklyData();
+    localStorage.setItem(weeklyReviewStorageKey(weeklyViewKey), JSON.stringify(data));
+    weeklyViewKey = key;
+    var loaded = loadWeeklyReviewForKey(key);
+    renderWeeklyReview(loaded || freshWeeklyReview());
+    renderWeeklyNav();
+  }
+
+  function weeklyPrevMonth() {
+    var p = weeklyParseKey();
+    p.m--; if (p.m < 1) { p.m = 12; p.y--; }
+    p.w = Math.min(p.w, maxWeeksInMonth(p.y, p.m));
+    weeklySaveAndLoad(`${p.y}-${p.m}-${p.w}`);
+  }
+  function weeklyNextMonth() {
+    var p = weeklyParseKey();
+    p.m++; if (p.m > 12) { p.m = 1; p.y++; }
+    p.w = Math.min(p.w, maxWeeksInMonth(p.y, p.m));
+    var nk = `${p.y}-${p.m}-${p.w}`;
+    if (isFutureWeek(p.y, p.m, p.w)) return;
+    weeklySaveAndLoad(nk);
+  }
+  function weeklyPrevWeek() {
+    var p = weeklyParseKey();
+    p.w--; if (p.w < 1) { p.m--; if (p.m < 1) { p.m = 12; p.y--; } p.w = maxWeeksInMonth(p.y, p.m); }
+    weeklySaveAndLoad(`${p.y}-${p.m}-${p.w}`);
+  }
+  function weeklyNextWeek() {
+    var p = weeklyParseKey();
+    if (isFutureWeek(p.y, p.m, p.w + 1)) return;
+    p.w++;
+    if (p.w > maxWeeksInMonth(p.y, p.m)) { p.w = 1; p.m++; if (p.m > 12) { p.m = 1; p.y++; } }
+    weeklySaveAndLoad(`${p.y}-${p.m}-${p.w}`);
+  }
+
+  // Override collectWeeklyData
+  var _origCollectWeeklyData = collectWeeklyData;
+  collectWeeklyData = function () {
+    var d = _origCollectWeeklyData();
+    d.dateKey = weeklyViewKey;
+    return d;
+  };
+
+  // --- Monthly navigation ---
+  let monthlyViewKey = monthlyReviewDateKey(new Date());
+
+  function monthlyParseKey() {
+    var parts = monthlyViewKey.split("-");
+    return { y: parseInt(parts[0]), m: parseInt(parts[1]) };
+  }
+
+  function renderMonthlyNav() {
+    var p = monthlyParseKey();
+    document.getElementById("monthly-cur-year").textContent = p.y;
+    document.getElementById("monthly-cur-month").textContent = p.m;
+  }
+
+  function monthlySaveAndLoad(key) {
+    var data = collectMonthlyData();
+    localStorage.setItem(monthlyReviewStorageKey(monthlyViewKey), JSON.stringify(data));
+    monthlyViewKey = key;
+    var loaded = loadMonthlyReviewForKey(key);
+    renderMonthlyReview(loaded || freshMonthlyReview());
+    renderMonthlyNav();
+  }
+
+  function monthlyPrevYear() { var p = monthlyParseKey(); monthlySaveAndLoad(`${p.y - 1}-${p.m}`); }
+  function monthlyNextYear() {
+    var p = monthlyParseKey();
+    if (isFutureMonth(p.y + 1, p.m)) return;
+    monthlySaveAndLoad(`${p.y + 1}-${p.m}`);
+  }
+  function monthlyPrevMonth() {
+    var p = monthlyParseKey();
+    p.m--; if (p.m < 1) { p.m = 12; p.y--; }
+    monthlySaveAndLoad(`${p.y}-${p.m}`);
+  }
+  function monthlyNextMonth() {
+    var p = monthlyParseKey();
+    if (isFutureMonth(p.y, p.m + 1)) return;
+    p.m++; if (p.m > 12) { p.m = 1; p.y++; }
+    monthlySaveAndLoad(`${p.y}-${p.m}`);
+  }
+
+  // Override collectMonthlyData
+  var _origCollectMonthlyData = collectMonthlyData;
+  collectMonthlyData = function () {
+    var d = _origCollectMonthlyData();
+    d.dateKey = monthlyViewKey;
+    return d;
+  };
+
+  // Helper: max weeks in month
+  function maxWeeksInMonth(year, month) { return Math.ceil(daysInMonth(year, month) / 7); }
+  function isFutureDay(year, month, day) {
+    var now = new Date();
+    return new Date(year, month - 1, day) > new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+  function isFutureWeek(year, month, weekNum) {
+    var now = new Date();
+    if (year > now.getFullYear()) return true;
+    if (year < now.getFullYear()) return false;
+    if (month > now.getMonth() + 1) return true;
+    if (month < now.getMonth() + 1) return false;
+    return weekNum > getWeekOfMonth(now);
+  }
+  function isFutureMonth(year, month) {
+    var now = new Date();
+    if (year > now.getFullYear()) return true;
+    if (year < now.getFullYear()) return false;
+    return month > now.getMonth() + 1;
+  }
+
+  // --- Nav button event bindings ---
+  document.getElementById("donelist-prev-month").addEventListener("click", donelistPrevMonth);
+  document.getElementById("donelist-next-month").addEventListener("click", donelistNextMonth);
+  document.getElementById("donelist-prev-day").addEventListener("click", donelistPrevDay);
+  document.getElementById("donelist-next-day").addEventListener("click", donelistNextDay);
+
+  document.getElementById("weekly-prev-month").addEventListener("click", weeklyPrevMonth);
+  document.getElementById("weekly-next-month").addEventListener("click", weeklyNextMonth);
+  document.getElementById("weekly-prev-week").addEventListener("click", weeklyPrevWeek);
+  document.getElementById("weekly-next-week").addEventListener("click", weeklyNextWeek);
+
+  document.getElementById("monthly-prev-year").addEventListener("click", monthlyPrevYear);
+  document.getElementById("monthly-next-year").addEventListener("click", monthlyNextYear);
+  document.getElementById("monthly-prev-month").addEventListener("click", monthlyPrevMonth);
+  document.getElementById("monthly-next-month").addEventListener("click", monthlyNextMonth);
+
+  // --- History Browser (read-only) ---
+  var historyState = {
+    tab: "day",
+    year: 0, month: 0, day: 0,
+    weekYear: 0, weekMonth: 0, weekNum: 0,
+    monthYear: 0, monthMonth: 0,
+  };
+
+  var historyEls = {
+    dialog: document.getElementById("history-dialog"),
+    closeBtn: document.getElementById("history-close"),
+    tabDay: document.getElementById("history-tab-day"),
+    tabWeek: document.getElementById("history-tab-week"),
+    tabMonth: document.getElementById("history-tab-month"),
+    nav: document.getElementById("history-nav"),
+    content: document.getElementById("history-content"),
+  };
+
+  function getWeekday(year, month, day) { return new Date(year, month - 1, day).getDay(); }
+
+  function historyDayPrevMonth() {
+    historyState.month--; if (historyState.month < 1) { historyState.month = 12; historyState.year--; }
+    historyState.day = Math.min(historyState.day, daysInMonth(historyState.year, historyState.month));
+  }
+  function historyDayNextMonth() {
+    historyState.month++; if (historyState.month > 12) { historyState.month = 1; historyState.year++; }
+    historyState.day = Math.min(historyState.day, daysInMonth(historyState.year, historyState.month));
+    if (isFutureDay(historyState.year, historyState.month, historyState.day)) {
+      historyState.month--; if (historyState.month < 1) { historyState.month = 12; historyState.year--; }
+      historyState.day = Math.min(historyState.day, daysInMonth(historyState.year, historyState.month));
+    }
+  }
+  function historyDayPrevDay() {
+    historyState.day--; if (historyState.day < 1) { historyState.month--; if (historyState.month < 1) { historyState.month = 12; historyState.year--; } historyState.day = daysInMonth(historyState.year, historyState.month); }
+  }
+  function historyDayNextDay() {
+    if (isFutureDay(historyState.year, historyState.month, historyState.day + 1)) return;
+    historyState.day++; if (historyState.day > daysInMonth(historyState.year, historyState.month)) { historyState.day = 1; historyState.month++; if (historyState.month > 12) { historyState.month = 1; historyState.year++; } }
+  }
+  function historyWeekPrevMonth() {
+    historyState.weekMonth--; if (historyState.weekMonth < 1) { historyState.weekMonth = 12; historyState.weekYear--; }
+    historyState.weekNum = Math.min(historyState.weekNum, maxWeeksInMonth(historyState.weekYear, historyState.weekMonth));
+  }
+  function historyWeekNextMonth() {
+    historyState.weekMonth++; if (historyState.weekMonth > 12) { historyState.weekMonth = 1; historyState.weekYear++; }
+    historyState.weekNum = Math.min(historyState.weekNum, maxWeeksInMonth(historyState.weekYear, historyState.weekMonth));
+    if (isFutureWeek(historyState.weekYear, historyState.weekMonth, historyState.weekNum)) {
+      historyState.weekMonth--; if (historyState.weekMonth < 1) { historyState.weekMonth = 12; historyState.weekYear--; }
+      historyState.weekNum = Math.min(historyState.weekNum, maxWeeksInMonth(historyState.weekYear, historyState.weekMonth));
+    }
+  }
+  function historyWeekPrevWeek() {
+    historyState.weekNum--; if (historyState.weekNum < 1) { historyState.weekMonth--; if (historyState.weekMonth < 1) { historyState.weekMonth = 12; historyState.weekYear--; } historyState.weekNum = maxWeeksInMonth(historyState.weekYear, historyState.weekMonth); }
+  }
+  function historyWeekNextWeek() {
+    if (isFutureWeek(historyState.weekYear, historyState.weekMonth, historyState.weekNum + 1)) return;
+    historyState.weekNum++; if (historyState.weekNum > maxWeeksInMonth(historyState.weekYear, historyState.weekMonth)) { historyState.weekNum = 1; historyState.weekMonth++; if (historyState.weekMonth > 12) { historyState.weekMonth = 1; historyState.weekYear++; } }
+  }
+  function historyMonthPrevYear() { historyState.monthYear--; }
+  function historyMonthNextYear() {
+    historyState.monthYear++; if (isFutureMonth(historyState.monthYear, historyState.monthMonth)) historyState.monthYear--;
+  }
+  function historyMonthPrevMonth() { historyState.monthMonth--; if (historyState.monthMonth < 1) { historyState.monthMonth = 12; historyState.monthYear--; } }
+  function historyMonthNextMonth() {
+    if (isFutureMonth(historyState.monthYear, historyState.monthMonth + 1)) return;
+    historyState.monthMonth++; if (historyState.monthMonth > 12) { historyState.monthMonth = 1; historyState.monthYear++; }
+  }
+
+  function renderHistoryNav() {
+    var h = "";
+    if (historyState.tab === "day") {
+      h += `<button class="history-nav-btn" onclick="window.__hDayPrevM()">◀</button>`;
+      h += `<span class="history-nav-label">${historyState.month}<span class="history-nav-unit">月</span></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hDayNextM()">▶</button>`;
+      h += `<span style="width:8px;"></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hDayPrevD()">◀</button>`;
+      h += `<span class="history-nav-label">${historyState.day}<span class="history-nav-unit">日</span></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hDayNextD()">▶</button>`;
+      h += `<span class="history-nav-weekday">${WEEKDAY_NAMES[getWeekday(historyState.year, historyState.month, historyState.day)]}</span>`;
+    } else if (historyState.tab === "week") {
+      h += `<button class="history-nav-btn" onclick="window.__hWeekPrevM()">◀</button>`;
+      h += `<span class="history-nav-label">${historyState.weekMonth}<span class="history-nav-unit">月</span></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hWeekNextM()">▶</button>`;
+      h += `<span style="width:8px;"></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hWeekPrevW()">◀</button>`;
+      h += `<span class="history-nav-label">${historyState.weekNum}<span class="history-nav-unit">周</span></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hWeekNextW()">▶</button>`;
+    } else {
+      h += `<button class="history-nav-btn" onclick="window.__hMonthPrevY()">◀</button>`;
+      h += `<span class="history-nav-label">${historyState.monthYear}<span class="history-nav-unit">年</span></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hMonthNextY()">▶</button>`;
+      h += `<span style="width:8px;"></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hMonthPrevM()">◀</button>`;
+      h += `<span class="history-nav-label">${historyState.monthMonth}<span class="history-nav-unit">月</span></span>`;
+      h += `<button class="history-nav-btn" onclick="window.__hMonthNextM()">▶</button>`;
+    }
+    historyEls.nav.innerHTML = h;
+  }
+
+  function renderHistoryDayContent() {
+    var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
+    var data = loadDonelistForDate(ds) || freshDonelist();
+    var h = '';
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">饮食</h3>';
+    h += `<textarea id="h-diet" class="donelist-input" placeholder="今天吃了什么...">${escapeHtml(data.diet || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">正向链接（生活中的美好）</h3>';
+    h += `<textarea id="h-positive" class="donelist-input" placeholder="今天遇到的美好事物...">${escapeHtml(data.positive || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">具体事件</h3>';
+    h += '<label class="donelist-sub-label">早上</label>';
+    h += `<textarea id="h-morning" class="donelist-input donelist-sub-input" placeholder="早上做了什么...">${escapeHtml(data.morning || "")}</textarea>`;
+    h += '<label class="donelist-sub-label">中午</label>';
+    h += `<textarea id="h-afternoon" class="donelist-input donelist-sub-input" placeholder="中午做了什么...">${escapeHtml(data.afternoon || "")}</textarea>`;
+    h += '<label class="donelist-sub-label">晚上</label>';
+    h += `<textarea id="h-evening" class="donelist-input donelist-sub-input" placeholder="晚上做了什么...">${escapeHtml(data.evening || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感谢</h3>';
+    h += `<textarea id="h-gratitude" class="donelist-input" placeholder="今天想感谢什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">夸夸自己</h3>';
+    h += `<textarea id="h-selfPraise" class="donelist-input" placeholder="今天做得好的地方...">${escapeHtml(data.selfPraise || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">复盘</h3>';
+    h += `<textarea id="h-review" class="donelist-input" placeholder="今天的收获和反思...">${escapeHtml(data.review || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
+    h += `<textarea id="h-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">情绪</h3>';
+    h += `<textarea id="h-emotion" class="donelist-input" placeholder="今天情绪如何...">${escapeHtml(data.emotion || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">今天我又进步啦</h3>';
+    h += `<textarea id="h-emotionKit" class="donelist-input" placeholder="今天进步了什么...">${escapeHtml(data.emotionKit || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">自由发泄区</h3>';
+    h += `<textarea id="h-vent" class="donelist-input" placeholder="随便写点什么...">${escapeHtml(data.vent || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">明日计划</h3>';
+    h += `<textarea id="h-tomorrowPlan" class="donelist-input" placeholder="明天的计划是什么...">${escapeHtml(data.tomorrowPlan || "")}</textarea></section>`;
+    historyEls.content.innerHTML = h;
+    requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
+  }
+
+  function collectHistoryDayData() {
+    var getVal = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
+    var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
+    return { date: ds, diet: getVal("h-diet"), positive: getVal("h-positive"), morning: getVal("h-morning"), afternoon: getVal("h-afternoon"), evening: getVal("h-evening"), gratitude: getVal("h-gratitude"), selfPraise: getVal("h-selfPraise"), review: getVal("h-review"), body: getVal("h-body"), emotion: getVal("h-emotion"), emotionKit: getVal("h-emotionKit"), vent: getVal("h-vent"), tomorrowPlan: getVal("h-tomorrowPlan") };
+  }
+
+  function saveHistoryDay() {
+    var data = collectHistoryDayData();
+    var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
+    localStorage.setItem(donelistDateKey(ds), JSON.stringify(data));
+  }
+
+  function renderHistoryWeekContent() {
+    var dk = `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`;
+    var data = loadWeeklyReviewForKey(dk) || freshWeeklyReview();
+    var h = '';
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周事件</h3>';
+    h += `<textarea id="hw-events" class="donelist-input" placeholder="这周发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
+    h += `<textarea id="hw-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感恩的事情</h3>';
+    h += `<textarea id="hw-gratitude" class="donelist-input" placeholder="这周想感恩什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周进步</h3>';
+    h += `<textarea id="hw-progress" class="donelist-input" placeholder="这周进步了什么...">${escapeHtml(data.progress || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周收获知识</h3>';
+    h += `<textarea id="hw-knowledge" class="donelist-input" placeholder="这周学到了什么新知识...">${escapeHtml(data.knowledge || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周反思</h3>';
+    h += `<textarea id="hw-reflection" class="donelist-input" placeholder="这周的收获和反思...">${escapeHtml(data.reflection || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">下周计划</h3>';
+    h += `<textarea id="hw-nextPlan" class="donelist-input" placeholder="下周的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
+    historyEls.content.innerHTML = h;
+    requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
+  }
+
+  function collectHistoryWeekData() {
+    var g = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
+    return { dateKey: `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`, events: g("hw-events"), body: g("hw-body"), gratitude: g("hw-gratitude"), progress: g("hw-progress"), knowledge: g("hw-knowledge"), reflection: g("hw-reflection"), nextPlan: g("hw-nextPlan") };
+  }
+
+  function saveHistoryWeek() {
+    var data = collectHistoryWeekData();
+    localStorage.setItem(weeklyReviewStorageKey(data.dateKey), JSON.stringify(data));
+  }
+
+  function renderHistoryMonthContent() {
+    var dk = `${historyState.monthYear}-${historyState.monthMonth}`;
+    var data = loadMonthlyReviewForKey(dk) || freshMonthlyReview();
+    var h = '';
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月的关键词</h3>';
+    h += `<textarea id="hm-keywords" class="donelist-input" placeholder="用几个关键词概括这个月...">${escapeHtml(data.keywords || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月事件</h3>';
+    h += `<textarea id="hm-events" class="donelist-input" placeholder="这个月发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
+    h += `<textarea id="hm-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感恩的事情</h3>';
+    h += `<textarea id="hm-gratitude" class="donelist-input" placeholder="这个月想感恩什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月进步</h3>';
+    h += `<textarea id="hm-progress" class="donelist-input" placeholder="这个月进步了什么...">${escapeHtml(data.progress || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月收获知识</h3>';
+    h += `<textarea id="hm-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识...">${escapeHtml(data.knowledge || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月反思</h3>';
+    h += `<textarea id="hm-reflection" class="donelist-input" placeholder="这个月的收获和反思...">${escapeHtml(data.reflection || "")}</textarea></section>`;
+    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">下月计划</h3>';
+    h += `<textarea id="hm-nextPlan" class="donelist-input" placeholder="下个月的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
+    historyEls.content.innerHTML = h;
+    requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
+  }
+
+  function collectHistoryMonthData() {
+    var g = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
+    return { dateKey: `${historyState.monthYear}-${historyState.monthMonth}`, keywords: g("hm-keywords"), events: g("hm-events"), body: g("hm-body"), gratitude: g("hm-gratitude"), progress: g("hm-progress"), knowledge: g("hm-knowledge"), reflection: g("hm-reflection"), nextPlan: g("hm-nextPlan") };
+  }
+
+  function saveHistoryMonth() {
+    var data = collectHistoryMonthData();
+    localStorage.setItem(monthlyReviewStorageKey(data.dateKey), JSON.stringify(data));
+  }
+
+  // Auto-save before switching tabs or navigating in history
+  function saveCurrentHistoryTab() {
+    if (!historyContentRendered) return;
+    if (historyState.tab === "day") saveHistoryDay();
+    else if (historyState.tab === "week") saveHistoryWeek();
+    else saveHistoryMonth();
+  }
+
+  function renderHistoryContent() {
+    if (historyState.tab === "day") renderHistoryDayContent();
+    else if (historyState.tab === "week") renderHistoryWeekContent();
+    else renderHistoryMonthContent();
+  }
+
+  function refreshHistory() { renderHistoryNav(); renderHistoryContent(); }
+
+  function switchHistoryTab(tab) {
+    saveCurrentHistoryTab();
+    historyState.tab = tab;
+    var now = new Date();
+    if (tab === "day") { historyState.year = now.getFullYear(); historyState.month = now.getMonth() + 1; historyState.day = now.getDate(); }
+    else if (tab === "week") { historyState.weekYear = now.getFullYear(); historyState.weekMonth = now.getMonth() + 1; historyState.weekNum = getWeekOfMonth(now); }
+    else { historyState.monthYear = now.getFullYear(); historyState.monthMonth = now.getMonth() + 1; }
+    historyEls.tabDay.classList.toggle("is-active", tab === "day");
+    historyEls.tabWeek.classList.toggle("is-active", tab === "week");
+    historyEls.tabMonth.classList.toggle("is-active", tab === "month");
+    refreshHistory();
+  }
+
+  // Expose nav functions
+  function wrapHNav(fn) { return function () { saveCurrentHistoryTab(); fn(); refreshHistory(); }; }
+  window.__hDayPrevM = wrapHNav(historyDayPrevMonth);
+  window.__hDayNextM = wrapHNav(historyDayNextMonth);
+  window.__hDayPrevD = wrapHNav(historyDayPrevDay);
+  window.__hDayNextD = wrapHNav(historyDayNextDay);
+  window.__hWeekPrevM = wrapHNav(historyWeekPrevMonth);
+  window.__hWeekNextM = wrapHNav(historyWeekNextMonth);
+  window.__hWeekPrevW = wrapHNav(historyWeekPrevWeek);
+  window.__hWeekNextW = wrapHNav(historyWeekNextWeek);
+  window.__hMonthPrevY = wrapHNav(historyMonthPrevYear);
+  window.__hMonthNextY = wrapHNav(historyMonthNextYear);
+  window.__hMonthPrevM = wrapHNav(historyMonthPrevMonth);
+  window.__hMonthNextM = wrapHNav(historyMonthNextMonth);
+
+  // "回顾" buttons inside each dialog
+  var historyContentRendered = false;
+  document.getElementById("donelist-goto-history").addEventListener("click", function () {
+    historyState.year = donelistYear(); historyState.month = donelistMonth(); historyState.day = donelistDay();
+    historyState.tab = "day";
+    historyEls.tabDay.classList.add("is-active");
+    historyEls.tabWeek.classList.remove("is-active");
+    historyEls.tabMonth.classList.remove("is-active");
+    if (!historyEls.dialog.open) historyEls.dialog.showModal();
+    historyContentRendered = true;
+    refreshHistory();
+  });
+  document.getElementById("weekly-review-goto-history").addEventListener("click", function () {
+    var p = weeklyParseKey();
+    historyState.weekYear = p.y; historyState.weekMonth = p.m; historyState.weekNum = p.w;
+    historyState.tab = "week";
+    historyEls.tabDay.classList.remove("is-active");
+    historyEls.tabWeek.classList.add("is-active");
+    historyEls.tabMonth.classList.remove("is-active");
+    if (!historyEls.dialog.open) historyEls.dialog.showModal();
+    historyContentRendered = true;
+    refreshHistory();
+  });
+  document.getElementById("monthly-review-goto-history").addEventListener("click", function () {
+    var p = monthlyParseKey();
+    historyState.monthYear = p.y; historyState.monthMonth = p.m;
+    historyState.tab = "month";
+    historyEls.tabDay.classList.remove("is-active");
+    historyEls.tabWeek.classList.remove("is-active");
+    historyEls.tabMonth.classList.add("is-active");
+    if (!historyEls.dialog.open) historyEls.dialog.showModal();
+    historyContentRendered = true;
+    refreshHistory();
+  });
+
+  historyEls.closeBtn.addEventListener("click", function () {
+    saveCurrentHistoryTab();
+    historyContentRendered = false;
+    historyEls.dialog.close();
+  });
+  historyEls.tabDay.addEventListener("click", function () { switchHistoryTab("day"); });
+  historyEls.tabWeek.addEventListener("click", function () { switchHistoryTab("week"); });
+  historyEls.tabMonth.addEventListener("click", function () { switchHistoryTab("month"); });
+
+  // --- Patch open functions to init nav ---
+  var _origOpenDonelist = openDonelist;
+  openDonelist = function () {
+    donelistViewDate = TODAY();
+    var data = loadDonelistForDate(TODAY());
+    renderDonelist(data || freshDonelist());
+    renderDonelistNav();
+    if (!donelistEls.dialog.open) donelistEls.dialog.showModal();
+  };
+  donelistEls.openBtn.removeEventListener("click", _origOpenDonelist);
+  donelistEls.openBtn.addEventListener("click", openDonelist);
+
+  var _origOpenWeeklyReview = openWeeklyReview;
+  openWeeklyReview = function () {
+    weeklyViewKey = weeklyReviewDateKey(new Date());
+    var data = loadWeeklyReviewForKey(weeklyViewKey);
+    renderWeeklyReview(data || freshWeeklyReview());
+    renderWeeklyNav();
+    if (!weeklyEls.dialog.open) weeklyEls.dialog.showModal();
+  };
+  weeklyEls.openBtn.removeEventListener("click", _origOpenWeeklyReview);
+  weeklyEls.openBtn.addEventListener("click", openWeeklyReview);
+
+  var _origOpenMonthlyReview = openMonthlyReview;
+  openMonthlyReview = function () {
+    monthlyViewKey = monthlyReviewDateKey(new Date());
+    var data = loadMonthlyReviewForKey(monthlyViewKey);
+    renderMonthlyReview(data || freshMonthlyReview());
+    renderMonthlyNav();
+    if (!monthlyEls.dialog.open) monthlyEls.dialog.showModal();
+  };
+  monthlyEls.openBtn.removeEventListener("click", _origOpenMonthlyReview);
+  monthlyEls.openBtn.addEventListener("click", openMonthlyReview);
 })();

@@ -609,6 +609,17 @@ body.habit-dragging .drag-handle {
   color: var(--warn);
 }
 
+.danger-button {
+  background: rgba(163, 63, 24, 0.08);
+  border-color: rgba(163, 63, 24, 0.24);
+  color: var(--warn);
+}
+
+.danger-button:hover {
+  background: rgba(163, 63, 24, 0.16);
+  border-color: rgba(163, 63, 24, 0.4);
+}
+
 .timer-setup {
   display: grid;
   gap: 16px;
@@ -870,4 +881,359 @@ body.habit-dragging .drag-handle {
   .timer-form label:last-child input {
     width: 100%;
   }
+}
+
+/* --- History Dialog --- */
+.history-dialog {
+  width: min(900px, calc(100vw - 32px));
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.history-dialog::backdrop {
+  background: rgba(20, 16, 12, 0.42);
+  backdrop-filter: blur(6px);
+}
+
+.history-shell {
+  display: grid;
+  gap: 16px;
+  max-height: min(88vh, 900px);
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.history-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(31, 27, 22, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.history-tab {
+  min-height: 38px;
+  padding: 0 20px;
+  border-radius: calc(var(--radius-sm) - 2px);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.history-tab.is-active {
+  background: white;
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.history-tab:hover:not(.is-active) {
+  color: var(--ink);
+}
+
+/* --- History Navigation --- */
+.history-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0;
+  user-select: none;
+}
+
+.history-nav-btn {
+  min-height: 38px;
+  min-width: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.history-nav-btn:hover {
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.history-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: none;
+}
+
+.history-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--ink);
+  min-width: 36px;
+  justify-content: center;
+}
+
+.history-nav-unit {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: var(--font-body);
+}
+
+.history-nav-weekday {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* --- History Content --- */
+.history-content {
+  display: grid;
+  gap: 16px;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.history-field {
+  background: rgba(255, 250, 240, 0.78);
+  border: 1px solid rgba(31, 27, 22, 0.08);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.history-field-label {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.history-field-value {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.95rem;
+}
+
+.history-field-value.is-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Sub-fields for daily log (morning/afternoon/evening) */
+.history-sub-fields {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.history-sub-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 2px;
+}
+
+.history-sub-value {
+  margin: 0 0 8px;
+  color: var(--ink);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.93rem;
+  padding-left: 4px;
+}
+
+.history-sub-value.is-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* History edit area (same textarea layout as normal dialogs) */
+.history-edit-area {
+  display: grid;
+  gap: 16px;
+}
+
+/* history-tabs inside donelist-header-actions */
+.history-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(31, 27, 22, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.history-tab {
+  min-height: 38px;
+  padding: 0 20px;
+  border-radius: calc(var(--radius-sm) - 2px);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.history-tab.is-active {
+  background: white;
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.history-tab:hover:not(.is-active) {
+  color: var(--ink);
+}
+
+/* Keep history-nav (reuses donelist-nav styles) */
+.history-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0 4px;
+  user-select: none;
+}
+
+.history-nav-btn {
+  min-height: 32px;
+  min-width: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.history-nav-btn:hover {
+  background: var(--accent-soft);
+}
+
+.history-nav-label {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  min-width: 36px;
+  justify-content: center;
+}
+
+.history-nav-unit {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: var(--font-body);
+}
+
+.history-nav-weekday {
+  margin-left: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+}
+
+/* Remove old standalone history dialog styles (replaced by settings-dialog) */
+/* The .history-dialog, .history-shell, .history-content, .history-field, .history-field-label, .history-field-value, .history-empty, .history-sub-fields, .history-sub-label, .history-sub-value styles can be removed or kept for backward compat */
+
+/* --- In-dialog Date Navigation --- */
+.donelist-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0 4px;
+  user-select: none;
+}
+
+.donelist-nav-btn {
+  min-height: 32px;
+  min-width: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 120ms ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.donelist-nav-btn:hover {
+  background: var(--accent-soft);
+}
+
+.donelist-nav-num {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  min-width: 36px;
+  justify-content: center;
+}
+
+.donelist-nav-spacer {
+  width: 12px;
+}
+
+.donelist-nav-weekday {
+  margin-left: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-body);
 }

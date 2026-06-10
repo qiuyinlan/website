@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间管理器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .task-list {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .task-list p {
+            margin: 5px 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            padding-right: 20px;
+            cursor: pointer;
+        }
+
+        .summary {
+            margin-top: 20px;
+        }
+
+        .task-detail {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .current-task {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .current-task span {
+            margin-left: 10px;
+        }
+
+        .timeline {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        .time-block {
+            padding: 5px;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+        }
+
+        .task-detail-timeline {
+            padding: 5px;
+            margin-left: 10px;
+            background-color: #e7f3fe;
+            border: 1px solid #b3d7ff;
+            border-radius: 4px;
+        }
+
+        .refresh-btn {
+            margin-left: 10px;
+            cursor: pointer;
+            color: red;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .delete-all-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-all-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* 备忘录样式 */
+        .memo-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .memo-input-container {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .memo-input {
+            flex-grow: 1;
+            padding: 5px;
+            margin-right: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .memo-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .memo-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .memo-item.completed {
+            opacity: 0.6;
+        }
+
+        .memo-item.completed .memo-text {
+            text-decoration: line-through;
+        }
+
+        .memo-checkbox {
+            margin-right: 8px;
+        }
+
+        .memo-text {
+            flex-grow: 1;
+            word-break: break-all;
+        }
+
+        .memo-delete {
+            color: #ff4444;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <button class="delete-all-btn" onclick="deleteAllTasks()">删除所有记录</button>
+    <h1>时间管理器</h1>
+    <button onclick="startTask()">开始任务</button>
+    <button id="pause-resume-btn" onclick="pauseOrResumeTask()" style="display: none;">暂停任务</button>
+    <button onclick="showAddTaskForm()">添加历史任务</button>
+    <button onclick="showFrequentTaskForm()">添加常用计划</button>
+    
+    <!-- 当前任务显示区域 -->
+    <div id="current-task" class="current-task"></div>
+
+    <!-- 添加任务表单 (默认隐藏) -->
+    <div id="addTaskForm" style="display: none; margin-top: 20px; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>添加历史任务</h3>
+        <div style="margin-bottom: 10px;">
+            <label>任务名称：</label>
+            <input type="text" id="taskName" style="padding: 5px;">
+            <button type="button" onclick="showTaskSelector()" style="padding: 5px; margin-left: 5px;">选择已有任务</button>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>时长（分钟）：</label>
+            <input type="number" id="taskDuration" style="padding: 5px;" min="0">
+        </div>
+        <button onclick="addManualTask()">保存</button>
+        <button onclick="hideAddTaskForm()">取消</button>
+    </div>
+<!-- 在这个位置添加（在task-list div之前） -->
+<div class="summary" id="summary-result" style="margin: 20px 0; font-weight: bold; font-size: 18px;"></div>
+    <!-- 任务列表显示区域 -->
+    <div id="task-list" class="task-list"></div>
+
+    <div class="timeline" id="timeline">
+        <div class="time-block">早上 (0:00-12:00)</div>
+        <div class="time-block">中午 (12:00-18:00)</div>
+        <div class="time-block">晚上 (18:00-24:00)</div>
+    </div>
+
+    <!-- 常用计划表单 (默认隐藏) -->
+    <div id="frequentTaskForm" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1000; max-width: 400px; width: 90%;">
+        <h3>添加常用计划</h3>
+        <div style="margin-bottom: 15px;">
+            <label>计划名称：</label>
+            <input type="text" id="frequentTaskName" style="padding: 5px; width: 200px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label>预计时长（分钟）：</label>
+            <input type="number" id="frequentTaskDuration" style="padding: 5px; width: 200px;" min="0">
+        </div>
+        <button onclick="addFrequentTask()" style="margin-right: 10px;">保存</button>
+        <button onclick="hideFrequentTaskForm()">取消</button>
+    </div>
+
+    <!-- 备忘录容器 -->
+    <div class="memo-container">
+        <div class="memo-header">
+            <h3 style="margin: 0;">备忘录</h3>
+        </div>
+        <div class="memo-input-container">
+            <input type="text" class="memo-input" id="memoInput" placeholder="输入新任务...">
+            <button onclick="addMemo()" style="padding: 5px 10px;">添加</button>
+            <button onclick="showFrequentMemos()" style="padding: 5px 10px; margin-left: 5px;">常用</button>
+        </div>
+        <div class="memo-list" id="memoList">
+            <!-- 备忘录项会在这里动态添加 -->
+        </div>
+    </div>
+
+<script>
+// 全局变量
+let tasks = {};
+let currentTask = null;
+let timerInterval;
+let db;
+let isPaused = false;
+let startTime = null;
+let pausedTime = 0;
+let pauseStartTime = null;
+
+// 格式化时间的函数
+function formatDuration(minutes) {
+    minutes = parseFloat(minutes);
+    if (minutes < 60) {
+        return `${minutes.toFixed(2)}分钟`;
+    } else {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = (minutes % 60).toFixed(2);
+        if (remainingMinutes === '0.00') {
+            return `${hours}小时`;
+        }
+        return `${hours}小时${remainingMinutes}分钟`;
+    }
+}
+
+// 格式化时间显示
+function formatTime(date) {
+    let hours = date.getHours().toString().padStart(2, '0');
+    let minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
+// 总耗时函数
+function showSummary() {
+    let totalDuration = 0;
+    
+    // 遍历所有任务，使用当前正在进行的任务的时间
+    if (currentTask && startTime && !currentTask.endTime) {
+        const now = new Date();
+        const currentDuration = (now - startTime - pausedTime) / (1000 * 60);
+        if (!isNaN(currentDuration)) {
+            totalDuration += currentDuration;
+        }
+    }
+    
+    // 遍历已完成的任务
+    for (const taskName in tasks) {
+        const taskList = tasks[taskName];
+        if (Array.isArray(taskList)) {
+            taskList.forEach(task => {
+                if (task && task.duration) {
+                    const duration = parseFloat(task.duration);
+                    if (!isNaN(duration)) {
+                        totalDuration += duration;
+                    }
+                }
+            });
+        }
+    }
+    
+    console.log(`Total duration: ${totalDuration}`); // 调试日志
+    document.getElementById('summary-result').innerText = `今日总耗时: ${formatDuration(totalDuration)}`;
+}
+
+// 修改 updateTaskList 函数，在最后添加对 showSummary 的调用
+function updateTaskList() {
+    let taskHtml = "<h2>任务列表</h2>";
+    
+    let allTasks = [];
+    for (const taskName in tasks) {
+        if (Array.isArray(tasks[taskName])) {
+            tasks[taskName].forEach(task => {
+                // 确保任务对象有效
+                if (task && task.startTime) {
+                    allTasks.push({
+                        name: taskName,
+                        ...task
+                    });
+                }
+            });
+        }
+    }
+
+    // 按开始时间排序
+    allTasks.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+
+    // 重新组织任务数据
+    let organizedTasks = {};
+    allTasks.forEach(task => {
+        if (!organizedTasks[task.name]) {
+            organizedTasks[task.name] = [];
+        }
+        organizedTasks[task.name].push(task);
+    });
+
+    // 生成HTML并计算每个任务的总时间
+    for (const taskName in organizedTasks) {
+        let totalTaskDuration = 0;
+        organizedTasks[taskName].forEach(task => {
+            if (task.duration) {
+                const duration = parseFloat(task.duration);
+                if (!isNaN(duration)) {
+                    totalTaskDuration += duration;
+                }
+            }
+        });
+
+        taskHtml += `<div class="task-item">
+            <span onclick="toggleTaskDetails('${taskName}')">${taskName}</span>
+            <span>${formatDuration(totalTaskDuration)}</span>
+            <span class="refresh-btn" onclick="refreshTask('${taskName}', event)">🗑️</span>
+        </div>
+        <div class="task-detail" id="task-detail-${taskName}" style="display:none;"></div>`;
+    }
+
+    document.getElementById('task-list').innerHTML = taskHtml;
+    updateTimeline();
+    showSummary(); // 更新总耗时显示
+}
+// 数据库相关函数
+function openDB() {
+    let request = indexedDB.open("TaskManagerDB", 2); // 版本号改为2以触发升级
+
+    request.onerror = function (event) {
+        console.error("数据库打开失败", event);
+    };
+
+    request.onsuccess = function (event) {
+        db = event.target.result;
+        console.log("数据库打开成功");
+        loadTasksFromDB();
+    };
+
+    request.onupgradeneeded = function (event) {
+        db = event.target.result;
+        if (!db.objectStoreNames.contains("tasks")) {
+            let objectStore = db.createObjectStore("tasks", { keyPath: "id", autoIncrement: true });
+            objectStore.createIndex("name", "name", { unique: false });
+        }
+        console.log("数据库升级成功");
+    };
+}
+
+// 保存任务到数据库
+function saveTaskToDB(task) {
+    if (!task.id) {
+        task.id = Date.now(); // 确保每个任务都有唯一ID
+    }
+    
+    let transaction = db.transaction(["tasks"], "readwrite");
+    let objectStore = transaction.objectStore("tasks");
+    let request = objectStore.add(task);
+
+    request.onsuccess = function(event) {
+        console.log("任务保存成功");
+        showSummary(); 
+    };
+
+    request.onerror = function(event) {
+        console.error("任务保存失败", event);
+    };
+}
+
+// 从数据库加载任务
+function loadTasksFromDB() {
+    let transaction = db.transaction(["tasks"], "readonly");
+    let objectStore = transaction.objectStore("tasks");
+    tasks = {};
+
+    objectStore.openCursor().onsuccess = function(event) {
+        let cursor = event.target.result;
+        if (cursor) {
+            let task = cursor.value;
+            if (!tasks[task.name]) {
+                tasks[task.name] = [];
+            }
+            tasks[task.name].push(task);
+            cursor.continue();
+        } else {
+            console.log("所有任务加载完毕");
+            updateTaskList();
+        }
+    };
+}
+
+// 开始任务
+function startTask() {
+    if (currentTask !== null) {
+        const endTime = new Date();
+        const actualDuration = (endTime - startTime - pausedTime) / (1000 * 60); // 转换为分钟
+        currentTask.endTime = endTime;
+        currentTask.duration = actualDuration.toFixed(2);
+
+        if (!tasks[currentTask.name]) {
+            tasks[currentTask.name] = [];
+        }
+        tasks[currentTask.name].push(currentTask);
+
+        saveTaskToDB(currentTask);
+        clearInterval(timerInterval);
+        updateTaskList(); // 这会触发 showSummary
+        
+        // 重置计时相关变量
+        isPaused = false;
+        startTime = null;
+        pausedTime = 0;
+        pauseStartTime = null;
+        document.getElementById('pause-resume-btn').textContent = "暂停任务";
+    }
+
+    let taskName = prompt("请输入要做的事情：");
+    if (taskName) {
+        startTime = new Date();
+        currentTask = {
+            name: taskName,
+            startTime: startTime,
+            endTime: null,
+            duration: null
+        };
+        
+        isPaused = false;
+        pausedTime = 0;
+        
+        document.getElementById('pause-resume-btn').style.display = 'inline-block';
+        document.getElementById('pause-resume-btn').textContent = "暂停任务";
+        
+        const currentTaskDiv = document.getElementById('current-task');
+        currentTaskDiv.innerHTML = `正在进行：${taskName} <span id="timer">0.00分钟</span>`;
+
+        timerInterval = setInterval(() => {
+            if (!isPaused) {
+                const now = new Date();
+                const elapsed = (now - startTime - pausedTime) / (1000 * 60);
+                document.getElementById('timer').innerText = formatDuration(elapsed);
+            }
+        }, 1000);
+    }
+}
+
+// 暂停或恢复任务
+function pauseOrResumeTask() {
+    const pauseResumeBtn = document.getElementById('pause-resume-btn');
+    const currentTaskDiv = document.getElementById('current-task');
+
+    if (!currentTask) {
+        alert("当前没有进行中的任务！");
+        return;
+    }
+
+    isPaused = !isPaused;
+    
+    if (isPaused) {
+        pauseStartTime = new Date();
+        clearInterval(timerInterval);
+        pauseResumeBtn.textContent = "恢复任务";
+        const currentElapsed = (pauseStartTime - startTime - pausedTime) / (1000 * 60);
+        currentTaskDiv.innerHTML = `任务已暂停：${currentTask.name} <span id="timer">${formatDuration(currentElapsed)}</span>`;
+    } else {
+        const now = new Date();
+        pausedTime += (now - pauseStartTime);
+        pauseStartTime = null;
+        
+        pauseResumeBtn.textContent = "暂停任务";
+        const currentElapsed = (now - startTime - pausedTime) / (1000 * 60);
+        currentTaskDiv.innerHTML = `正在进行：${currentTask.name} <span id="timer">${formatDuration(currentElapsed)}</span>`;
+        
+        timerInterval = setInterval(() => {
+            if (!isPaused) {
+                const now = new Date();
+                const elapsed = (now - startTime - pausedTime) / (1000 * 60);
+                document.getElementById('timer').innerText = formatDuration(elapsed);
+            }
+        }, 1000);
+    }
+}
+
+
+// 更新时间轴显示
+function updateTimeline() {
+    const timelineDiv = document.getElementById('timeline');
+    timelineDiv.innerHTML = `    
+        <div class="time-block">早上 (0:00-12:00)</div>
+        <div class="time-block">中午 (12:00-18:00)</div>
+        <div class="time-block">晚上 (18:00-24:00)</div>
+    `;
+
+    for (const taskName in tasks) {
+        tasks[taskName].forEach(task => {
+            const startHour = new Date(task.startTime).getHours();
+            const taskBlock = document.createElement('div');
+            taskBlock.className = 'task-detail-timeline';
+            taskBlock.innerHTML = `<p>${taskName}: ${formatDuration(parseFloat(task.duration))} (开始时间：${formatTime(new Date(task.startTime))} - 结束时间：${formatTime(new Date(task.endTime))})</p>`;
+
+            if (startHour < 12) {
+                timelineDiv.children[0].appendChild(taskBlock);
+            } else if (startHour < 18) {
+                timelineDiv.children[1].appendChild(taskBlock);
+            } else {
+                timelineDiv.children[2].appendChild(taskBlock);
+            }
+        });
+    }
+}
+
+// 显示/隐藏任务详情
+function toggleTaskDetails(taskName) {
+    const detailDiv = document.getElementById(`task-detail-${taskName}`);
+    if (detailDiv.style.display === "none") {
+        let taskDetailsHtml = "";
+        tasks[taskName].forEach(task => {
+            taskDetailsHtml += `<p>开始时间：${formatTime(new Date(task.startTime))} - 结束时间：${formatTime(new Date(task.endTime))} (${formatDuration(parseFloat(task.duration))})</p>`;
+        });
+        detailDiv.innerHTML = taskDetailsHtml;
+        detailDiv.style.display = "block";
+    } else {
+        detailDiv.style.display = "none";
+    }
+}
+
+// 删除任务
+function refreshTask(taskName, event) {
+    event.stopPropagation();
+    if (confirm(`确定要删除任务 "${taskName}" 吗？`)) {
+        // 首先从内存中删除
+        delete tasks[taskName];
+        
+        // 然后从数据库中删除
+        let transaction = db.transaction(["tasks"], "readwrite");
+        let objectStore = transaction.objectStore("tasks");
+        
+        // 使用游标删除所有匹配的任务
+        objectStore.openCursor().onsuccess = function(event) {
+            const cursor = event.target.result;
+            if (cursor) {
+                if (cursor.value.name === taskName) {
+                    cursor.delete();
+                }
+                cursor.continue();
+            } else {
+                // 所有匹配项都已处理完毕，更新显示
+                console.log("删除完成");
+                updateTaskList();
+                showSummary(); 
+            }
+        };
+
+        transaction.oncomplete = function() {
+            console.log("删除事务完成");
+        };
+
+        transaction.onerror = function(event) {
+            console.error("删除失败", event);
+        };
+    }
+}
+
+// 显示添加任务表单
+function showAddTaskForm() {
+    document.getElementById('addTaskForm').style.display = 'block';
+}
+
+// 隐藏添加任务表单
+function hideAddTaskForm() {
+    document.getElementById('addTaskForm').style.display = 'none';
+    document.getElementById('taskName').value = '';
+    document.getElementById('taskDuration').value = '';
+}
+
+// 添加手动任务
+function addManualTask() {
+    const taskName = document.getElementById('taskName').value;
+    const durationMinutes = parseFloat(document.getElementById('taskDuration').value);
+
+    if (!taskName || isNaN(durationMinutes) || durationMinutes <= 0) {
+        alert('请填写所有字段并确保时长为正数！');
+        return;
+    }
+
+    const now = new Date();
+    const task = {
+        id: Date.now(),
+        name: taskName,
+        startTime: now,
+        endTime: new Date(now.getTime() + durationMinutes * 60000),
+        duration: durationMinutes.toFixed(2)
+    };
+
+    if (!tasks[taskName]) {
+        tasks[taskName] = [];
+    }
+    tasks[taskName].push(task);
+
+    saveTaskToDB(task);
+    updateTaskList();
+    hideAddTaskForm();
+
+    alert(`任务添加成功！持续时间：${formatDuration(durationMinutes)}`);
+}
+// 删除所有任务
+function deleteAllTasks() {
+    if (confirm('确定要删除所有任务记录吗？此操作不可恢复！')) {
+        let transaction = db.transaction(["tasks"], "readwrite");
+        let objectStore = transaction.objectStore("tasks");
+        let request = objectStore.clear();
+        
+        request.onsuccess = function() {
+            tasks = {};
+            currentTask = null;
+            clearInterval(timerInterval);
+            
+            // 更新界面
+            updateTaskList();
+            document.getElementById('current-task').innerHTML = '';
+            document.getElementById('pause-resume-btn').style.display = 'none';
+            document.getElementById('summary-result').innerText = '今日总耗时: 0分钟';
+            console.log("所有任务已删除");
+        };
+        
+        request.onerror = function(event) {
+            console.error("删除所有任务失败", event);
+        };
+    }
+}
+
+// 备忘录相关代码
+let memos = JSON.parse(localStorage.getItem('memos')) || [];
+let frequentMemos = JSON.parse(localStorage.getItem('frequentMemos')) || [];
+
+function addMemo() {
+    const input = document.getElementById('memoInput');
+    const text = input.value.trim();
+    
+    if (text) {
+        const memo = {
+            id: Date.now(),
+            text: text,
+            completed: false,
+            timestamp: new Date().toISOString()
+        };
+        
+        memos.push(memo);
+        saveMemos();
+        updateMemoList();
+        input.value = '';
+    }
+}
+
+function toggleMemo(id) {
+    const memo = memos.find(m => m.id === id);
+    if (memo) {
+        memo.completed = !memo.completed;
+        saveMemos();
+        updateMemoList();
+    }
+}
+
+function deleteMemo(id) {
+    memos = memos.filter(m => m.id !== id);
+    saveMemos();
+    updateMemoList();
+}
+
+function saveMemos() {
+    localStorage.setItem('memos', JSON.stringify(memos));
+}
+
+function updateMemoList() {
+    const memoList = document.getElementById('memoList');
+    const sortedMemos = [...memos].sort((a, b) => {
+        if (a.completed === b.completed) {
+            return new Date(b.timestamp) - new Date(a.timestamp);
+        }
+        return a.completed ? 1 : -1;
+    });
+
+    memoList.innerHTML = sortedMemos.map(memo => `
+        <div class="memo-item ${memo.completed ? 'completed' : ''}">
+            <input type="checkbox" 
+                   class="memo-checkbox" 
+                   ${memo.completed ? 'checked' : ''} 
+                   onclick="toggleMemo(${memo.id})">
+            <span class="memo-text">${memo.text}</span>
+            <span class="memo-delete" onclick="deleteMemo(${memo.id})">×</span>
+        </div>
+    `).join('');
+}
+
+// 常用计划相关代码
+let frequentTasks = JSON.parse(localStorage.getItem('frequentTasks')) || [];
+
+function showFrequentTaskForm() {
+    document.getElementById('frequentTaskForm').style.display = 'block';
+}
+
+function hideFrequentTaskForm() {
+    document.getElementById('frequentTaskForm').style.display = 'none';
+    document.getElementById('frequentTaskName').value = '';
+    document.getElementById('frequentTaskDuration').value = '';
+}
+
+function addFrequentTask() {
+    const taskName = document.getElementById('frequentTaskName').value.trim();
+    const duration = parseFloat(document.getElementById('frequentTaskDuration').value);
+    
+    if (!taskName) {
+        alert('请输入计划名称！');
+        return;
+    }
+    
+    if (isNaN(duration) || duration <= 0) {
+        alert('请输入有效的时长！');
+        return;
+    }
+    
+    if (frequentTasks.some(task => task.name === taskName)) {
+        alert('该计划已存在！');
+        return;
+    }
+    
+    frequentTasks.push({
+        name: taskName,
+        duration: duration
+    });
+    
+    localStorage.setItem('frequentTasks', JSON.stringify(frequentTasks));
+    alert('常用计划添加成功！');
+    hideFrequentTaskForm();
+}
+
+function deleteFrequentTask(taskName) {
+    if (confirm(`确定要删除常用计划 "${taskName}" 吗？`)) {
+        frequentTasks = frequentTasks.filter(task => task.name !== taskName);
+        localStorage.setItem('frequentTasks', JSON.stringify(frequentTasks));
+        showTaskSelector();
+    }
+}
+
+function selectFrequentTask(taskName) {
+    const task = frequentTasks.find(t => t.name === taskName);
+    if (task) {
+        document.getElementById('taskName').value = task.name;
+        document.getElementById('taskDuration').value = task.duration;
+        hideTaskSelector();
+    }
+}
+
+// 任务选择器相关代码
+function showTaskSelector() {
+    let taskSelectorHtml = '<div id="taskSelector" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1000; max-width: 400px; width: 90%;">';
+    taskSelectorHtml += '<h3>选择任务</h3>';
+    
+    // 常用计划部分
+    taskSelectorHtml += '<div id="frequentTaskList" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">';
+    taskSelectorHtml += '<h4>常用计划</h4>';
+    frequentTasks.forEach(task => {
+        taskSelectorHtml += `
+            <div style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <span style="cursor: pointer;" onclick="selectFrequentTask('${task.name}')">${task.name} (${formatDuration(task.duration)})</span>
+                <span style="color: red; cursor: pointer;" onclick="deleteFrequentTask('${task.name}')">×</span>
+            </div>
+        `;
+    });
+    taskSelectorHtml += '</div>';
+    
+    // 历史任务部分
+    taskSelectorHtml += '<div id="taskSelectorList">';
+    taskSelectorHtml += '<h4>历史任务</h4>';
+    const taskNames = Object.keys(tasks);
+    taskNames.forEach(taskName => {
+        if (!frequentTasks.some(ft => ft.name === taskName)) {
+            taskSelectorHtml += `
+                <div style="padding: 8px; border-bottom: 1px solid #eee; cursor: pointer;" 
+                     onclick="selectTask('${taskName.replace(/'/g, "\\'")}')">${taskName}</div>
+            `;
+        }
+    });
+    taskSelectorHtml += '</div>';
+    
+    taskSelectorHtml += '<button onclick="hideTaskSelector()" style="margin-top: 15px;">关闭</button>';
+    taskSelectorHtml += '</div>';
+    
+    // 如果已存在选择器，先移除
+    const existingSelector = document.getElementById('taskSelector');
+    if (existingSelector) {
+        existingSelector.remove();
+    }
+    
+    // 添加新的选择器
+    document.body.insertAdjacentHTML('beforeend', taskSelectorHtml);
+}
+
+function hideTaskSelector() {
+    const selector = document.getElementById('taskSelector');
+    if (selector) {
+        selector.remove();
+    }
+}
+
+function selectTask(taskName) {
+    document.getElementById('taskName').value = taskName;
+    hideTaskSelector();
+}
+
+// 页面加载时的初始化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('页面初始化开始...');
+    openDB();
+    updateMemoList();
+    showSummary();
+    // 监听回车键添加备忘录
+    document.getElementById('memoInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addMemo();
+        }
+    });
+    
+    console.log('页面初始化完成');
+});
+
+</script>
+</body>
+</html>

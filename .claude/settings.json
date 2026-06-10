@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m ' *)",
+      "Bash(git commit -m '新增周复盘和月复盘功能，明日计划改为文本框 *)"
+    ]
+  }
+}
