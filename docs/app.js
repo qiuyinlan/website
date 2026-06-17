@@ -87,6 +87,10 @@
   let selectedMainlineId = null;
   let selectedPrincipleId = null;
   let selectedInterestId = null;
+  let persistPromise = Promise.resolve();
+  let persistPending = false;
+  let persistScheduled = false;
+  let persistStatusTimer = null;
   const listDrag = {
     kind: null,
     pointerId: null,
@@ -110,6 +114,24 @@
   function renderAppVersion() {
     if (!els.appVersion) return;
     els.appVersion.textContent = `版本 v${getAppVersion()}`;
+  }
+
+  function queueSyncStatus(message, autoClear = false) {
+    state.supabaseNotice = message;
+    renderSettings();
+    if (persistStatusTimer) {
+      clearTimeout(persistStatusTimer);
+      persistStatusTimer = null;
+    }
+    if (autoClear) {
+      persistStatusTimer = setTimeout(() => {
+        if (state.supabaseNotice === message) {
+          state.supabaseNotice = "";
+          renderSettings();
+        }
+        persistStatusTimer = null;
+      }, 1600);
+    }
   }
 
   function autoResizeTextarea(textarea) {
@@ -1838,15 +1860,43 @@
 
   let provider = localProvider;
 
-  async function persistAll() {
+  async function persistAll(flushRemote = false) {
     normalizeOrders();
     saveLocalState();
-    await provider.persist();
     renderMain();
     renderMainlineDialog();
     renderPrinciplesDialog();
     renderInterestsDialog();
     renderSettings();
+
+    if (flushRemote) {
+      await provider.persist();
+      return;
+    }
+
+    scheduleProviderPersist();
+  }
+
+  function scheduleProviderPersist() {
+    persistPending = true;
+    if (persistScheduled) return;
+    persistScheduled = true;
+    queueSyncStatus("正在后台同步...");
+
+    persistPromise = persistPromise
+      .catch(() => {})
+      .then(async () => {
+        persistScheduled = false;
+        if (!persistPending) return;
+        persistPending = false;
+        try {
+          await provider.persist();
+          queueSyncStatus("已同步", true);
+        } catch (error) {
+          const message = getErrorMessage(error, "同步失败");
+          queueSyncStatus(`同步失败：${message}`);
+        }
+      });
   }
 
   async function initProvider() {
@@ -2089,6 +2139,55 @@
 
   let donelistSaveTimer = null;
 
+  function getJournalSupabaseClient() {
+    if (state.mode !== "supabase" || !state.session) return null;
+    const config = window.APP_CONFIG || {};
+    if (!config.supabaseUrl || !config.supabaseAnonKey) return null;
+    return window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+  }
+
+  async function upsertKeyedJournalEntry(tableName, keyColumn, keyValue, content) {
+    const client = getJournalSupabaseClient();
+    if (!client) return { missingSchema: false };
+    try {
+      const { error } = await client.from(tableName).upsert(
+        {
+          user_id: state.session.user.id,
+          [keyColumn]: keyValue,
+          content,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: `user_id,${keyColumn}` },
+      );
+      if (error) throw error;
+      return { missingSchema: false };
+    } catch (error) {
+      if (isMissingContentTableError(error, tableName)) {
+        return { missingSchema: true };
+      }
+      throw error;
+    }
+  }
+
+  async function fetchKeyedJournalEntry(tableName, keyColumn, keyValue) {
+    const client = getJournalSupabaseClient();
+    if (!client) return { missingSchema: false, content: null };
+    try {
+      const { data, error } = await client
+        .from(tableName)
+        .select("content")
+        .eq(keyColumn, keyValue)
+        .maybeSingle();
+      if (error) throw error;
+      return { missingSchema: false, content: data?.content || null };
+    } catch (error) {
+      if (isMissingContentTableError(error, tableName)) {
+        return { missingSchema: true, content: null };
+      }
+      throw error;
+    }
+  }
+
   function freshDonelist() {
     return {
       date: TODAY(),
@@ -2146,7 +2245,7 @@
     try {
       const raw = localStorage.getItem(key);
       if (!raw) return null;
-      return { ...freshDonelist(), ...JSON.parse(raw) };
+      return { ...freshDonelist(), ...JSON.parse(raw), date: dateStr };
     } catch {
       return null;
     }
@@ -2174,7 +2273,7 @@
   function saveDonelist() {
     const data = collectDonelistData();
     localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
-    localStorage.setItem(donelistDateKey(TODAY()), JSON.stringify(data));
+    localStorage.setItem(donelistDateKey(data.date || TODAY()), JSON.stringify(data));
     syncDonelistToSupabase(data);
   }
 
@@ -2185,10 +2284,20 @@
 
   async function syncDonelistToSupabase(data) {
     if (state.mode !== "supabase" || !state.session) return;
-    const config = window.APP_CONFIG || {};
-    if (!config.supabaseUrl || !config.supabaseAnonKey) return;
     try {
-      const client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+      const targetDate = data.date || TODAY();
+      const result = await upsertKeyedJournalEntry(
+        "user_donelist_entries",
+        "entry_date",
+        targetDate,
+        data,
+      );
+      if (!result.missingSchema || targetDate !== TODAY()) {
+        return;
+      }
+
+      const client = getJournalSupabaseClient();
+      if (!client) return;
       const content = JSON.stringify(data);
       await client.from("user_donelist").upsert(
         { user_id: state.session.user.id, content, updated_at: new Date().toISOString() },
@@ -2197,20 +2306,37 @@
     } catch {}
   }
 
-  async function loadDonelistFromSupabase() {
+  async function loadDonelistFromSupabase(dateStr = TODAY()) {
     if (state.mode !== "supabase" || !state.session) return null;
-    const config = window.APP_CONFIG || {};
-    if (!config.supabaseUrl || !config.supabaseAnonKey) return null;
     try {
-      const client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+      const result = await fetchKeyedJournalEntry(
+        "user_donelist_entries",
+        "entry_date",
+        dateStr,
+      );
+      if (result.content && typeof result.content === "object") {
+        return { ...freshDonelist(), ...result.content, date: dateStr };
+      }
+      if (!result.missingSchema || dateStr !== TODAY()) return null;
+
+      const client = getJournalSupabaseClient();
+      if (!client) return null;
       const { data } = await client.from("user_donelist").select("content").maybeSingle();
       if (!data?.content) return null;
       const parsed = JSON.parse(data.content);
       if (parsed.date !== TODAY()) return null;
-      return { ...freshDonelist(), ...parsed };
+      return { ...freshDonelist(), ...parsed, date: TODAY() };
     } catch {
       return null;
     }
+  }
+
+  async function hydrateDonelistFromSupabase(dateStr) {
+    const remote = await loadDonelistFromSupabase(dateStr);
+    if (!remote || donelistViewDate !== dateStr) return;
+    localStorage.setItem(donelistDateKey(dateStr), JSON.stringify(remote));
+    renderDonelist(remote);
+    renderDonelistNav();
   }
 
   function renderDonelist(data) {
@@ -2239,6 +2365,7 @@
       if (remote) {
         data = remote;
         localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
+        localStorage.setItem(donelistDateKey(data.date || TODAY()), JSON.stringify(data));
       }
     }
     renderDonelist(data);
@@ -2413,6 +2540,7 @@
   function saveWeeklyReview() {
     const data = collectWeeklyData();
     localStorage.setItem(weeklyReviewStorageKey(data.dateKey), JSON.stringify(data));
+    syncWeeklyReviewToSupabase(data);
   }
 
   function debounceSaveWeekly() {
@@ -2437,6 +2565,32 @@
     const data = loadWeeklyReview();
     renderWeeklyReview(data);
     if (!weeklyEls.dialog.open) weeklyEls.dialog.showModal();
+  }
+
+  async function syncWeeklyReviewToSupabase(data) {
+    if (state.mode !== "supabase" || !state.session) return;
+    try {
+      await upsertKeyedJournalEntry("user_weekly_reviews", "review_key", data.dateKey, data);
+    } catch {}
+  }
+
+  async function loadWeeklyReviewFromSupabase(dateKey) {
+    if (state.mode !== "supabase" || !state.session) return null;
+    try {
+      const result = await fetchKeyedJournalEntry("user_weekly_reviews", "review_key", dateKey);
+      if (!result.content || typeof result.content !== "object") return null;
+      return { ...freshWeeklyReview(), ...result.content, dateKey };
+    } catch {
+      return null;
+    }
+  }
+
+  async function hydrateWeeklyReviewFromSupabase(dateKey) {
+    const remote = await loadWeeklyReviewFromSupabase(dateKey);
+    if (!remote || weeklyViewKey !== dateKey) return;
+    localStorage.setItem(weeklyReviewStorageKey(dateKey), JSON.stringify(remote));
+    renderWeeklyReview(remote);
+    renderWeeklyNav();
   }
 
   function copyWeeklyReview() {
@@ -2589,6 +2743,7 @@
   function saveMonthlyReview() {
     const data = collectMonthlyData();
     localStorage.setItem(monthlyReviewStorageKey(data.dateKey), JSON.stringify(data));
+    syncMonthlyReviewToSupabase(data);
   }
 
   function debounceSaveMonthly() {
@@ -2614,6 +2769,32 @@
     const data = loadMonthlyReview();
     renderMonthlyReview(data);
     if (!monthlyEls.dialog.open) monthlyEls.dialog.showModal();
+  }
+
+  async function syncMonthlyReviewToSupabase(data) {
+    if (state.mode !== "supabase" || !state.session) return;
+    try {
+      await upsertKeyedJournalEntry("user_monthly_reviews", "review_key", data.dateKey, data);
+    } catch {}
+  }
+
+  async function loadMonthlyReviewFromSupabase(dateKey) {
+    if (state.mode !== "supabase" || !state.session) return null;
+    try {
+      const result = await fetchKeyedJournalEntry("user_monthly_reviews", "review_key", dateKey);
+      if (!result.content || typeof result.content !== "object") return null;
+      return { ...freshMonthlyReview(), ...result.content, dateKey };
+    } catch {
+      return null;
+    }
+  }
+
+  async function hydrateMonthlyReviewFromSupabase(dateKey) {
+    const remote = await loadMonthlyReviewFromSupabase(dateKey);
+    if (!remote || monthlyViewKey !== dateKey) return;
+    localStorage.setItem(monthlyReviewStorageKey(dateKey), JSON.stringify(remote));
+    renderMonthlyReview(remote);
+    renderMonthlyNav();
   }
 
   function copyMonthlyReview() {
@@ -2703,15 +2884,13 @@
   }
 
   function donelistSaveAndLoad(dateStr) {
-    // save current data before navigating away
-    var data = collectDonelistData();
-    localStorage.setItem(donelistDateKey(donelistViewDate), JSON.stringify(data));
-    localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
+    saveDonelist();
     // load new date
     donelistViewDate = dateStr;
     var loaded = loadDonelistForDate(dateStr);
-    renderDonelist(loaded || freshDonelist());
+    renderDonelist(loaded || { ...freshDonelist(), date: dateStr });
     renderDonelistNav();
+    void hydrateDonelistFromSupabase(dateStr);
   }
 
   function donelistPrevMonth() {
@@ -2765,12 +2944,12 @@
   }
 
   function weeklySaveAndLoad(key) {
-    var data = collectWeeklyData();
-    localStorage.setItem(weeklyReviewStorageKey(weeklyViewKey), JSON.stringify(data));
+    saveWeeklyReview();
     weeklyViewKey = key;
     var loaded = loadWeeklyReviewForKey(key);
     renderWeeklyReview(loaded || freshWeeklyReview());
     renderWeeklyNav();
+    void hydrateWeeklyReviewFromSupabase(key);
   }
 
   function weeklyPrevMonth() {
@@ -2823,12 +3002,12 @@
   }
 
   function monthlySaveAndLoad(key) {
-    var data = collectMonthlyData();
-    localStorage.setItem(monthlyReviewStorageKey(monthlyViewKey), JSON.stringify(data));
+    saveMonthlyReview();
     monthlyViewKey = key;
     var loaded = loadMonthlyReviewForKey(key);
     renderMonthlyReview(loaded || freshMonthlyReview());
     renderMonthlyNav();
+    void hydrateMonthlyReviewFromSupabase(key);
   }
 
   function monthlyPrevYear() { var p = monthlyParseKey(); monthlySaveAndLoad(`${p.y - 1}-${p.m}`); }
@@ -2996,6 +3175,7 @@
   function renderHistoryDayContent() {
     var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
     var data = loadDonelistForDate(ds) || freshDonelist();
+    var localDataJson = JSON.stringify(data);
     var h = '';
     h += '<section class="panel donelist-section"><h3 class="donelist-period-title">饮食</h3>';
     h += `<textarea id="h-diet" class="donelist-input" placeholder="今天吃了什么...">${escapeHtml(data.diet || "")}</textarea></section>`;
@@ -3026,6 +3206,15 @@
     h += `<textarea id="h-tomorrowPlan" class="donelist-input" placeholder="明天的计划是什么...">${escapeHtml(data.tomorrowPlan || "")}</textarea></section>`;
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
+    void (async function () {
+      const remote = await loadDonelistFromSupabase(ds);
+      if (!remote || historyState.tab !== "day") return;
+      var currentDs = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
+      if (currentDs !== ds) return;
+      if (JSON.stringify(remote) === localDataJson) return;
+      localStorage.setItem(donelistDateKey(ds), JSON.stringify(remote));
+      renderHistoryDayContent();
+    })();
   }
 
   function collectHistoryDayData() {
@@ -3038,11 +3227,13 @@
     var data = collectHistoryDayData();
     var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
     localStorage.setItem(donelistDateKey(ds), JSON.stringify(data));
+    syncDonelistToSupabase(data);
   }
 
   function renderHistoryWeekContent() {
     var dk = `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`;
     var data = loadWeeklyReviewForKey(dk) || freshWeeklyReview();
+    var localDataJson = JSON.stringify(data);
     var h = '';
     h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周事件</h3>';
     h += `<textarea id="hw-events" class="donelist-input" placeholder="这周发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
@@ -3060,6 +3251,15 @@
     h += `<textarea id="hw-nextPlan" class="donelist-input" placeholder="下周的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
+    void (async function () {
+      const remote = await loadWeeklyReviewFromSupabase(dk);
+      if (!remote || historyState.tab !== "week") return;
+      var currentDk = `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`;
+      if (currentDk !== dk) return;
+      if (JSON.stringify(remote) === localDataJson) return;
+      localStorage.setItem(weeklyReviewStorageKey(dk), JSON.stringify(remote));
+      renderHistoryWeekContent();
+    })();
   }
 
   function collectHistoryWeekData() {
@@ -3070,11 +3270,13 @@
   function saveHistoryWeek() {
     var data = collectHistoryWeekData();
     localStorage.setItem(weeklyReviewStorageKey(data.dateKey), JSON.stringify(data));
+    syncWeeklyReviewToSupabase(data);
   }
 
   function renderHistoryMonthContent() {
     var dk = `${historyState.monthYear}-${historyState.monthMonth}`;
     var data = loadMonthlyReviewForKey(dk) || freshMonthlyReview();
+    var localDataJson = JSON.stringify(data);
     var h = '';
     h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月的关键词</h3>';
     h += `<textarea id="hm-keywords" class="donelist-input" placeholder="用几个关键词概括这个月...">${escapeHtml(data.keywords || "")}</textarea></section>`;
@@ -3094,6 +3296,15 @@
     h += `<textarea id="hm-nextPlan" class="donelist-input" placeholder="下个月的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
+    void (async function () {
+      const remote = await loadMonthlyReviewFromSupabase(dk);
+      if (!remote || historyState.tab !== "month") return;
+      var currentDk = `${historyState.monthYear}-${historyState.monthMonth}`;
+      if (currentDk !== dk) return;
+      if (JSON.stringify(remote) === localDataJson) return;
+      localStorage.setItem(monthlyReviewStorageKey(dk), JSON.stringify(remote));
+      renderHistoryMonthContent();
+    })();
   }
 
   function collectHistoryMonthData() {
@@ -3104,6 +3315,7 @@
   function saveHistoryMonth() {
     var data = collectHistoryMonthData();
     localStorage.setItem(monthlyReviewStorageKey(data.dateKey), JSON.stringify(data));
+    syncMonthlyReviewToSupabase(data);
   }
 
   // Auto-save before switching tabs or navigating in history
@@ -3202,6 +3414,7 @@
     renderDonelist(data || freshDonelist());
     renderDonelistNav();
     if (!donelistEls.dialog.open) donelistEls.dialog.showModal();
+    void hydrateDonelistFromSupabase(TODAY());
   };
   donelistEls.openBtn.removeEventListener("click", _origOpenDonelist);
   donelistEls.openBtn.addEventListener("click", openDonelist);
@@ -3213,6 +3426,7 @@
     renderWeeklyReview(data || freshWeeklyReview());
     renderWeeklyNav();
     if (!weeklyEls.dialog.open) weeklyEls.dialog.showModal();
+    void hydrateWeeklyReviewFromSupabase(weeklyViewKey);
   };
   weeklyEls.openBtn.removeEventListener("click", _origOpenWeeklyReview);
   weeklyEls.openBtn.addEventListener("click", openWeeklyReview);
@@ -3224,6 +3438,7 @@
     renderMonthlyReview(data || freshMonthlyReview());
     renderMonthlyNav();
     if (!monthlyEls.dialog.open) monthlyEls.dialog.showModal();
+    void hydrateMonthlyReviewFromSupabase(monthlyViewKey);
   };
   monthlyEls.openBtn.removeEventListener("click", _origOpenMonthlyReview);
   monthlyEls.openBtn.addEventListener("click", openMonthlyReview);

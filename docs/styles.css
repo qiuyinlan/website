@@ -714,6 +714,26 @@ body.habit-dragging .drag-handle {
   transition: transform 120ms ease, background 120ms ease;
 }
 
+.orchard-button {
+  min-height: 48px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9853b;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 120ms ease, background 120ms ease;
+}
+
+.orchard-button:hover {
+  transform: translateY(-1px);
+  background: #ba6d2d;
+}
+
 .review-button:hover {
   transform: translateY(-1px);
 }

@@ -1,0 +1,6 @@
+{
+  "name": "春日果园自律与好状态清单",
+  "description": "基于粉黄淡绿治愈系配色的春天果园风自律系统。支持三大主线任务、好状态积累库、兴趣池、每日必做与终极大奖管理。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
