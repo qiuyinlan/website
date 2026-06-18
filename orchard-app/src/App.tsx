@@ -98,7 +98,7 @@ export default function App() {
   const [isBoardsConfigMode, setIsBoardsConfigMode] = useState<boolean>(false);
 
   // Collapsible state for Today's Must checklist
-  const [isMustExpanded, setIsMustExpanded] = useState<boolean>(false);
+  const [isMustExpanded, setIsMustExpanded] = useState<boolean>(true);
 
   // Synchronized controllers for Today's Must checklist on the homepage
   const handleToggleMust = (id: string) => {
@@ -536,26 +536,29 @@ export default function App() {
             href={appHomeHref}
             className="inline-flex items-center justify-center rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-extrabold text-emerald-800 no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:bg-emerald-50"
           >
-            返回微习惯系统
+            返回
           </a>
         </header>
 
         <section className="mb-8 rounded-[32px] border-2 border-white/80 bg-white/75 p-4 sm:p-5 shadow-sm">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-1">
             <div className="space-y-1">
               <p className="text-xs font-black uppercase tracking-[0.18em] text-[#4F7325]">Orchard Sync</p>
-              <p className="text-sm font-extrabold text-gray-800">
-                {syncMode === 'supabase' ? 'Supabase 同步已启用' : '当前为本地保存模式'}
+              <p className="flex items-center gap-2 text-sm font-extrabold text-gray-800">
+                {syncMode === 'supabase' ? (
+                  <>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                      <Check className="w-3.5 h-3.5" />
+                    </span>
+                    <span>同步</span>
+                  </>
+                ) : (
+                  <span>本地</span>
+                )}
               </p>
               <p className="text-xs font-bold text-gray-500">
                 {pendingRemoteSync ? '正在后台同步...' : syncStatus}
               </p>
-            </div>
-
-            <div className="rounded-2xl border border-emerald-100 bg-white px-4 py-3 text-sm font-bold text-gray-600">
-              {sessionUserId
-                ? '已自动复用微习惯系统登录态'
-                : '请先在微习惯系统里登录，同步会自动生效'}
             </div>
           </div>
         </section>
