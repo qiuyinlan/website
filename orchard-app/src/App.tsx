@@ -16,7 +16,6 @@ import {
   Timer,
   Heart,
   Undo2,
-  Lock,
   Compass,
   Sprout,
   Plus,
@@ -96,8 +95,6 @@ export default function App() {
   const [sessionUserId, setSessionUserId] = useState<string | null>(null);
   const [pendingRemoteSync, setPendingRemoteSync] = useState<boolean>(false);
 
-  // Editing locks
-  const [isConfigMode, setIsConfigMode] = useState<boolean>(false);
   const [isBoardsConfigMode, setIsBoardsConfigMode] = useState<boolean>(false);
 
   // Collapsible state for Today's Must checklist
@@ -582,8 +579,6 @@ export default function App() {
                 <MainProjectsSection
                   projects={projects}
                   setProjects={setProjects}
-                  isConfigMode={isConfigMode}
-                  setIsConfigMode={setIsConfigMode}
                   onAddSpringDew={addSpringDewPoints}
                 />
               </section>
@@ -1210,8 +1205,7 @@ export default function App() {
 
         {/* Footer */}
         <footer className="mt-16 text-center text-[11px] text-gray-400 space-y-1">
-          <p>© 2026 春日果园成长自律系统 | 由甜橙与春露自给灌溉提供能量</p>
-          <p>游戏化心灵回血指南 · 高不成低不就的样子最难看 · 杀出一条自强血路</p>
+          <p>© 一起加油，天天开心 </p>
         </footer>
 
       </div>

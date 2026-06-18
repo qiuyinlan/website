@@ -91,6 +91,8 @@
   let persistPending = false;
   let persistScheduled = false;
   let persistStatusTimer = null;
+  let celebrationTimer = null;
+  let wasAllHabitsDone = null;
   const listDrag = {
     kind: null,
     pointerId: null,
@@ -609,15 +611,76 @@
     );
   }
 
+  function clearCelebration() {
+    if (celebrationTimer) {
+      clearTimeout(celebrationTimer);
+      celebrationTimer = null;
+    }
+    document.querySelectorAll(".celebration-fireworks").forEach((node) => node.remove());
+  }
+
+  function launchCompletionCelebration() {
+    clearCelebration();
+
+    const layer = document.createElement("div");
+    layer.className = "celebration-fireworks";
+    layer.setAttribute("aria-hidden", "true");
+
+    const bursts = [
+      { x: "18%", y: "24%", delay: "0ms", hue: "24deg" },
+      { x: "50%", y: "16%", delay: "260ms", hue: "132deg" },
+      { x: "81%", y: "28%", delay: "520ms", hue: "315deg" },
+      { x: "34%", y: "48%", delay: "760ms", hue: "210deg" },
+      { x: "68%", y: "54%", delay: "1020ms", hue: "58deg" },
+    ];
+
+    bursts.forEach((burst, burstIndex) => {
+      const firework = document.createElement("div");
+      firework.className = "firework-burst";
+      firework.style.left = burst.x;
+      firework.style.top = burst.y;
+      firework.style.animationDelay = burst.delay;
+      firework.style.setProperty("--burst-hue", burst.hue);
+
+      for (let i = 0; i < 12; i += 1) {
+        const spark = document.createElement("span");
+        spark.className = "firework-spark";
+        spark.style.setProperty("--spark-angle", `${i * 30}deg`);
+        spark.style.setProperty("--spark-delay", `${burstIndex * 140 + i * 22}ms`);
+        firework.appendChild(spark);
+      }
+
+      layer.appendChild(firework);
+    });
+
+    const message = document.createElement("div");
+    message.className = "celebration-banner";
+    message.textContent = "今日微习惯全部完成";
+    layer.appendChild(message);
+
+    document.body.appendChild(layer);
+
+    celebrationTimer = setTimeout(() => {
+      layer.remove();
+      if (celebrationTimer) {
+        clearTimeout(celebrationTimer);
+        celebrationTimer = null;
+      }
+    }, 4200);
+  }
+
   function renderMain() {
     const activeHabits = getActiveHabits();
     const completed = new Set(getTodayCompletions());
     resetSkippedRoundIfNeeded();
     const skipped = new Set(state.skippedToday);
     const nextHabit = computeNextHabit();
+    const allHabitsDone = activeHabits.length > 0 && completed.size === activeHabits.length;
 
     if (!activeHabits.length) {
       state.currentHabitId = null;
+      wasAllHabitsDone = false;
+      clearCelebration();
       els.taskOrder.textContent = "还没有习惯";
       els.taskTitle.textContent = "先添加一个微习惯";
       els.taskHint.textContent = "建议从最小动作开始，比如喝一口水。";
@@ -625,6 +688,10 @@
       els.skipTask.disabled = true;
     } else if (!nextHabit) {
       state.currentHabitId = null;
+      if (allHabitsDone && wasAllHabitsDone === false) {
+        launchCompletionCelebration();
+      }
+      wasAllHabitsDone = allHabitsDone;
       els.taskOrder.textContent = "今天已完成";
       els.taskTitle.textContent = "今天的微习惯已经完成";
       els.taskHint.textContent = "你可以休息一下，或者去设置里再加一个新习惯。";
@@ -632,6 +699,8 @@
       els.skipTask.disabled = true;
     } else {
       const currentIndex = activeHabits.findIndex((habit) => habit.id === nextHabit.id);
+      wasAllHabitsDone = false;
+      clearCelebration();
       els.taskOrder.textContent = `今天第 ${currentIndex + 1} 项`;
       els.taskTitle.textContent = nextHabit.title;
       els.taskHint.textContent = "只做这一个动作就好，完成后系统会自动跳到下一个。";
@@ -1864,10 +1933,17 @@
     normalizeOrders();
     saveLocalState();
     renderMain();
-    renderMainlineDialog();
-    renderPrinciplesDialog();
-    renderInterestsDialog();
     renderSettings();
+
+    if (els.mainlineDialog.open) {
+      renderMainlineDialog();
+    }
+    if (els.principlesDialog.open) {
+      renderPrinciplesDialog();
+    }
+    if (els.interestsDialog.open) {
+      renderInterestsDialog();
+    }
 
     if (flushRemote) {
       await provider.persist();

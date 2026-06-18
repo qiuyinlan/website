@@ -1257,3 +1257,135 @@ body.habit-dragging .drag-handle {
   border-radius: 6px;
   font-family: var(--font-body);
 }
+
+.celebration-fireworks {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.celebration-banner {
+  position: absolute;
+  left: 50%;
+  top: 10vh;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.92);
+  border: 1px solid rgba(43, 106, 74, 0.18);
+  color: var(--accent-strong);
+  box-shadow: 0 16px 40px rgba(38, 30, 21, 0.18);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.06em;
+  animation: celebration-banner-in 4200ms ease forwards;
+}
+
+.firework-burst {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+}
+
+.firework-burst::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  background: hsl(var(--burst-hue) 92% 68% / 0.95);
+  box-shadow:
+    0 0 24px hsl(var(--burst-hue) 92% 68% / 0.65),
+    0 0 44px hsl(var(--burst-hue) 92% 68% / 0.35);
+  animation: firework-core 1300ms ease-out forwards;
+  animation-delay: inherit;
+}
+
+.firework-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 72px;
+  transform-origin: center top;
+  transform: translate(-50%, -6px) rotate(var(--spark-angle)) scaleY(0.18);
+  opacity: 0;
+  animation: firework-spark 1100ms cubic-bezier(0.16, 0.84, 0.32, 1) forwards;
+  animation-delay: calc(var(--spark-delay) + 120ms);
+}
+
+.firework-spark::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      to bottom,
+      hsl(var(--burst-hue) 100% 84% / 0.98) 0%,
+      hsl(var(--burst-hue) 98% 66% / 0.92) 40%,
+      hsl(calc(var(--burst-hue) + 28deg) 96% 58% / 0.1) 100%
+    );
+  box-shadow: 0 0 18px hsl(var(--burst-hue) 100% 70% / 0.48);
+}
+
+@keyframes firework-core {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+@keyframes firework-spark {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -6px) rotate(var(--spark-angle)) scaleY(0.16);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -6px) rotate(var(--spark-angle)) translateY(-64px) scaleY(1);
+  }
+}
+
+@keyframes celebration-banner-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-14px) scale(0.96);
+  }
+  12%,
+  76% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .firework-burst::before,
+  .firework-spark,
+  .celebration-banner {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
