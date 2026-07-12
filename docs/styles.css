@@ -763,11 +763,154 @@ body.habit-dragging .drag-handle {
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .donelist-section {
   display: grid;
   gap: 12px;
+}
+
+.review-mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.review-mode-switch-compact {
+  gap: 8px;
+}
+
+.review-mode-btn {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.review-mode-btn:hover {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+}
+
+.review-mode-btn.is-active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 10px 24px rgba(27, 54, 93, 0.16);
+}
+
+.review-mode-switch-compact .review-mode-btn {
+  min-height: 34px;
+  padding: 0 14px;
+  font-size: 0.86rem;
+}
+
+.review-mode-panel {
+  margin-top: 2px;
+}
+
+.review-mode-panel[hidden],
+.review-structured-shell[hidden],
+.review-stepper[hidden],
+.review-step-panel[hidden] {
+  display: none !important;
+}
+
+.review-mode-head {
+  display: grid;
+  gap: 6px;
+}
+
+.review-freeform-input {
+  min-height: 260px;
+}
+
+.review-structured-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.review-stepper {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.review-stepper-meta {
+  display: grid;
+  gap: 6px;
+}
+
+.review-step-count {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.review-step-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.18rem;
+  color: var(--ink);
+}
+
+.review-stepper-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.review-step-btn {
+  min-width: 92px;
+}
+
+.review-step-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.review-guided-sections {
+  display: grid;
+  gap: 16px;
+}
+
+.review-structured-shell.is-template .review-step-panel {
+  display: grid;
+}
+
+.review-step-panel {
+  display: none;
+}
+
+.review-step-panel.is-active {
+  display: grid;
+}
+
+.review-history-mode {
+  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .donelist-period-title {
@@ -832,7 +975,22 @@ body.habit-dragging .drag-handle {
   }
 
   .topbar-actions,
-  .mainline-actions {
+  .mainline-actions,
+  .donelist-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .review-mode-switch-compact {
+    width: 100%;
+  }
+
+  .review-stepper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .review-stepper-actions {
     width: 100%;
     justify-content: flex-start;
   }

@@ -99,6 +99,11 @@
             <h2>自我觉察日记</h2>
           </div>
           <div class="donelist-header-actions">
+            <div class="review-mode-switch review-mode-switch-compact" role="group" aria-label="日志模式切换">
+              <button id="donelist-mode-template" class="review-mode-btn is-active" type="button" aria-pressed="true">模板</button>
+              <button id="donelist-mode-free" class="review-mode-btn" type="button" aria-pressed="false">随记</button>
+              <button id="donelist-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
+            </div>
             <button id="donelist-copy" class="secondary-button" type="button">复制全部</button>
             <button id="donelist-clear" class="secondary-button danger-button" type="button">清空</button>
             <button id="donelist-goto-history" class="secondary-button" type="button">回顾</button>
@@ -117,66 +122,80 @@
           <span id="donelist-nav-weekday" class="donelist-nav-weekday">周二</span>
         </div>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">饮食</h3>
-          <textarea id="donelist-diet" class="donelist-input" placeholder="今天吃了什么..."></textarea>
+        <section id="donelist-freeform-section" class="panel donelist-section review-mode-panel" hidden>
+          <div class="review-mode-head">
+            <h3 class="donelist-period-title">随记</h3>
+            <p class="donelist-hint">想到什么就写什么，复制时也会自动带上 #日期 标签。</p>
+          </div>
+          <textarea id="donelist-freeform" class="donelist-input review-freeform-input" placeholder="今天想怎么记都可以，随便写..."></textarea>
         </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">正向链接（生活中的美好）</h3>
-          <textarea id="donelist-positive" class="donelist-input" placeholder="今天遇到的美好事物..."></textarea>
-        </section>
+        <div id="donelist-structured-shell" class="review-structured-shell is-template">
+          <section id="donelist-stepper" class="panel review-stepper" hidden>
+            <div class="review-stepper-meta">
+              <p id="donelist-step-count" class="review-step-count">1 / 10</p>
+              <h3 id="donelist-step-title" class="review-step-title">收获</h3>
+              <p class="donelist-hint">一次只展示这一项，写完点下一个就行；不想写也可以直接跳过。</p>
+            </div>
+            <div class="review-stepper-actions">
+              <button id="donelist-step-prev" class="secondary-button review-step-btn" type="button">上一个</button>
+              <button id="donelist-step-next" class="secondary-button review-step-btn" type="button">下一个</button>
+            </div>
+          </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">具体事件</h3>
-          <label class="donelist-sub-label">早上</label>
-          <textarea id="donelist-morning" class="donelist-input donelist-sub-input" placeholder="早上做了什么..."></textarea>
-          <label class="donelist-sub-label">中午</label>
-          <textarea id="donelist-afternoon" class="donelist-input donelist-sub-input" placeholder="中午做了什么..."></textarea>
-          <label class="donelist-sub-label">晚上</label>
-          <textarea id="donelist-evening" class="donelist-input donelist-sub-input" placeholder="晚上做了什么..."></textarea>
-        </section>
+          <div id="donelist-structured-sections" class="review-guided-sections">
+            <section class="panel donelist-section review-step-panel" data-review-step="emotionKit">
+              <h3 class="donelist-period-title">收获</h3>
+              <p class="donelist-hint">比如完善了一条原则，收获了经验......无论小或大，都是记得记录的！</p>
+              <textarea id="donelist-emotion-kit" class="donelist-input" placeholder="今天收获了什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">感谢</h3>
-          <textarea id="donelist-gratitude" class="donelist-input" placeholder="今天想感谢什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="review">
+              <h3 class="donelist-period-title">复盘</h3>
+              <textarea id="donelist-review" class="donelist-input" placeholder="今天的收获和反思..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">夸夸自己</h3>
-          <textarea id="donelist-self-praise" class="donelist-input" placeholder="今天做得好的地方..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="positive">
+              <h3 class="donelist-period-title">正向链接（生活中的美好）</h3>
+              <textarea id="donelist-positive" class="donelist-input" placeholder="今天遇到的美好事物..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">复盘</h3>
-          <textarea id="donelist-review" class="donelist-input" placeholder="今天的收获和反思..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="events">
+              <h3 class="donelist-period-title">具体事件</h3>
+              <textarea id="donelist-events" class="donelist-input" placeholder="今天发生了什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">身体</h3>
-          <textarea id="donelist-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="gratitude">
+              <h3 class="donelist-period-title">感谢</h3>
+              <textarea id="donelist-gratitude" class="donelist-input" placeholder="今天想感谢什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">情绪</h3>
-          <textarea id="donelist-emotion" class="donelist-input" placeholder="今天情绪如何..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="selfPraise">
+              <h3 class="donelist-period-title">夸夸自己</h3>
+              <textarea id="donelist-self-praise" class="donelist-input" placeholder="今天做得好的地方..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">今天我又进步啦</h3>
-          <p class="donelist-hint">比如完善了一条原则，收获了经验......无论小或大，都是记得记录的！</p>
-          <textarea id="donelist-emotion-kit" class="donelist-input" placeholder="今天进步了什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="body">
+              <h3 class="donelist-period-title">身体</h3>
+              <textarea id="donelist-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">自由发泄区</h3>
-          <textarea id="donelist-vent" class="donelist-input" placeholder="随便写点什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="emotion">
+              <h3 class="donelist-period-title">情绪</h3>
+              <textarea id="donelist-emotion" class="donelist-input" placeholder="今天情绪如何..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">明日计划</h3>
-          <textarea id="donelist-tomorrow-plan" class="donelist-input" placeholder="明天的计划是什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="vent">
+              <h3 class="donelist-period-title">自由发泄区</h3>
+              <textarea id="donelist-vent" class="donelist-input" placeholder="随便写点什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="tomorrowPlan">
+              <h3 class="donelist-period-title">明日计划</h3>
+              <textarea id="donelist-tomorrow-plan" class="donelist-input" placeholder="明天的计划是什么..."></textarea>
+            </section>
+          </div>
+        </div>
       </div>
     </dialog>
 
@@ -188,6 +207,11 @@
             <h2>周复盘</h2>
           </div>
           <div class="donelist-header-actions">
+            <div class="review-mode-switch review-mode-switch-compact" role="group" aria-label="周复盘模式切换">
+              <button id="weekly-mode-template" class="review-mode-btn is-active" type="button" aria-pressed="true">模板</button>
+              <button id="weekly-mode-free" class="review-mode-btn" type="button" aria-pressed="false">随记</button>
+              <button id="weekly-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
+            </div>
             <button id="weekly-review-copy" class="secondary-button" type="button">复制全部</button>
             <button id="weekly-review-clear" class="secondary-button danger-button" type="button">清空</button>
             <button id="weekly-review-goto-history" class="secondary-button" type="button">回顾</button>
@@ -205,40 +229,64 @@
           <button class="donelist-nav-btn" id="weekly-next-week">▶</button>
         </div>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本周事件</h3>
-          <textarea id="weekly-events" class="donelist-input" placeholder="这周发生了什么事情..."></textarea>
+        <section id="weekly-freeform-section" class="panel donelist-section review-mode-panel" hidden>
+          <div class="review-mode-head">
+            <h3 class="donelist-period-title">随记</h3>
+            <p class="donelist-hint">这一种会按你的原话复制出去，并自动带上对应的 #日期 标签。</p>
+          </div>
+          <textarea id="weekly-freeform" class="donelist-input review-freeform-input" placeholder="这周想怎么复盘都可以，随便写..."></textarea>
         </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">身体</h3>
-          <textarea id="weekly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
-        </section>
+        <div id="weekly-guided-shell" class="review-structured-shell is-template">
+          <section id="weekly-stepper" class="panel review-stepper" hidden>
+            <div class="review-stepper-meta">
+              <p id="weekly-step-count" class="review-step-count">1 / 7</p>
+              <h3 id="weekly-step-title" class="review-step-title">本周事件</h3>
+              <p class="donelist-hint">一次只展示这一项，写完点下一个就行；不想写也可以直接跳过。</p>
+            </div>
+            <div class="review-stepper-actions">
+              <button id="weekly-step-prev" class="secondary-button review-step-btn" type="button">上一个</button>
+              <button id="weekly-step-next" class="secondary-button review-step-btn" type="button">下一个</button>
+            </div>
+          </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">感恩的事情</h3>
-          <textarea id="weekly-gratitude" class="donelist-input" placeholder="这周想感恩什么..."></textarea>
-        </section>
+          <div id="weekly-guided-sections" class="review-guided-sections">
+            <section class="panel donelist-section review-step-panel" data-review-step="events">
+              <h3 class="donelist-period-title">本周事件</h3>
+              <textarea id="weekly-events" class="donelist-input" placeholder="这周发生了什么事情..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本周进步</h3>
-          <textarea id="weekly-progress" class="donelist-input" placeholder="这周进步了什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="body">
+              <h3 class="donelist-period-title">身体</h3>
+              <textarea id="weekly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本周收获知识</h3>
-          <textarea id="weekly-knowledge" class="donelist-input" placeholder="这周学到了什么新知识..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="gratitude">
+              <h3 class="donelist-period-title">感恩的事情</h3>
+              <textarea id="weekly-gratitude" class="donelist-input" placeholder="这周想感恩什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本周反思</h3>
-          <textarea id="weekly-reflection" class="donelist-input" placeholder="这周的收获和反思..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="progress">
+              <h3 class="donelist-period-title">本周进步</h3>
+              <textarea id="weekly-progress" class="donelist-input" placeholder="这周进步了什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">下周计划</h3>
-          <textarea id="weekly-next-plan" class="donelist-input" placeholder="下周的计划是什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="knowledge">
+              <h3 class="donelist-period-title">本周收获知识</h3>
+              <textarea id="weekly-knowledge" class="donelist-input" placeholder="这周学到了什么新知识..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="reflection">
+              <h3 class="donelist-period-title">本周反思</h3>
+              <textarea id="weekly-reflection" class="donelist-input" placeholder="这周的收获和反思..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="nextPlan">
+              <h3 class="donelist-period-title">下周计划</h3>
+              <textarea id="weekly-next-plan" class="donelist-input" placeholder="下周的计划是什么..."></textarea>
+            </section>
+          </div>
+        </div>
       </div>
     </dialog>
 
@@ -250,6 +298,11 @@
             <h2>月复盘</h2>
           </div>
           <div class="donelist-header-actions">
+            <div class="review-mode-switch review-mode-switch-compact" role="group" aria-label="月复盘模式切换">
+              <button id="monthly-mode-template" class="review-mode-btn is-active" type="button" aria-pressed="true">模板</button>
+              <button id="monthly-mode-free" class="review-mode-btn" type="button" aria-pressed="false">随记</button>
+              <button id="monthly-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
+            </div>
             <button id="monthly-review-copy" class="secondary-button" type="button">复制全部</button>
             <button id="monthly-review-clear" class="secondary-button danger-button" type="button">清空</button>
             <button id="monthly-review-goto-history" class="secondary-button" type="button">回顾</button>
@@ -267,45 +320,69 @@
           <button class="donelist-nav-btn" id="monthly-next-month">▶</button>
         </div>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本月的关键词</h3>
-          <textarea id="monthly-keywords" class="donelist-input" placeholder="用几个关键词概括这个月..."></textarea>
+        <section id="monthly-freeform-section" class="panel donelist-section review-mode-panel" hidden>
+          <div class="review-mode-head">
+            <h3 class="donelist-period-title">随记</h3>
+            <p class="donelist-hint">这一种会按你的原话复制出去，并自动带上对应的 #日期 标签。</p>
+          </div>
+          <textarea id="monthly-freeform" class="donelist-input review-freeform-input" placeholder="这个月想怎么复盘都可以，随便写..."></textarea>
         </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本月事件</h3>
-          <textarea id="monthly-events" class="donelist-input" placeholder="这个月发生了什么事情..."></textarea>
-        </section>
+        <div id="monthly-guided-shell" class="review-structured-shell is-template">
+          <section id="monthly-stepper" class="panel review-stepper" hidden>
+            <div class="review-stepper-meta">
+              <p id="monthly-step-count" class="review-step-count">1 / 8</p>
+              <h3 id="monthly-step-title" class="review-step-title">本月的关键词</h3>
+              <p class="donelist-hint">一次只展示这一项，写完点下一个就行；不想写也可以直接跳过。</p>
+            </div>
+            <div class="review-stepper-actions">
+              <button id="monthly-step-prev" class="secondary-button review-step-btn" type="button">上一个</button>
+              <button id="monthly-step-next" class="secondary-button review-step-btn" type="button">下一个</button>
+            </div>
+          </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">身体</h3>
-          <textarea id="monthly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
-        </section>
+          <div id="monthly-guided-sections" class="review-guided-sections">
+            <section class="panel donelist-section review-step-panel" data-review-step="keywords">
+              <h3 class="donelist-period-title">本月的关键词</h3>
+              <textarea id="monthly-keywords" class="donelist-input" placeholder="用几个关键词概括这个月..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">感恩的事情</h3>
-          <textarea id="monthly-gratitude" class="donelist-input" placeholder="这个月想感恩什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="events">
+              <h3 class="donelist-period-title">本月事件</h3>
+              <textarea id="monthly-events" class="donelist-input" placeholder="这个月发生了什么事情..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本月进步</h3>
-          <textarea id="monthly-progress" class="donelist-input" placeholder="这个月进步了什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="body">
+              <h3 class="donelist-period-title">身体</h3>
+              <textarea id="monthly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本月收获知识</h3>
-          <textarea id="monthly-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="gratitude">
+              <h3 class="donelist-period-title">感恩的事情</h3>
+              <textarea id="monthly-gratitude" class="donelist-input" placeholder="这个月想感恩什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">本月反思</h3>
-          <textarea id="monthly-reflection" class="donelist-input" placeholder="这个月的收获和反思..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="progress">
+              <h3 class="donelist-period-title">本月进步</h3>
+              <textarea id="monthly-progress" class="donelist-input" placeholder="这个月进步了什么..."></textarea>
+            </section>
 
-        <section class="panel donelist-section">
-          <h3 class="donelist-period-title">下月计划</h3>
-          <textarea id="monthly-next-plan" class="donelist-input" placeholder="下个月的计划是什么..."></textarea>
-        </section>
+            <section class="panel donelist-section review-step-panel" data-review-step="knowledge">
+              <h3 class="donelist-period-title">本月收获知识</h3>
+              <textarea id="monthly-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="reflection">
+              <h3 class="donelist-period-title">本月反思</h3>
+              <textarea id="monthly-reflection" class="donelist-input" placeholder="这个月的收获和反思..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="nextPlan">
+              <h3 class="donelist-period-title">下月计划</h3>
+              <textarea id="monthly-next-plan" class="donelist-input" placeholder="下个月的计划是什么..."></textarea>
+            </section>
+          </div>
+        </div>
       </div>
     </dialog>
 

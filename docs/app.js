@@ -2191,6 +2191,9 @@
 
   // --- DoneList ---
   const DONELIST_KEY = "micro-habit-donelist-v2";
+  const DONELIST_MODE_PREFERENCE_KEY = "donelist-mode-preference";
+  const WEEKLY_MODE_PREFERENCE_KEY = "weekly-review-mode-preference";
+  const MONTHLY_MODE_PREFERENCE_KEY = "monthly-review-mode-preference";
   const WEEKDAY_NAMES = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
   function daysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
   const donelistEls = {
@@ -2198,11 +2201,19 @@
     openBtn: document.getElementById("open-donelist"),
     closeBtn: document.getElementById("donelist-close"),
     copyBtn: document.getElementById("donelist-copy"),
-    diet: document.getElementById("donelist-diet"),
+    modeTemplateBtn: document.getElementById("donelist-mode-template"),
+    modeFreeBtn: document.getElementById("donelist-mode-free"),
+    modeGuidedBtn: document.getElementById("donelist-mode-guided"),
+    freeformSection: document.getElementById("donelist-freeform-section"),
+    freeform: document.getElementById("donelist-freeform"),
+    structuredShell: document.getElementById("donelist-structured-shell"),
+    stepper: document.getElementById("donelist-stepper"),
+    stepCount: document.getElementById("donelist-step-count"),
+    stepTitle: document.getElementById("donelist-step-title"),
+    stepPrev: document.getElementById("donelist-step-prev"),
+    stepNext: document.getElementById("donelist-step-next"),
     positive: document.getElementById("donelist-positive"),
-    morning: document.getElementById("donelist-morning"),
-    afternoon: document.getElementById("donelist-afternoon"),
-    evening: document.getElementById("donelist-evening"),
+    events: document.getElementById("donelist-events"),
     gratitude: document.getElementById("donelist-gratitude"),
     selfPraise: document.getElementById("donelist-self-praise"),
     review: document.getElementById("donelist-review"),
@@ -2214,6 +2225,7 @@
   };
 
   let donelistSaveTimer = null;
+  let donelistStepIndex = 0;
 
   function getJournalSupabaseClient() {
     if (state.mode !== "supabase" || !state.session) return null;
@@ -2267,7 +2279,10 @@
   function freshDonelist() {
     return {
       date: TODAY(),
+      mode: loadReviewModePreference(DONELIST_MODE_PREFERENCE_KEY),
+      freeform: "",
       diet: "",
+      events: "",
       positive: "",
       morning: "",
       afternoon: "",
@@ -2287,6 +2302,22 @@
     return `donelist-${dateStr}`;
   }
 
+  function buildLegacyDonelistEvents(data) {
+    const parts = [];
+    if ((data.morning || "").trim()) parts.push(`早上：${data.morning.trim()}`);
+    if ((data.afternoon || "").trim()) parts.push(`中午：${data.afternoon.trim()}`);
+    if ((data.evening || "").trim()) parts.push(`晚上：${data.evening.trim()}`);
+    return parts.join("\n");
+  }
+
+  function normalizeDonelistRecord(data) {
+    const merged = { ...freshDonelist(), ...data };
+    if (!merged.events.trim()) {
+      merged.events = buildLegacyDonelistEvents(merged);
+    }
+    return merged;
+  }
+
   function loadDonelist() {
     // 优先读按日期存的 key
     const dateKey = donelistDateKey(TODAY());
@@ -2294,7 +2325,7 @@
       const raw = localStorage.getItem(dateKey);
       if (raw) {
         const data = JSON.parse(raw);
-        return { ...freshDonelist(), ...data };
+        return normalizeDonelistRecord(data);
       }
     } catch {}
 
@@ -2308,7 +2339,7 @@
         return freshDonelist();
       }
       // 迁移到新 key
-      const merged = { ...freshDonelist(), ...data };
+      const merged = normalizeDonelistRecord(data);
       localStorage.setItem(dateKey, JSON.stringify(merged));
       return merged;
     } catch {
@@ -2321,7 +2352,7 @@
     try {
       const raw = localStorage.getItem(key);
       if (!raw) return null;
-      return { ...freshDonelist(), ...JSON.parse(raw), date: dateStr };
+      return { ...normalizeDonelistRecord(JSON.parse(raw)), date: dateStr };
     } catch {
       return null;
     }
@@ -2329,12 +2360,11 @@
 
   function collectDonelistData() {
     return {
-      date: TODAY(),
-      diet: donelistEls.diet.value,
+      date: donelistViewDate,
+      mode: getDonelistMode(),
+      freeform: donelistEls.freeform.value,
+      events: donelistEls.events.value,
       positive: donelistEls.positive.value,
-      morning: donelistEls.morning.value,
-      afternoon: donelistEls.afternoon.value,
-      evening: donelistEls.evening.value,
       gratitude: donelistEls.gratitude.value,
       selfPraise: donelistEls.selfPraise.value,
       review: donelistEls.review.value,
@@ -2391,7 +2421,7 @@
         dateStr,
       );
       if (result.content && typeof result.content === "object") {
-        return { ...freshDonelist(), ...result.content, date: dateStr };
+        return { ...normalizeDonelistRecord(result.content), date: dateStr };
       }
       if (!result.missingSchema || dateStr !== TODAY()) return null;
 
@@ -2401,7 +2431,7 @@
       if (!data?.content) return null;
       const parsed = JSON.parse(data.content);
       if (parsed.date !== TODAY()) return null;
-      return { ...freshDonelist(), ...parsed, date: TODAY() };
+      return { ...normalizeDonelistRecord(parsed), date: TODAY() };
     } catch {
       return null;
     }
@@ -2416,11 +2446,9 @@
   }
 
   function renderDonelist(data) {
-    donelistEls.diet.value = data.diet || "";
+    donelistEls.freeform.value = data.freeform || "";
+    donelistEls.events.value = data.events || "";
     donelistEls.positive.value = data.positive || "";
-    donelistEls.morning.value = data.morning || "";
-    donelistEls.afternoon.value = data.afternoon || "";
-    donelistEls.evening.value = data.evening || "";
     donelistEls.gratitude.value = data.gratitude || "";
     donelistEls.selfPraise.value = data.selfPraise || "";
     donelistEls.review.value = data.review || "";
@@ -2429,12 +2457,15 @@
     donelistEls.emotionKit.value = data.emotionKit || "";
     donelistEls.vent.value = data.vent || "";
     donelistEls.tomorrowPlan.value = data.tomorrowPlan || "";
+    donelistStepIndex = getFirstEmptyReviewStepIndex(donelistSteps);
+    setDonelistMode(data.mode);
     Object.values(donelistEls).forEach((el) => {
       if (el instanceof HTMLTextAreaElement) autoResizeTextarea(el);
     });
   }
 
   async function openDonelist() {
+    donelistViewDate = TODAY();
     let data = loadDonelist();
     if (state.mode === "supabase" && state.session) {
       const remote = await loadDonelistFromSupabase();
@@ -2445,81 +2476,49 @@
       }
     }
     renderDonelist(data);
+    renderDonelistNav();
     if (!donelistEls.dialog.open) donelistEls.dialog.showModal();
   }
 
   function copyDonelist() {
-    const d = new Date();
-    const dateStr = `#日记/${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+    const dateStr = formatDonelistTag(donelistViewDate);
+    if (getDonelistMode() === "free") {
+      const freeform = donelistEls.freeform.value.trim();
+      const text = freeform ? `${dateStr}\n\n${freeform}` : `${dateStr}\n今天还没有记录。`;
+      copyTextWithFeedback(text, donelistEls.copyBtn);
+      return;
+    }
     const fields = [
-      { label: "饮食", value: donelistEls.diet.value },
+      { label: "收获", value: donelistEls.emotionKit.value },
+      { label: "复盘", value: donelistEls.review.value },
       { label: "正向链接（生活中的美好）", value: donelistEls.positive.value },
-      { label: "具体事件", value: null, subs: [
-        { label: "早上", value: donelistEls.morning.value },
-        { label: "中午", value: donelistEls.afternoon.value },
-        { label: "晚上", value: donelistEls.evening.value },
-      ]},
+      { label: "具体事件", value: donelistEls.events.value },
       { label: "感谢", value: donelistEls.gratitude.value },
       { label: "夸夸自己", value: donelistEls.selfPraise.value },
-      { label: "复盘", value: donelistEls.review.value },
       { label: "身体", value: donelistEls.body.value },
       { label: "情绪", value: donelistEls.emotion.value },
-      { label: "今天我又进步啦", value: donelistEls.emotionKit.value },
       { label: "自由发泄区", value: donelistEls.vent.value },
     ];
 
     const parts = [];
     fields.forEach((f) => {
-      if (f.subs) {
-        const subParts = f.subs.filter((s) => s.value.trim()).map((s) => `${s.label}:\n${s.value.trim()}`);
-        if (subParts.length) {
-          parts.push(`• ${f.label}:\n${subParts.join("\n")}`);
-        }
-      } else {
-        const v = f.value.trim();
-        if (v) parts.push(`• ${f.label}:\n${v}`);
-      }
+      const v = f.value.trim();
+      if (v) parts.push(`• ${f.label}:\n${v}`);
     });
 
     const planVal = donelistEls.tomorrowPlan.value.trim();
     if (planVal) parts.push(`• 明日计划:\n${planVal}`);
 
     const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n今天还没有记录。`;
-    const doCopy = () => {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        return navigator.clipboard.writeText(text);
-      }
-      return new Promise((resolve, reject) => {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        ta.style.top = "-9999px";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-          document.execCommand("copy");
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-        document.body.removeChild(ta);
-      });
-    };
-    doCopy().then(() => {
-      const original = donelistEls.copyBtn.textContent;
-      donelistEls.copyBtn.textContent = "已复制";
-      setTimeout(() => { donelistEls.copyBtn.textContent = original; }, 1500);
-    }).catch(() => {
-      alert("复制失败，请手动全选后 Ctrl+C 复制。");
-    });
+    copyTextWithFeedback(text, donelistEls.copyBtn);
   }
 
   function clearDonelist() {
     if (!confirm("确定要清空今天的所有日志记录吗？此操作不可恢复！")) return;
-    const fields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
+    const fields = [donelistEls.freeform, donelistEls.events, donelistEls.positive, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
     fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    donelistStepIndex = 0;
+    updateDonelistStepView();
     saveDonelist();
   }
 
@@ -2529,8 +2528,31 @@
     donelistEls.dialog.close();
   });
   donelistEls.copyBtn.addEventListener("click", copyDonelist);
+  donelistEls.modeTemplateBtn.addEventListener("click", () => {
+    setDonelistMode("template");
+    saveDonelist();
+  });
+  donelistEls.modeFreeBtn.addEventListener("click", () => {
+    setDonelistMode("free");
+    saveDonelist();
+  });
+  donelistEls.modeGuidedBtn.addEventListener("click", () => {
+    setDonelistMode("guided");
+    saveDonelist();
+  });
+  donelistEls.stepPrev.addEventListener("click", () => {
+    if (donelistStepIndex === 0) return;
+    donelistStepIndex -= 1;
+    updateDonelistStepView();
+    requestAnimationFrame(() => donelistSteps[donelistStepIndex].el.focus());
+  });
+  donelistEls.stepNext.addEventListener("click", () => {
+    donelistStepIndex = donelistStepIndex >= donelistSteps.length - 1 ? 0 : donelistStepIndex + 1;
+    updateDonelistStepView();
+    requestAnimationFrame(() => donelistSteps[donelistStepIndex].el.focus());
+  });
   document.getElementById("donelist-clear").addEventListener("click", clearDonelist);
-  const donelistFields = [donelistEls.diet, donelistEls.positive, donelistEls.morning, donelistEls.afternoon, donelistEls.evening, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
+  const donelistFields = [donelistEls.freeform, donelistEls.events, donelistEls.positive, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
   donelistFields.forEach((el) => el.addEventListener("input", debounceSaveDonelist));
 
   // --- Weekly Review ---
@@ -2548,11 +2570,212 @@
     return `${date.getFullYear()}-${date.getMonth() + 1}-${getWeekOfMonth(date)}`;
   }
 
+  function getReviewMode(mode) {
+    if (mode === "free" || mode === "guided" || mode === "template") return mode;
+    return "template";
+  }
+
+  function getReviewModeLabel(mode) {
+    const normalized = getReviewMode(mode);
+    if (normalized === "free") return "随记";
+    if (normalized === "guided") return "逐个记";
+    return "模板";
+  }
+
+  function loadReviewModePreference(storageKey) {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      return getReviewMode(raw || "template");
+    } catch {
+      return "template";
+    }
+  }
+
+  function saveReviewModePreference(storageKey, mode) {
+    try {
+      localStorage.setItem(storageKey, getReviewMode(mode));
+    } catch {}
+  }
+
+  function getReviewStepValue(step) {
+    if (typeof step.getValue === "function") return step.getValue();
+    if (step.el && typeof step.el.value === "string") return step.el.value;
+    return "";
+  }
+
+  function getFirstEmptyReviewStepIndex(steps) {
+    const index = steps.findIndex((step) => !getReviewStepValue(step).trim());
+    return index === -1 ? 0 : index;
+  }
+
+  function updateReviewModeButtons(buttonMap, mode) {
+    Object.entries(buttonMap).forEach(([key, button]) => {
+      const isActive = key === mode;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+  }
+
+  function buildStructuredReviewText(dateTag, fields, emptyFallback) {
+    const parts = [];
+    fields.forEach((field) => {
+      const value = field.value.trim();
+      if (value) parts.push(`• ${field.label}:\n${value}`);
+    });
+    return parts.length ? `${dateTag}\n\n${parts.join("\n\n")}` : `${dateTag}\n${emptyFallback}`;
+  }
+
+  function copyTextWithFeedback(text, button) {
+    const doCopy = () => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand("copy");
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+        document.body.removeChild(ta);
+      });
+    };
+
+    doCopy().then(() => {
+      const original = button.textContent;
+      button.textContent = "已复制";
+      setTimeout(() => {
+        button.textContent = original;
+      }, 1500);
+    }).catch(() => {
+      alert("复制失败，请手动全选后 Ctrl+C 复制。");
+    });
+  }
+
+  const donelistSteps = [
+    {
+      label: "收获",
+      el: donelistEls.emotionKit,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="emotionKit"]'),
+    },
+    {
+      label: "复盘",
+      el: donelistEls.review,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="review"]'),
+    },
+    {
+      label: "正向链接（生活中的美好）",
+      el: donelistEls.positive,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="positive"]'),
+    },
+    {
+      label: "具体事件",
+      el: donelistEls.events,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="events"]'),
+    },
+    {
+      label: "感谢",
+      el: donelistEls.gratitude,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="gratitude"]'),
+    },
+    {
+      label: "夸夸自己",
+      el: donelistEls.selfPraise,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="selfPraise"]'),
+    },
+    {
+      label: "身体",
+      el: donelistEls.body,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="body"]'),
+    },
+    {
+      label: "情绪",
+      el: donelistEls.emotion,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="emotion"]'),
+    },
+    {
+      label: "自由发泄区",
+      el: donelistEls.vent,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="vent"]'),
+    },
+    {
+      label: "明日计划",
+      el: donelistEls.tomorrowPlan,
+      section: document.querySelector('#donelist-structured-sections [data-review-step="tomorrowPlan"]'),
+    },
+  ];
+
+  function getDonelistMode() {
+    if (donelistEls.modeFreeBtn.classList.contains("is-active")) return "free";
+    if (donelistEls.modeGuidedBtn.classList.contains("is-active")) return "guided";
+    return "template";
+  }
+
+  function formatDonelistTag(dateStr = donelistViewDate) {
+    const parts = String(dateStr).split("-");
+    return `#日记/${parseInt(parts[0], 10)}/${parseInt(parts[1], 10)}/${parseInt(parts[2], 10)}`;
+  }
+
+  function updateDonelistStepView() {
+    donelistStepIndex = Math.max(0, Math.min(donelistStepIndex, donelistSteps.length - 1));
+    const current = donelistSteps[donelistStepIndex];
+    donelistEls.stepCount.textContent = `${donelistStepIndex + 1} / ${donelistSteps.length}`;
+    donelistEls.stepTitle.textContent = current.label;
+    donelistEls.stepPrev.disabled = donelistStepIndex === 0;
+    donelistEls.stepNext.disabled = false;
+
+    donelistSteps.forEach((step, index) => {
+      const isActive = index === donelistStepIndex;
+      step.section.hidden = !isActive;
+      step.section.classList.toggle("is-active", isActive);
+    });
+  }
+
+  function setDonelistMode(mode) {
+    const normalized = getReviewMode(mode);
+    saveReviewModePreference(DONELIST_MODE_PREFERENCE_KEY, normalized);
+    updateReviewModeButtons({
+      template: donelistEls.modeTemplateBtn,
+      free: donelistEls.modeFreeBtn,
+      guided: donelistEls.modeGuidedBtn,
+    }, normalized);
+    donelistEls.freeformSection.hidden = normalized !== "free";
+    donelistEls.structuredShell.hidden = normalized === "free";
+    donelistEls.structuredShell.classList.toggle("is-template", normalized === "template");
+    donelistEls.stepper.hidden = normalized !== "guided";
+    if (normalized === "guided") updateDonelistStepView();
+    if (normalized === "template") {
+      donelistSteps.forEach((step) => {
+        step.section.hidden = false;
+        step.section.classList.remove("is-active");
+      });
+    }
+  }
+
   const weeklyEls = {
     dialog: document.getElementById("weekly-review-dialog"),
     openBtn: document.getElementById("open-weekly-review"),
     closeBtn: document.getElementById("weekly-review-close"),
     copyBtn: document.getElementById("weekly-review-copy"),
+    modeTemplateBtn: document.getElementById("weekly-mode-template"),
+    modeGuidedBtn: document.getElementById("weekly-mode-guided"),
+    modeFreeBtn: document.getElementById("weekly-mode-free"),
+    freeformSection: document.getElementById("weekly-freeform-section"),
+    freeform: document.getElementById("weekly-freeform"),
+    guidedShell: document.getElementById("weekly-guided-shell"),
+    stepper: document.getElementById("weekly-stepper"),
+    stepCount: document.getElementById("weekly-step-count"),
+    stepTitle: document.getElementById("weekly-step-title"),
+    stepPrev: document.getElementById("weekly-step-prev"),
+    stepNext: document.getElementById("weekly-step-next"),
     events: document.getElementById("weekly-events"),
     body: document.getElementById("weekly-body"),
     gratitude: document.getElementById("weekly-gratitude"),
@@ -2562,11 +2785,99 @@
     nextPlan: document.getElementById("weekly-next-plan"),
   };
 
+  const weeklySteps = [
+    {
+      label: "本周事件",
+      el: weeklyEls.events,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="events"]'),
+    },
+    {
+      label: "身体",
+      el: weeklyEls.body,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="body"]'),
+    },
+    {
+      label: "感恩的事情",
+      el: weeklyEls.gratitude,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="gratitude"]'),
+    },
+    {
+      label: "本周进步",
+      el: weeklyEls.progress,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="progress"]'),
+    },
+    {
+      label: "本周收获知识",
+      el: weeklyEls.knowledge,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="knowledge"]'),
+    },
+    {
+      label: "本周反思",
+      el: weeklyEls.reflection,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="reflection"]'),
+    },
+    {
+      label: "下周计划",
+      el: weeklyEls.nextPlan,
+      section: document.querySelector('#weekly-guided-sections [data-review-step="nextPlan"]'),
+    },
+  ];
+
   let weeklySaveTimer = null;
+  let weeklyStepIndex = 0;
+
+  function getWeeklyMode() {
+    if (weeklyEls.modeFreeBtn.classList.contains("is-active")) return "free";
+    if (weeklyEls.modeGuidedBtn.classList.contains("is-active")) return "guided";
+    return "template";
+  }
+
+  function formatWeeklyReviewTag(dateKey = weeklyViewKey) {
+    const parts = String(dateKey).split("-");
+    return `#${parts[0]}/${parts[1]}.${parts[2]}`;
+  }
+
+  function updateWeeklyStepView() {
+    weeklyStepIndex = Math.max(0, Math.min(weeklyStepIndex, weeklySteps.length - 1));
+    const current = weeklySteps[weeklyStepIndex];
+    weeklyEls.stepCount.textContent = `${weeklyStepIndex + 1} / ${weeklySteps.length}`;
+    weeklyEls.stepTitle.textContent = current.label;
+    weeklyEls.stepPrev.disabled = weeklyStepIndex === 0;
+    weeklyEls.stepNext.disabled = false;
+
+    weeklySteps.forEach((step, index) => {
+      const isActive = index === weeklyStepIndex;
+      step.section.hidden = !isActive;
+      step.section.classList.toggle("is-active", isActive);
+    });
+  }
+
+  function setWeeklyMode(mode) {
+    const normalized = getReviewMode(mode);
+    saveReviewModePreference(WEEKLY_MODE_PREFERENCE_KEY, normalized);
+    updateReviewModeButtons({
+      template: weeklyEls.modeTemplateBtn,
+      free: weeklyEls.modeFreeBtn,
+      guided: weeklyEls.modeGuidedBtn,
+    }, normalized);
+    weeklyEls.freeformSection.hidden = normalized !== "free";
+    weeklyEls.guidedShell.hidden = normalized === "free";
+    weeklyEls.guidedShell.classList.toggle("is-template", normalized === "template");
+    weeklyEls.stepper.hidden = normalized !== "guided";
+    if (normalized === "guided") updateWeeklyStepView();
+    if (normalized === "template") {
+      weeklySteps.forEach((step) => {
+        step.section.hidden = false;
+        step.section.classList.remove("is-active");
+      });
+    }
+  }
 
   function freshWeeklyReview() {
     return {
       dateKey: weeklyReviewDateKey(new Date()),
+      mode: loadReviewModePreference(WEEKLY_MODE_PREFERENCE_KEY),
+      freeform: "",
       events: "",
       body: "",
       gratitude: "",
@@ -2602,7 +2913,9 @@
 
   function collectWeeklyData() {
     return {
-      dateKey: weeklyReviewDateKey(new Date()),
+      dateKey: weeklyViewKey,
+      mode: getWeeklyMode(),
+      freeform: weeklyEls.freeform.value,
       events: weeklyEls.events.value,
       body: weeklyEls.body.value,
       gratitude: weeklyEls.gratitude.value,
@@ -2625,6 +2938,7 @@
   }
 
   function renderWeeklyReview(data) {
+    weeklyEls.freeform.value = data.freeform || "";
     weeklyEls.events.value = data.events || "";
     weeklyEls.body.value = data.body || "";
     weeklyEls.gratitude.value = data.gratitude || "";
@@ -2632,14 +2946,18 @@
     weeklyEls.knowledge.value = data.knowledge || "";
     weeklyEls.reflection.value = data.reflection || "";
     weeklyEls.nextPlan.value = data.nextPlan || "";
-    [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan].forEach((el) => {
+    weeklyStepIndex = getFirstEmptyReviewStepIndex(weeklySteps);
+    setWeeklyMode(data.mode);
+    [weeklyEls.freeform, weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan].forEach((el) => {
       if (el) autoResizeTextarea(el);
     });
   }
 
   function openWeeklyReview() {
+    weeklyViewKey = weeklyReviewDateKey(new Date());
     const data = loadWeeklyReview();
     renderWeeklyReview(data);
+    renderWeeklyNav();
     if (!weeklyEls.dialog.open) weeklyEls.dialog.showModal();
   }
 
@@ -2670,9 +2988,15 @@
   }
 
   function copyWeeklyReview() {
-    const d = new Date();
-    const dateStr = `#${d.getFullYear()}/${d.getMonth() + 1}.${getWeekOfMonth(d)}`;
-    const fields = [
+    const dateTag = formatWeeklyReviewTag(weeklyViewKey);
+    if (getWeeklyMode() === "free") {
+      const freeform = weeklyEls.freeform.value.trim();
+      const text = freeform ? `${dateTag}\n\n${freeform}` : `${dateTag}\n这周还没有记录。`;
+      copyTextWithFeedback(text, weeklyEls.copyBtn);
+      return;
+    }
+
+    const text = buildStructuredReviewText(dateTag, [
       { label: "本周事件", value: weeklyEls.events.value },
       { label: "身体", value: weeklyEls.body.value },
       { label: "感恩的事情", value: weeklyEls.gratitude.value },
@@ -2680,50 +3004,16 @@
       { label: "本周收获知识", value: weeklyEls.knowledge.value },
       { label: "本周反思", value: weeklyEls.reflection.value },
       { label: "下周计划", value: weeklyEls.nextPlan.value },
-    ];
-
-    const parts = [];
-    fields.forEach((f) => {
-      const v = f.value.trim();
-      if (v) parts.push(`• ${f.label}:\n${v}`);
-    });
-
-    const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n这周还没有记录。`;
-    const doCopy = () => {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        return navigator.clipboard.writeText(text);
-      }
-      return new Promise((resolve, reject) => {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        ta.style.top = "-9999px";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-          document.execCommand("copy");
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-        document.body.removeChild(ta);
-      });
-    };
-    doCopy().then(() => {
-      const original = weeklyEls.copyBtn.textContent;
-      weeklyEls.copyBtn.textContent = "已复制";
-      setTimeout(() => { weeklyEls.copyBtn.textContent = original; }, 1500);
-    }).catch(() => {
-      alert("复制失败，请手动全选后 Ctrl+C 复制。");
-    });
+    ], "这周还没有记录。");
+    copyTextWithFeedback(text, weeklyEls.copyBtn);
   }
 
   function clearWeeklyReview() {
     if (!confirm("确定要清空本周复盘的所有记录吗？此操作不可恢复！")) return;
-    const fields = [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
+    const fields = [weeklyEls.freeform, weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
     fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    weeklyStepIndex = 0;
+    updateWeeklyStepView();
     saveWeeklyReview();
   }
 
@@ -2733,8 +3023,31 @@
     weeklyEls.dialog.close();
   });
   weeklyEls.copyBtn.addEventListener("click", copyWeeklyReview);
+  weeklyEls.modeTemplateBtn.addEventListener("click", () => {
+    setWeeklyMode("template");
+    saveWeeklyReview();
+  });
+  weeklyEls.modeGuidedBtn.addEventListener("click", () => {
+    setWeeklyMode("guided");
+    saveWeeklyReview();
+  });
+  weeklyEls.modeFreeBtn.addEventListener("click", () => {
+    setWeeklyMode("free");
+    saveWeeklyReview();
+  });
+  weeklyEls.stepPrev.addEventListener("click", () => {
+    if (weeklyStepIndex === 0) return;
+    weeklyStepIndex -= 1;
+    updateWeeklyStepView();
+    requestAnimationFrame(() => weeklySteps[weeklyStepIndex].el.focus());
+  });
+  weeklyEls.stepNext.addEventListener("click", () => {
+    weeklyStepIndex = weeklyStepIndex >= weeklySteps.length - 1 ? 0 : weeklyStepIndex + 1;
+    updateWeeklyStepView();
+    requestAnimationFrame(() => weeklySteps[weeklyStepIndex].el.focus());
+  });
   document.getElementById("weekly-review-clear").addEventListener("click", clearWeeklyReview);
-  const weeklyFields = [weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
+  const weeklyFields = [weeklyEls.freeform, weeklyEls.events, weeklyEls.body, weeklyEls.gratitude, weeklyEls.progress, weeklyEls.knowledge, weeklyEls.reflection, weeklyEls.nextPlan];
   weeklyFields.forEach((el) => el.addEventListener("input", debounceSaveWeekly));
 
   // --- Monthly Review ---
@@ -2753,6 +3066,17 @@
     openBtn: document.getElementById("open-monthly-review"),
     closeBtn: document.getElementById("monthly-review-close"),
     copyBtn: document.getElementById("monthly-review-copy"),
+    modeTemplateBtn: document.getElementById("monthly-mode-template"),
+    modeGuidedBtn: document.getElementById("monthly-mode-guided"),
+    modeFreeBtn: document.getElementById("monthly-mode-free"),
+    freeformSection: document.getElementById("monthly-freeform-section"),
+    freeform: document.getElementById("monthly-freeform"),
+    guidedShell: document.getElementById("monthly-guided-shell"),
+    stepper: document.getElementById("monthly-stepper"),
+    stepCount: document.getElementById("monthly-step-count"),
+    stepTitle: document.getElementById("monthly-step-title"),
+    stepPrev: document.getElementById("monthly-step-prev"),
+    stepNext: document.getElementById("monthly-step-next"),
     keywords: document.getElementById("monthly-keywords"),
     events: document.getElementById("monthly-events"),
     body: document.getElementById("monthly-body"),
@@ -2763,11 +3087,104 @@
     nextPlan: document.getElementById("monthly-next-plan"),
   };
 
+  const monthlySteps = [
+    {
+      label: "本月的关键词",
+      el: monthlyEls.keywords,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="keywords"]'),
+    },
+    {
+      label: "本月事件",
+      el: monthlyEls.events,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="events"]'),
+    },
+    {
+      label: "身体",
+      el: monthlyEls.body,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="body"]'),
+    },
+    {
+      label: "感恩的事情",
+      el: monthlyEls.gratitude,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="gratitude"]'),
+    },
+    {
+      label: "本月进步",
+      el: monthlyEls.progress,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="progress"]'),
+    },
+    {
+      label: "本月收获知识",
+      el: monthlyEls.knowledge,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="knowledge"]'),
+    },
+    {
+      label: "本月反思",
+      el: monthlyEls.reflection,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="reflection"]'),
+    },
+    {
+      label: "下月计划",
+      el: monthlyEls.nextPlan,
+      section: document.querySelector('#monthly-guided-sections [data-review-step="nextPlan"]'),
+    },
+  ];
+
   let monthlySaveTimer = null;
+  let monthlyStepIndex = 0;
+
+  function getMonthlyMode() {
+    if (monthlyEls.modeFreeBtn.classList.contains("is-active")) return "free";
+    if (monthlyEls.modeGuidedBtn.classList.contains("is-active")) return "guided";
+    return "template";
+  }
+
+  function formatMonthlyReviewTag(dateKey = monthlyViewKey) {
+    const parts = String(dateKey).split("-");
+    return `#${parts[0]}/${parts[1]}`;
+  }
+
+  function updateMonthlyStepView() {
+    monthlyStepIndex = Math.max(0, Math.min(monthlyStepIndex, monthlySteps.length - 1));
+    const current = monthlySteps[monthlyStepIndex];
+    monthlyEls.stepCount.textContent = `${monthlyStepIndex + 1} / ${monthlySteps.length}`;
+    monthlyEls.stepTitle.textContent = current.label;
+    monthlyEls.stepPrev.disabled = monthlyStepIndex === 0;
+    monthlyEls.stepNext.disabled = false;
+
+    monthlySteps.forEach((step, index) => {
+      const isActive = index === monthlyStepIndex;
+      step.section.hidden = !isActive;
+      step.section.classList.toggle("is-active", isActive);
+    });
+  }
+
+  function setMonthlyMode(mode) {
+    const normalized = getReviewMode(mode);
+    saveReviewModePreference(MONTHLY_MODE_PREFERENCE_KEY, normalized);
+    updateReviewModeButtons({
+      template: monthlyEls.modeTemplateBtn,
+      free: monthlyEls.modeFreeBtn,
+      guided: monthlyEls.modeGuidedBtn,
+    }, normalized);
+    monthlyEls.freeformSection.hidden = normalized !== "free";
+    monthlyEls.guidedShell.hidden = normalized === "free";
+    monthlyEls.guidedShell.classList.toggle("is-template", normalized === "template");
+    monthlyEls.stepper.hidden = normalized !== "guided";
+    if (normalized === "guided") updateMonthlyStepView();
+    if (normalized === "template") {
+      monthlySteps.forEach((step) => {
+        step.section.hidden = false;
+        step.section.classList.remove("is-active");
+      });
+    }
+  }
 
   function freshMonthlyReview() {
     return {
       dateKey: monthlyReviewDateKey(new Date()),
+      mode: loadReviewModePreference(MONTHLY_MODE_PREFERENCE_KEY),
+      freeform: "",
       keywords: "",
       events: "",
       body: "",
@@ -2804,7 +3221,9 @@
 
   function collectMonthlyData() {
     return {
-      dateKey: monthlyReviewDateKey(new Date()),
+      dateKey: monthlyViewKey,
+      mode: getMonthlyMode(),
+      freeform: monthlyEls.freeform.value,
       keywords: monthlyEls.keywords.value,
       events: monthlyEls.events.value,
       body: monthlyEls.body.value,
@@ -2828,6 +3247,7 @@
   }
 
   function renderMonthlyReview(data) {
+    monthlyEls.freeform.value = data.freeform || "";
     monthlyEls.keywords.value = data.keywords || "";
     monthlyEls.events.value = data.events || "";
     monthlyEls.body.value = data.body || "";
@@ -2836,14 +3256,18 @@
     monthlyEls.knowledge.value = data.knowledge || "";
     monthlyEls.reflection.value = data.reflection || "";
     monthlyEls.nextPlan.value = data.nextPlan || "";
-    [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan].forEach((el) => {
+    monthlyStepIndex = getFirstEmptyReviewStepIndex(monthlySteps);
+    setMonthlyMode(data.mode);
+    [monthlyEls.freeform, monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan].forEach((el) => {
       if (el) autoResizeTextarea(el);
     });
   }
 
   function openMonthlyReview() {
+    monthlyViewKey = monthlyReviewDateKey(new Date());
     const data = loadMonthlyReview();
     renderMonthlyReview(data);
+    renderMonthlyNav();
     if (!monthlyEls.dialog.open) monthlyEls.dialog.showModal();
   }
 
@@ -2874,9 +3298,15 @@
   }
 
   function copyMonthlyReview() {
-    const d = new Date();
-    const dateStr = `#${d.getFullYear()}/${d.getMonth() + 1}`;
-    const fields = [
+    const dateTag = formatMonthlyReviewTag(monthlyViewKey);
+    if (getMonthlyMode() === "free") {
+      const freeform = monthlyEls.freeform.value.trim();
+      const text = freeform ? `${dateTag}\n\n${freeform}` : `${dateTag}\n这个月还没有记录。`;
+      copyTextWithFeedback(text, monthlyEls.copyBtn);
+      return;
+    }
+
+    const text = buildStructuredReviewText(dateTag, [
       { label: "本月的关键词", value: monthlyEls.keywords.value },
       { label: "本月事件", value: monthlyEls.events.value },
       { label: "身体", value: monthlyEls.body.value },
@@ -2885,50 +3315,16 @@
       { label: "本月收获知识", value: monthlyEls.knowledge.value },
       { label: "本月反思", value: monthlyEls.reflection.value },
       { label: "下月计划", value: monthlyEls.nextPlan.value },
-    ];
-
-    const parts = [];
-    fields.forEach((f) => {
-      const v = f.value.trim();
-      if (v) parts.push(`• ${f.label}:\n${v}`);
-    });
-
-    const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n这个月还没有记录。`;
-    const doCopy = () => {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        return navigator.clipboard.writeText(text);
-      }
-      return new Promise((resolve, reject) => {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        ta.style.top = "-9999px";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-          document.execCommand("copy");
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-        document.body.removeChild(ta);
-      });
-    };
-    doCopy().then(() => {
-      const original = monthlyEls.copyBtn.textContent;
-      monthlyEls.copyBtn.textContent = "已复制";
-      setTimeout(() => { monthlyEls.copyBtn.textContent = original; }, 1500);
-    }).catch(() => {
-      alert("复制失败，请手动全选后 Ctrl+C 复制。");
-    });
+    ], "这个月还没有记录。");
+    copyTextWithFeedback(text, monthlyEls.copyBtn);
   }
 
   function clearMonthlyReview() {
     if (!confirm("确定要清空本月复盘的所有记录吗？此操作不可恢复！")) return;
-    const fields = [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
+    const fields = [monthlyEls.freeform, monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
     fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    monthlyStepIndex = 0;
+    updateMonthlyStepView();
     saveMonthlyReview();
   }
 
@@ -2938,8 +3334,31 @@
     monthlyEls.dialog.close();
   });
   monthlyEls.copyBtn.addEventListener("click", copyMonthlyReview);
+  monthlyEls.modeTemplateBtn.addEventListener("click", () => {
+    setMonthlyMode("template");
+    saveMonthlyReview();
+  });
+  monthlyEls.modeGuidedBtn.addEventListener("click", () => {
+    setMonthlyMode("guided");
+    saveMonthlyReview();
+  });
+  monthlyEls.modeFreeBtn.addEventListener("click", () => {
+    setMonthlyMode("free");
+    saveMonthlyReview();
+  });
+  monthlyEls.stepPrev.addEventListener("click", () => {
+    if (monthlyStepIndex === 0) return;
+    monthlyStepIndex -= 1;
+    updateMonthlyStepView();
+    requestAnimationFrame(() => monthlySteps[monthlyStepIndex].el.focus());
+  });
+  monthlyEls.stepNext.addEventListener("click", () => {
+    monthlyStepIndex = monthlyStepIndex >= monthlySteps.length - 1 ? 0 : monthlyStepIndex + 1;
+    updateMonthlyStepView();
+    requestAnimationFrame(() => monthlySteps[monthlyStepIndex].el.focus());
+  });
   document.getElementById("monthly-review-clear").addEventListener("click", clearMonthlyReview);
-  const monthlyFields = [monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
+  const monthlyFields = [monthlyEls.freeform, monthlyEls.keywords, monthlyEls.events, monthlyEls.body, monthlyEls.gratitude, monthlyEls.progress, monthlyEls.knowledge, monthlyEls.reflection, monthlyEls.nextPlan];
   monthlyFields.forEach((el) => el.addEventListener("input", debounceSaveMonthly));
 
   // ========== In-dialog Date Navigation ==========
@@ -3023,7 +3442,7 @@
     saveWeeklyReview();
     weeklyViewKey = key;
     var loaded = loadWeeklyReviewForKey(key);
-    renderWeeklyReview(loaded || freshWeeklyReview());
+    renderWeeklyReview(loaded || { ...freshWeeklyReview(), dateKey: key });
     renderWeeklyNav();
     void hydrateWeeklyReviewFromSupabase(key);
   }
@@ -3081,7 +3500,7 @@
     saveMonthlyReview();
     monthlyViewKey = key;
     var loaded = loadMonthlyReviewForKey(key);
-    renderMonthlyReview(loaded || freshMonthlyReview());
+    renderMonthlyReview(loaded || { ...freshMonthlyReview(), dateKey: key });
     renderMonthlyNav();
     void hydrateMonthlyReviewFromSupabase(key);
   }
@@ -3166,6 +3585,9 @@
     nav: document.getElementById("history-nav"),
     content: document.getElementById("history-content"),
   };
+  let historyDaySnapshot = null;
+  let historyWeekSnapshot = null;
+  let historyMonthSnapshot = null;
 
   function getWeekday(year, month, day) { return new Date(year, month - 1, day).getDay(); }
 
@@ -3251,35 +3673,37 @@
   function renderHistoryDayContent() {
     var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
     var data = loadDonelistForDate(ds) || freshDonelist();
+    historyDaySnapshot = data;
     var localDataJson = JSON.stringify(data);
+    var mode = getReviewMode(data.mode);
     var h = '';
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">饮食</h3>';
-    h += `<textarea id="h-diet" class="donelist-input" placeholder="今天吃了什么...">${escapeHtml(data.diet || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">正向链接（生活中的美好）</h3>';
-    h += `<textarea id="h-positive" class="donelist-input" placeholder="今天遇到的美好事物...">${escapeHtml(data.positive || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">具体事件</h3>';
-    h += '<label class="donelist-sub-label">早上</label>';
-    h += `<textarea id="h-morning" class="donelist-input donelist-sub-input" placeholder="早上做了什么...">${escapeHtml(data.morning || "")}</textarea>`;
-    h += '<label class="donelist-sub-label">中午</label>';
-    h += `<textarea id="h-afternoon" class="donelist-input donelist-sub-input" placeholder="中午做了什么...">${escapeHtml(data.afternoon || "")}</textarea>`;
-    h += '<label class="donelist-sub-label">晚上</label>';
-    h += `<textarea id="h-evening" class="donelist-input donelist-sub-input" placeholder="晚上做了什么...">${escapeHtml(data.evening || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感谢</h3>';
-    h += `<textarea id="h-gratitude" class="donelist-input" placeholder="今天想感谢什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">夸夸自己</h3>';
-    h += `<textarea id="h-selfPraise" class="donelist-input" placeholder="今天做得好的地方...">${escapeHtml(data.selfPraise || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">复盘</h3>';
-    h += `<textarea id="h-review" class="donelist-input" placeholder="今天的收获和反思...">${escapeHtml(data.review || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
-    h += `<textarea id="h-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">情绪</h3>';
-    h += `<textarea id="h-emotion" class="donelist-input" placeholder="今天情绪如何...">${escapeHtml(data.emotion || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">今天我又进步啦</h3>';
-    h += `<textarea id="h-emotionKit" class="donelist-input" placeholder="今天进步了什么...">${escapeHtml(data.emotionKit || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">自由发泄区</h3>';
-    h += `<textarea id="h-vent" class="donelist-input" placeholder="随便写点什么...">${escapeHtml(data.vent || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">明日计划</h3>';
-    h += `<textarea id="h-tomorrowPlan" class="donelist-input" placeholder="明天的计划是什么...">${escapeHtml(data.tomorrowPlan || "")}</textarea></section>`;
+    h += `<p class="review-history-mode">当前模式：${getReviewModeLabel(mode)}</p>`;
+    if (mode === "free") {
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">随记</h3>';
+      h += '<p class="donelist-hint">这条记录会在复制时保留原文，并自动带上对应的 #日期 标签。</p>';
+      h += `<textarea id="h-freeform" class="donelist-input review-freeform-input" placeholder="今天想怎么记都可以，随便写...">${escapeHtml(data.freeform || "")}</textarea></section>`;
+    } else {
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">收获</h3>';
+      h += `<textarea id="h-emotionKit" class="donelist-input" placeholder="今天收获了什么...">${escapeHtml(data.emotionKit || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">复盘</h3>';
+      h += `<textarea id="h-review" class="donelist-input" placeholder="今天的收获和反思...">${escapeHtml(data.review || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">正向链接（生活中的美好）</h3>';
+      h += `<textarea id="h-positive" class="donelist-input" placeholder="今天遇到的美好事物...">${escapeHtml(data.positive || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">具体事件</h3>';
+      h += `<textarea id="h-events" class="donelist-input" placeholder="今天发生了什么...">${escapeHtml(data.events || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感谢</h3>';
+      h += `<textarea id="h-gratitude" class="donelist-input" placeholder="今天想感谢什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">夸夸自己</h3>';
+      h += `<textarea id="h-selfPraise" class="donelist-input" placeholder="今天做得好的地方...">${escapeHtml(data.selfPraise || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
+      h += `<textarea id="h-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">情绪</h3>';
+      h += `<textarea id="h-emotion" class="donelist-input" placeholder="今天情绪如何...">${escapeHtml(data.emotion || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">自由发泄区</h3>';
+      h += `<textarea id="h-vent" class="donelist-input" placeholder="随便写点什么...">${escapeHtml(data.vent || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">明日计划</h3>';
+      h += `<textarea id="h-tomorrowPlan" class="donelist-input" placeholder="明天的计划是什么...">${escapeHtml(data.tomorrowPlan || "")}</textarea></section>`;
+    }
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
     void (async function () {
@@ -3296,7 +3720,24 @@
   function collectHistoryDayData() {
     var getVal = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
     var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
-    return { date: ds, diet: getVal("h-diet"), positive: getVal("h-positive"), morning: getVal("h-morning"), afternoon: getVal("h-afternoon"), evening: getVal("h-evening"), gratitude: getVal("h-gratitude"), selfPraise: getVal("h-selfPraise"), review: getVal("h-review"), body: getVal("h-body"), emotion: getVal("h-emotion"), emotionKit: getVal("h-emotionKit"), vent: getVal("h-vent"), tomorrowPlan: getVal("h-tomorrowPlan") };
+    var base = historyDaySnapshot || freshDonelist();
+    var mode = getReviewMode(base.mode);
+    return {
+      ...base,
+      date: ds,
+      mode,
+      freeform: mode === "free" ? getVal("h-freeform") : (base.freeform || ""),
+      positive: mode === "free" ? (base.positive || "") : getVal("h-positive"),
+      events: mode === "free" ? (base.events || "") : getVal("h-events"),
+      gratitude: mode === "free" ? (base.gratitude || "") : getVal("h-gratitude"),
+      selfPraise: mode === "free" ? (base.selfPraise || "") : getVal("h-selfPraise"),
+      review: mode === "free" ? (base.review || "") : getVal("h-review"),
+      body: mode === "free" ? (base.body || "") : getVal("h-body"),
+      emotion: mode === "free" ? (base.emotion || "") : getVal("h-emotion"),
+      emotionKit: mode === "free" ? (base.emotionKit || "") : getVal("h-emotionKit"),
+      vent: mode === "free" ? (base.vent || "") : getVal("h-vent"),
+      tomorrowPlan: mode === "free" ? (base.tomorrowPlan || "") : getVal("h-tomorrowPlan"),
+    };
   }
 
   function saveHistoryDay() {
@@ -3309,22 +3750,31 @@
   function renderHistoryWeekContent() {
     var dk = `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`;
     var data = loadWeeklyReviewForKey(dk) || freshWeeklyReview();
+    historyWeekSnapshot = data;
     var localDataJson = JSON.stringify(data);
+    var mode = getReviewMode(data.mode);
     var h = '';
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周事件</h3>';
-    h += `<textarea id="hw-events" class="donelist-input" placeholder="这周发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
-    h += `<textarea id="hw-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感恩的事情</h3>';
-    h += `<textarea id="hw-gratitude" class="donelist-input" placeholder="这周想感恩什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周进步</h3>';
-    h += `<textarea id="hw-progress" class="donelist-input" placeholder="这周进步了什么...">${escapeHtml(data.progress || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周收获知识</h3>';
-    h += `<textarea id="hw-knowledge" class="donelist-input" placeholder="这周学到了什么新知识...">${escapeHtml(data.knowledge || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周反思</h3>';
-    h += `<textarea id="hw-reflection" class="donelist-input" placeholder="这周的收获和反思...">${escapeHtml(data.reflection || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">下周计划</h3>';
-    h += `<textarea id="hw-nextPlan" class="donelist-input" placeholder="下周的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
+    h += `<p class="review-history-mode">当前模式：${getReviewModeLabel(mode)}</p>`;
+    if (mode === "free") {
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">随记</h3>';
+      h += '<p class="donelist-hint">这条记录会在复制时保留原文，并自动带上对应的 #日期 标签。</p>';
+      h += `<textarea id="hw-freeform" class="donelist-input review-freeform-input" placeholder="这周想怎么复盘都可以，随便写...">${escapeHtml(data.freeform || "")}</textarea></section>`;
+    } else {
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周事件</h3>';
+      h += `<textarea id="hw-events" class="donelist-input" placeholder="这周发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
+      h += `<textarea id="hw-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感恩的事情</h3>';
+      h += `<textarea id="hw-gratitude" class="donelist-input" placeholder="这周想感恩什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周进步</h3>';
+      h += `<textarea id="hw-progress" class="donelist-input" placeholder="这周进步了什么...">${escapeHtml(data.progress || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周收获知识</h3>';
+      h += `<textarea id="hw-knowledge" class="donelist-input" placeholder="这周学到了什么新知识...">${escapeHtml(data.knowledge || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本周反思</h3>';
+      h += `<textarea id="hw-reflection" class="donelist-input" placeholder="这周的收获和反思...">${escapeHtml(data.reflection || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">下周计划</h3>';
+      h += `<textarea id="hw-nextPlan" class="donelist-input" placeholder="下周的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
+    }
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
     void (async function () {
@@ -3340,7 +3790,21 @@
 
   function collectHistoryWeekData() {
     var g = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
-    return { dateKey: `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`, events: g("hw-events"), body: g("hw-body"), gratitude: g("hw-gratitude"), progress: g("hw-progress"), knowledge: g("hw-knowledge"), reflection: g("hw-reflection"), nextPlan: g("hw-nextPlan") };
+    var base = historyWeekSnapshot || freshWeeklyReview();
+    var mode = getReviewMode(base.mode);
+    return {
+      ...base,
+      dateKey: `${historyState.weekYear}-${historyState.weekMonth}-${historyState.weekNum}`,
+      mode,
+      freeform: mode === "free" ? g("hw-freeform") : (base.freeform || ""),
+      events: mode === "free" ? (base.events || "") : g("hw-events"),
+      body: mode === "free" ? (base.body || "") : g("hw-body"),
+      gratitude: mode === "free" ? (base.gratitude || "") : g("hw-gratitude"),
+      progress: mode === "free" ? (base.progress || "") : g("hw-progress"),
+      knowledge: mode === "free" ? (base.knowledge || "") : g("hw-knowledge"),
+      reflection: mode === "free" ? (base.reflection || "") : g("hw-reflection"),
+      nextPlan: mode === "free" ? (base.nextPlan || "") : g("hw-nextPlan"),
+    };
   }
 
   function saveHistoryWeek() {
@@ -3352,24 +3816,33 @@
   function renderHistoryMonthContent() {
     var dk = `${historyState.monthYear}-${historyState.monthMonth}`;
     var data = loadMonthlyReviewForKey(dk) || freshMonthlyReview();
+    historyMonthSnapshot = data;
     var localDataJson = JSON.stringify(data);
+    var mode = getReviewMode(data.mode);
     var h = '';
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月的关键词</h3>';
-    h += `<textarea id="hm-keywords" class="donelist-input" placeholder="用几个关键词概括这个月...">${escapeHtml(data.keywords || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月事件</h3>';
-    h += `<textarea id="hm-events" class="donelist-input" placeholder="这个月发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
-    h += `<textarea id="hm-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感恩的事情</h3>';
-    h += `<textarea id="hm-gratitude" class="donelist-input" placeholder="这个月想感恩什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月进步</h3>';
-    h += `<textarea id="hm-progress" class="donelist-input" placeholder="这个月进步了什么...">${escapeHtml(data.progress || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月收获知识</h3>';
-    h += `<textarea id="hm-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识...">${escapeHtml(data.knowledge || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月反思</h3>';
-    h += `<textarea id="hm-reflection" class="donelist-input" placeholder="这个月的收获和反思...">${escapeHtml(data.reflection || "")}</textarea></section>`;
-    h += '<section class="panel donelist-section"><h3 class="donelist-period-title">下月计划</h3>';
-    h += `<textarea id="hm-nextPlan" class="donelist-input" placeholder="下个月的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
+    h += `<p class="review-history-mode">当前模式：${getReviewModeLabel(mode)}</p>`;
+    if (mode === "free") {
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">随记</h3>';
+      h += '<p class="donelist-hint">这条记录会在复制时保留原文，并自动带上对应的 #日期 标签。</p>';
+      h += `<textarea id="hm-freeform" class="donelist-input review-freeform-input" placeholder="这个月想怎么复盘都可以，随便写...">${escapeHtml(data.freeform || "")}</textarea></section>`;
+    } else {
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月的关键词</h3>';
+      h += `<textarea id="hm-keywords" class="donelist-input" placeholder="用几个关键词概括这个月...">${escapeHtml(data.keywords || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月事件</h3>';
+      h += `<textarea id="hm-events" class="donelist-input" placeholder="这个月发生了什么事情...">${escapeHtml(data.events || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">身体</h3>';
+      h += `<textarea id="hm-body" class="donelist-input" placeholder="身体状况、运动、睡眠...">${escapeHtml(data.body || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">感恩的事情</h3>';
+      h += `<textarea id="hm-gratitude" class="donelist-input" placeholder="这个月想感恩什么...">${escapeHtml(data.gratitude || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月进步</h3>';
+      h += `<textarea id="hm-progress" class="donelist-input" placeholder="这个月进步了什么...">${escapeHtml(data.progress || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月收获知识</h3>';
+      h += `<textarea id="hm-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识...">${escapeHtml(data.knowledge || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">本月反思</h3>';
+      h += `<textarea id="hm-reflection" class="donelist-input" placeholder="这个月的收获和反思...">${escapeHtml(data.reflection || "")}</textarea></section>`;
+      h += '<section class="panel donelist-section"><h3 class="donelist-period-title">下月计划</h3>';
+      h += `<textarea id="hm-nextPlan" class="donelist-input" placeholder="下个月的计划是什么...">${escapeHtml(data.nextPlan || "")}</textarea></section>`;
+    }
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
     void (async function () {
@@ -3385,7 +3858,22 @@
 
   function collectHistoryMonthData() {
     var g = function (id) { var el = document.getElementById(id); return el ? el.value : ""; };
-    return { dateKey: `${historyState.monthYear}-${historyState.monthMonth}`, keywords: g("hm-keywords"), events: g("hm-events"), body: g("hm-body"), gratitude: g("hm-gratitude"), progress: g("hm-progress"), knowledge: g("hm-knowledge"), reflection: g("hm-reflection"), nextPlan: g("hm-nextPlan") };
+    var base = historyMonthSnapshot || freshMonthlyReview();
+    var mode = getReviewMode(base.mode);
+    return {
+      ...base,
+      dateKey: `${historyState.monthYear}-${historyState.monthMonth}`,
+      mode,
+      freeform: mode === "free" ? g("hm-freeform") : (base.freeform || ""),
+      keywords: mode === "free" ? (base.keywords || "") : g("hm-keywords"),
+      events: mode === "free" ? (base.events || "") : g("hm-events"),
+      body: mode === "free" ? (base.body || "") : g("hm-body"),
+      gratitude: mode === "free" ? (base.gratitude || "") : g("hm-gratitude"),
+      progress: mode === "free" ? (base.progress || "") : g("hm-progress"),
+      knowledge: mode === "free" ? (base.knowledge || "") : g("hm-knowledge"),
+      reflection: mode === "free" ? (base.reflection || "") : g("hm-reflection"),
+      nextPlan: mode === "free" ? (base.nextPlan || "") : g("hm-nextPlan"),
+    };
   }
 
   function saveHistoryMonth() {
