@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="60px" viewBox="0 0 96 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.2 (81672) - https://sketch.com -->
+    <title>icon-mode-streamline</title>
+    <desc>Created with Sketch.</desc>
+    <g id="设置项内图标" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-mode-streamline" fill-rule="nonzero">
+            <rect id="Rectangle" fill="#1492FF" x="0" y="0" width="96" height="60" rx="3"></rect>
+            <rect id="Rectangle" fill="#FFFFFF" x="30" y="9" width="36" height="36" rx="3"></rect>
+            <rect id="Rectangle" fill="#A1D3FF" x="34" y="49" width="28" height="6"></rect>
+        </g>
+    </g>
+</svg>

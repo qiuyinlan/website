@@ -1,0 +1,821 @@
+{
+   "24_hour_system": {
+      "message": "24 Hour System"
+   },
+   "about_us": {
+      "message": "About Us"
+   },
+   "add": {
+      "message": "Add"
+   },
+   "add_and_continue": {
+      "message": "Add And Continue"
+   },
+   "add_group": {
+      "message": "Add Group"
+   },
+   "add_icon": {
+      "message": "Add Icon"
+   },
+   "add_manually": {
+      "message": "Add Manually"
+   },
+   "add_successful": {
+      "message": "Add successful"
+   },
+   "add_task": {
+      "message": "Add Task"
+   },
+   "address": {
+      "message": "Address"
+   },
+   "all": {
+      "message": "All"
+   },
+   "all_bookmarks": {
+      "message": "All Bookmarks"
+   },
+   "animal": {
+      "message": "Animal"
+   },
+   "anime": {
+      "message": "Anime"
+   },
+   "any_important_plans": {
+      "message": "Any important plans?"
+   },
+   "any_plans": {
+      "message": "Any plans?"
+   },
+   "appearance": {
+      "message": "Appearance"
+   },
+   "architecture": {
+      "message": "Architecture"
+   },
+   "authorize": {
+      "message": "Authorize"
+   },
+   "auto_hide": {
+      "message": "Auto Hide"
+   },
+   "background_color": {
+      "message": "Background Color"
+   },
+   "background_tab": {
+      "message": "Background Tab"
+   },
+   "blur": {
+      "message": "Blur"
+   },
+   "border_radius": {
+      "message": "Border Radius"
+   },
+   "brightness_color": {
+      "message": "Brightness Color"
+   },
+   "cancel": {
+      "message": "Cancel"
+   },
+   "captcha": {
+      "message": "Captcha"
+   },
+   "captcha_expired": {
+      "message": "Captcha expired"
+   },
+   "captcha_invalid": {
+      "message": "Captcha invalid"
+   },
+   "category": {
+      "message": "Category"
+   },
+   "celsius": {
+      "message": "Celsius"
+   },
+   "classic": {
+      "message": "Classic"
+   },
+   "column_gap": {
+      "message": "Column Gap"
+   },
+   "completed": {
+      "message": "Completed"
+   },
+   "confirm": {
+      "message": "Confirm"
+   },
+   "confirm_new_password": {
+      "message": "Confirm New Password"
+   },
+   "contact": {
+      "message": "Contact"
+   },
+   "contact_url_path": {
+      "message": "/en/contact"
+   },
+   "current_tab": {
+      "message": "Current Tab"
+   },
+   "darkness_color": {
+      "message": "Darkness Color"
+   },
+   "delete": {
+      "message": "Delete"
+   },
+   "delete_all_completed_tasks": {
+      "message": "Delete All Completed Tasks"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "Are you sure you want to delete all completed tasks?"
+   },
+   "delete_confirmation": {
+      "message": "Are you sure you want to delete?"
+   },
+   "desc": {
+      "message": "Description"
+   },
+   "display_add_btn": {
+      "message": "Display Add Button"
+   },
+   "display_notification_badge": {
+      "message": "Display Notification Badge"
+   },
+   "display_width": {
+      "message": "Display Width"
+   },
+   "download": {
+      "message": "Download"
+   },
+   "download_wallpaper": {
+      "message": "Download Wallpaper"
+   },
+   "edit": {
+      "message": "Edit"
+   },
+   "edit_group": {
+      "message": "Edit Group"
+   },
+   "edit_icon": {
+      "message": "Edit Icon"
+   },
+   "efficient": {
+      "message": "Efficient"
+   },
+   "email": {
+      "message": "Email"
+   },
+   "email_format_invalid": {
+      "message": "Email format invalid"
+   },
+   "email_not_exists": {
+      "message": "Email not exists"
+   },
+   "email_or_password_invalid": {
+      "message": "Email or password invalid"
+   },
+   "email_registered": {
+      "message": "Email has been registered"
+   },
+   "enable_clock": {
+      "message": "Enable Clock"
+   },
+   "enable_standby_page": {
+      "message": "Enable Standby Page"
+   },
+   "enable_weather": {
+      "message": "Enable Weather"
+   },
+   "enter_when_inactive": {
+      "message": "Enter when Inactive"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "Enter when New Tab Open"
+   },
+   "entertainment": {
+      "message": "Entertainment"
+   },
+   "extension_desc": {
+      "message": "This is the new tab you are dreaming of. Support website URL group management, data sync, dark theme mode."
+   },
+   "extension_name": {
+      "message": "MONKNOW New Tab - Personal Dashboard"
+   },
+   "fahrenheit": {
+      "message": "Fahrenheit"
+   },
+   "fail": {
+      "message": "Fail"
+   },
+   "feedback": {
+      "message": "Feedback"
+   },
+   "feedback_and_others": {
+      "message": "Feedback & Others"
+   },
+   "feedback_and_rate": {
+      "message": "Feedback and Rate"
+   },
+   "feedback_url": {
+      "message": "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAASCXo9JUNVhRNEdDNVE0RVc5QjJBMk5RUVQyRzZNNi4u"
+   },
+   "finance": {
+      "message": "Finance"
+   },
+   "find_password": {
+      "message": "Find Password"
+   },
+   "find_password_successful": {
+      "message": "We have sent a email to $1, please go and reset your password"
+   },
+   "follow_the_system": {
+      "message": "Follow the System"
+   },
+   "forgot_password": {
+      "message": "Forgot your password?"
+   },
+   "general": {
+      "message": "General"
+   },
+   "graphic": {
+      "message": "Graphic"
+   },
+   "group": {
+      "message": "Group"
+   },
+   "have_account_login_right_now": {
+      "message": "I have account, login right now"
+   },
+   "height": {
+      "message": "Height"
+   },
+   "hide": {
+      "message": "Hide"
+   },
+   "homepage": {
+      "message": "Homepage"
+   },
+   "homepage_url_path": {
+      "message": "/en"
+   },
+   "hour_unit": {
+      "message": "h"
+   },
+   "icon": {
+      "message": "Icon"
+   },
+   "icon_text": {
+      "message": "Icon Text"
+   },
+   "image_size_can_not_exceed": {
+      "message": "Image size can't exceed $1"
+   },
+   "import_from_bookmarks": {
+      "message": "Import From Bookmarks"
+   },
+   "import_from_bookmarks_error": {
+      "message": "Excess quota limits, you can import bookmarks through 'Settings -> General -> Import' later"
+   },
+   "import_successful": {
+      "message": "Import successful"
+   },
+   "important": {
+      "message": "Important"
+   },
+   "impressive": {
+      "message": "Impressive"
+   },
+   "inconsistent": {
+      "message": "Inconsistent"
+   },
+   "info": {
+      "message": "Info"
+   },
+   "internal_app": {
+      "message": "Internal App"
+   },
+   "it_is_empty": {
+      "message": "It is empty"
+   },
+   "left_side": {
+      "message": "Left Side"
+   },
+   "lifestyle": {
+      "message": "Lifestyle"
+   },
+   "lightweight": {
+      "message": "Lightweight"
+   },
+   "loading": {
+      "message": "Loading"
+   },
+   "local": {
+      "message": "Local"
+   },
+   "locating": {
+      "message": "Locating"
+   },
+   "location": {
+      "message": "Location"
+   },
+   "login": {
+      "message": "Login"
+   },
+   "login_right_now": {
+      "message": "Login Right Now"
+   },
+   "logout": {
+      "message": "Logout"
+   },
+   "main_view": {
+      "message": "Main View"
+   },
+   "minute_unit": {
+      "message": "min"
+   },
+   "modify": {
+      "message": "Modify"
+   },
+   "modify_nickname": {
+      "message": "Modify Nickname"
+   },
+   "modify_password": {
+      "message": "Modify Password"
+   },
+   "modify_portrait": {
+      "message": "Modify Portrait"
+   },
+   "modify_successful": {
+      "message": "Modify successful"
+   },
+   "name": {
+      "message": "Name"
+   },
+   "narrow_menu": {
+      "message": "Narrow Menu"
+   },
+   "natural": {
+      "message": "Natural"
+   },
+   "need_bookmarks_permission": {
+      "message": "Please grant Bookmarks access"
+   },
+   "network_error": {
+      "message": "Network Error"
+   },
+   "never": {
+      "message": "Never"
+   },
+   "new_nickname": {
+      "message": "New Nickname"
+   },
+   "new_password": {
+      "message": "New Password"
+   },
+   "new_tab": {
+      "message": "New Tab"
+   },
+   "news_and_reading": {
+      "message": "News & Reading"
+   },
+   "next_one": {
+      "message": "Next One"
+   },
+   "next_step": {
+      "message": "Next Step"
+   },
+   "next_wallpaper": {
+      "message": "Next Wallpaper"
+   },
+   "nickname": {
+      "message": "Nickname"
+   },
+   "not_found": {
+      "message": "Not Found"
+   },
+   "not_have_account_register_right_now": {
+      "message": "I don't have account, register right now"
+   },
+   "not_recognized": {
+      "message": "Not recognized"
+   },
+   "not_supported_in_this_browser": {
+      "message": "Not supported in this browser"
+   },
+   "official": {
+      "message": "Official"
+   },
+   "official_lib": {
+      "message": "Official Library"
+   },
+   "old_password": {
+      "message": "Old Password"
+   },
+   "old_password_not_match": {
+      "message": "Old password not match"
+   },
+   "opacity": {
+      "message": "Opacity"
+   },
+   "open": {
+      "message": "Open"
+   },
+   "open_all": {
+      "message": "Open All"
+   },
+   "open_in_background_tab": {
+      "message": "Open in Background Tab"
+   },
+   "open_in_incognito_window": {
+      "message": "Open in Incognito Window"
+   },
+   "open_in_new_tab": {
+      "message": "Open in New Tab"
+   },
+   "open_method": {
+      "message": "Open Method"
+   },
+   "optional": {
+      "message": "Optional"
+   },
+   "others": {
+      "message": "Others"
+   },
+   "particular": {
+      "message": "Particular"
+   },
+   "password": {
+      "message": "Password"
+   },
+   "people": {
+      "message": "People"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "Pick the bookmarks you want to import"
+   },
+   "please_complete_form": {
+      "message": "Please complete the form"
+   },
+   "popular": {
+      "message": "Popular"
+   },
+   "prev_step": {
+      "message": "Prev Step"
+   },
+   "preview": {
+      "message": "Preview"
+   },
+   "privacy_policy": {
+      "message": "Privacy Policy"
+   },
+   "privacy_policy_url_path": {
+      "message": "/en/privacy-policy"
+   },
+   "productivity": {
+      "message": "Productivity"
+   },
+   "pure_color": {
+      "message": "Pure Color"
+   },
+   "rate_five_stars": {
+      "message": "Rate 5 Stars"
+   },
+   "register": {
+      "message": "Register"
+   },
+   "register_again": {
+      "message": "Wrong email address? Register again"
+   },
+   "register_to_sync_your_data": {
+      "message": "Register to sync your data"
+   },
+   "remember_the_last_visited_group": {
+      "message": "Remember the Last Visited Group"
+   },
+   "replace": {
+      "message": "Replace"
+   },
+   "replace_frequency": {
+      "message": "Replace Frequency"
+   },
+   "replace_location": {
+      "message": "Replace Location"
+   },
+   "request_for_inclusion": {
+      "message": "Request for Inclusion"
+   },
+   "request_for_inclusion_successful": {
+      "message": "Request for inclusion successful"
+   },
+   "required": {
+      "message": "Required"
+   },
+   "right_side": {
+      "message": "Right Side"
+   },
+   "row_gap": {
+      "message": "Row Gap"
+   },
+   "scroll_or_click": {
+      "message": "Scroll Or Click"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "Scroll to Switch the Group"
+   },
+   "search": {
+      "message": "Search"
+   },
+   "search_box": {
+      "message": "Search Box"
+   },
+   "search_engine": {
+      "message": "Search Engine"
+   },
+   "search_result": {
+      "message": "Search Result"
+   },
+   "searching": {
+      "message": "Searching"
+   },
+   "second_unit": {
+      "message": "sec"
+   },
+   "server_error": {
+      "message": "Server Error"
+   },
+   "set_nickname_first": {
+      "message": "Set Nickname First"
+   },
+   "settings": {
+      "message": "Settings"
+   },
+   "shadow": {
+      "message": "Shadow"
+   },
+   "shopping": {
+      "message": "Shopping"
+   },
+   "sidebar": {
+      "message": "Sidebar"
+   },
+   "simple": {
+      "message": "Simple"
+   },
+   "size": {
+      "message": "Size"
+   },
+   "skip": {
+      "message": "Skip"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "Skip guide, enter right now"
+   },
+   "skip_login_enter_right_now": {
+      "message": "Skip login, enter right now"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "Skip registration, enter right now"
+   },
+   "social": {
+      "message": "Social"
+   },
+   "standby_page": {
+      "message": "Standby Page"
+   },
+   "standby_page_background": {
+      "message": "Standby Page Background"
+   },
+   "standby_page_clock": {
+      "message": "Standby Page Clock"
+   },
+   "standby_page_weather": {
+      "message": "Standby Page Weather"
+   },
+   "stay_logged_out": {
+      "message": "Stay logged out"
+   },
+   "success": {
+      "message": "Success"
+   },
+   "target_group": {
+      "message": "Target Group"
+   },
+   "technology_and_education": {
+      "message": "Technology & Education"
+   },
+   "temperature_unit": {
+      "message": "Temperature Unit"
+   },
+   "terms_of_use": {
+      "message": "Terms of Use"
+   },
+   "terms_of_use_url_path": {
+      "message": "/en/terms-of-use"
+   },
+   "text": {
+      "message": "Text"
+   },
+   "the_end": {
+      "message": "The End"
+   },
+   "theme": {
+      "message": "Theme"
+   },
+   "theme_and_wallpaper": {
+      "message": "Theme & Wallpaper"
+   },
+   "to_do": {
+      "message": "ToDo"
+   },
+   "travel": {
+      "message": "Travel"
+   },
+   "uncompleted": {
+      "message": "Uncompleted"
+   },
+   "uninstall_reason_feedback_url": {
+      "message": "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAASCXo9JUNlNBQlU2NEFEMEkyMFdXUFdFUDc5TjFIMi4u"
+   },
+   "unknown": {
+      "message": "Unknown"
+   },
+   "upload": {
+      "message": "Upload"
+   },
+   "upload_icon": {
+      "message": "Upload Icon"
+   },
+   "user_changed": {
+      "message": "User Changed"
+   },
+   "visitor_slogan_1": {
+      "message": "Login to sync, "
+   },
+   "visitor_slogan_2": {
+      "message": "so your data will never lost"
+   },
+   "wallpaper": {
+      "message": "Wallpaper"
+   },
+   "warning": {
+      "message": "Warning"
+   },
+   "website_desc": {
+      "message": "Website Description"
+   },
+   "website_name": {
+      "message": "Website Name"
+   },
+   "welcome_back": {
+      "message": "Welcome Back"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "Welcome to MONKNOW New Tab"
+   },
+   "width": {
+      "message": "Width"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "Tornado"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "Tropical Storm"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "Freezing Rain"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "Showers"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "Rain"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "Snow Flurries"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "Light Snow Showers"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "Blowing Snow"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "Snow"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "Hail"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "Sleet"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "Dust"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "Hurricane"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "Foggy"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "Haze"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "Smoky"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "Blustery"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "Windy"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "Cold"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "Cloudy"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "Mostly Cloudy"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "Mostly Cloudy"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "Partly Cloudy"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "Severe Thunderstorms"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "Partly Cloudy"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "Clear"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "Sunny"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "Fair"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "Fair"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "Mixed Rain And Hail"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "Hot"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "Isolated Thunderstorms"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "Scattered Thunderstorms"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "Scattered Showers"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "Thunderstorms"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "Heavy Rain"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "Scattered Snow Showers"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "Heavy Snow"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "Blizzard"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "Not Available"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "Scattered Showers"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "Scattered Snow Showers"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "Scattered Thundershowers"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "Mixed Rain And Snow"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "Mixed Rain And Sleet"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "Mixed Snow And Sleet"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "Freezing Drizzle"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "Drizzle"
+   }
+}

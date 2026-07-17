@@ -1,0 +1,44 @@
+{
+   "action": {
+      "default_icon": "images/icon.png",
+      "default_title": "Flash Copilot 闪记"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "commands": {
+      "menu": {
+         "description": "Page Menu（页面菜单）",
+         "suggested_key": {
+            "default": "Alt + Comma"
+         }
+      }
+   },
+   "content_scripts": [ {
+      "js": [ "content-frame.js", "outline-frame.js", "highlight-frame.js", "video-notes-frame.js", "video-ai-frame.js", "task-window-frame.js", "translate-frame.js", "video2pdf-frame.js", "anno-frame.js" ],
+      "matches": [ "\u003Call_urls>" ],
+      "run_at": "document_end"
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_description__",
+   "host_permissions": [ "\u003Call_urls>", "*://*/*", "file://*/*" ],
+   "icons": {
+      "128": "images/icon.png",
+      "16": "images/icon.png",
+      "48": "images/icon.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArv8ivNfsxwM0OfoHu4HlaPIyD9BbV7cYZ48dn8ppb9HLJT1jfyzSNwJtlFq/s+n4Jel3tYlzXjk0YFFPQKGylrDYa5qj+DxorDUfTpDPlI45OMBLCsu8pWE6fsoABnK6eVBsp0T2aRf2lY3hEW8e06j0vRf9DoZlm269+GlwHamNSjaEBIwA6KpgdgGjhaPmaVk97xLI0nhNnGrKtlbJd7vrUUjD3l9CEZuoA2NY+68l9BKCc5kCEI7RFwz7ogcloVryjB5mNfnyHW4yp1KBjBa+NSbGuSCLDMiULf4oW9/UGQPWd9VttqZRbe14eaQO3EzTGPyBddspPQrHB+fiiQIDAQAB",
+   "manifest_version": 3,
+   "name": "__MSG_name__",
+   "options_ui": {
+      "open_in_tab": true,
+      "page": "popup.html"
+   },
+   "permissions": [ "tabs", "tabGroups", "activeTab", "storage", "unlimitedStorage", "bookmarks", "scripting", "favicon", "history" ],
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "12.1.0",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "content.html", "insert.js", "outline.html", "anno.html", "highlight.html", "video-notes.html", "video-ai.html", "task-window.html", "translate.html", "video2pdf.html", "video2pdf-inner.html", "video2pdf-inner.js", "fl-highlights.css", "images/box.png", "images/close-red.png", "images/copy.png", "images/highlight.png", "images/underline.png", "images/note.png", "images/trash.png", "images/add-dir.png", "images/add-mark.png", "images/download.png", "images/link.png", "images/links.png", "images/logined.png", "images/not-logined.png", "images/vip.png", "images/invite.png", "images/translator.png", "images/add.png", "images/pin.png", "images/z.png", "images/outline.png", "images/bmk-mng.png", "images/menu-bmk-search.png", "images/menu-bmk-add.png", "images/menu-bmk-loc.png", "images/menu-bmk-open.png", "images/menu-note.png", "images/menu-note-search.png", "images/menu-trans-ch.png", "images/menu-trans-en.png", "images/menu-tabs.png", "images/menu-tabs-workspace.png", "images/menu-tabs-lately.png", "images/menu-tabs-title.png", "images/menu-tabs-pin.png", "images/menu-tabs-dup.png", "images/menu-tabs-split.png", "images/menu-tabs-grp.png", "images/menu-tabs-grp-add.png", "images/menu-page-high.png", "images/menu-page-imgs.png", "images/menu-page-link.png", "images/menu-page.png", "images/menu-v2p.png", "images/menu-close.png", "images/menu-setting.png", "images/menu-disabled.png", "images/read.png", "images/books.png", "images/fire.png", "images/drag.png", "images/book-pic.png", "images/left-btn.png", "images/right-btn.png", "images/preview.png", "images/locate.png", "images/guide.png", "images/deepseek.png", "images/chatgpt.png", "images/youdao.png", "images/icon.png", "images/video-notes.png", "images/video-ai.png", "images/ai-note.png", "images/task-window-menu.svg", "pdfobject.min.js" ]
+   } ]
+}

@@ -1,0 +1,815 @@
+{
+   "24_hour_system": {
+      "message": "24小時制"
+   },
+   "about_us": {
+      "message": "關於我們"
+   },
+   "add": {
+      "message": "添加"
+   },
+   "add_and_continue": {
+      "message": "添加並繼續"
+   },
+   "add_group": {
+      "message": "添加分組"
+   },
+   "add_icon": {
+      "message": "添加圖標"
+   },
+   "add_manually": {
+      "message": "手動添加"
+   },
+   "add_successful": {
+      "message": "添加成功"
+   },
+   "add_task": {
+      "message": "添加任務"
+   },
+   "address": {
+      "message": "地址"
+   },
+   "all": {
+      "message": "全部"
+   },
+   "all_bookmarks": {
+      "message": "所有書籤"
+   },
+   "animal": {
+      "message": "動物"
+   },
+   "anime": {
+      "message": "動漫"
+   },
+   "any_important_plans": {
+      "message": "有什麼重要的計劃嗎？"
+   },
+   "any_plans": {
+      "message": "有什麼計劃嗎？"
+   },
+   "appearance": {
+      "message": "外觀"
+   },
+   "architecture": {
+      "message": "建築"
+   },
+   "authorize": {
+      "message": "授權"
+   },
+   "auto_hide": {
+      "message": "自動隱藏"
+   },
+   "background_color": {
+      "message": "背景顏色"
+   },
+   "background_tab": {
+      "message": "後台頁"
+   },
+   "blur": {
+      "message": "模糊"
+   },
+   "border_radius": {
+      "message": "圓角"
+   },
+   "brightness_color": {
+      "message": "淺色"
+   },
+   "cancel": {
+      "message": "取消"
+   },
+   "captcha": {
+      "message": "驗證碼"
+   },
+   "captcha_expired": {
+      "message": "驗證碼已過期"
+   },
+   "captcha_invalid": {
+      "message": "驗證碼不正確"
+   },
+   "category": {
+      "message": "類別"
+   },
+   "celsius": {
+      "message": "攝氏度"
+   },
+   "classic": {
+      "message": "經典"
+   },
+   "column_gap": {
+      "message": "列間距"
+   },
+   "completed": {
+      "message": "已完成"
+   },
+   "confirm": {
+      "message": "確定"
+   },
+   "confirm_new_password": {
+      "message": "確認新密碼"
+   },
+   "contact": {
+      "message": "聯繫"
+   },
+   "contact_url_path": {
+      "message": "/zh-TW/contact"
+   },
+   "current_tab": {
+      "message": "當前標籤頁"
+   },
+   "darkness_color": {
+      "message": "深色"
+   },
+   "delete": {
+      "message": "刪除"
+   },
+   "delete_all_completed_tasks": {
+      "message": "刪除全部已完成的任務"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "您確定要刪除全部已完成的任務嗎？"
+   },
+   "delete_confirmation": {
+      "message": "您確定要刪除嗎？"
+   },
+   "desc": {
+      "message": "描述"
+   },
+   "display_add_btn": {
+      "message": "顯示添加按鈕"
+   },
+   "display_notification_badge": {
+      "message": "顯示紅點提示"
+   },
+   "display_width": {
+      "message": "顯示寬度"
+   },
+   "download": {
+      "message": "下載"
+   },
+   "download_wallpaper": {
+      "message": "下載壁紙"
+   },
+   "edit": {
+      "message": "編輯"
+   },
+   "edit_group": {
+      "message": "編輯分組"
+   },
+   "edit_icon": {
+      "message": "編輯圖標"
+   },
+   "efficient": {
+      "message": "高效"
+   },
+   "email": {
+      "message": "電子郵箱"
+   },
+   "email_format_invalid": {
+      "message": "郵箱格式不正確"
+   },
+   "email_not_exists": {
+      "message": "郵箱不存在"
+   },
+   "email_or_password_invalid": {
+      "message": "郵箱或密碼不正確"
+   },
+   "email_registered": {
+      "message": "郵箱已被註冊"
+   },
+   "enable_clock": {
+      "message": "啟用時鐘"
+   },
+   "enable_standby_page": {
+      "message": "啟用待機頁"
+   },
+   "enable_weather": {
+      "message": "啟用天氣"
+   },
+   "enter_when_inactive": {
+      "message": "不活躍時進入"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "開啟標籤頁時進入"
+   },
+   "entertainment": {
+      "message": "娛樂"
+   },
+   "extension_desc": {
+      "message": "這是您夢寐以求的新標籤頁。支持網站網址URL分組管理，數據實時云同步，黑暗深色夜間主題模式。"
+   },
+   "extension_name": {
+      "message": "MONKNOW 新標籤頁 - 個性化面板"
+   },
+   "fahrenheit": {
+      "message": "華氏度"
+   },
+   "fail": {
+      "message": "失敗"
+   },
+   "feedback": {
+      "message": "反饋"
+   },
+   "feedback_and_others": {
+      "message": "反饋&其他"
+   },
+   "feedback_and_rate": {
+      "message": "反饋與評分"
+   },
+   "finance": {
+      "message": "金融"
+   },
+   "find_password": {
+      "message": "找回密碼"
+   },
+   "find_password_successful": {
+      "message": "我們已向您的郵箱 $1 發送了一封重置密碼的郵件，請前往郵箱變更"
+   },
+   "follow_the_system": {
+      "message": "跟隨系統"
+   },
+   "forgot_password": {
+      "message": "忘記密碼？"
+   },
+   "general": {
+      "message": "常規"
+   },
+   "graphic": {
+      "message": "圖片"
+   },
+   "group": {
+      "message": "分組"
+   },
+   "have_account_login_right_now": {
+      "message": "已有賬戶，即刻登錄"
+   },
+   "height": {
+      "message": "高度"
+   },
+   "hide": {
+      "message": "隱藏"
+   },
+   "homepage": {
+      "message": "主頁"
+   },
+   "homepage_url_path": {
+      "message": "/zh-TW"
+   },
+   "hour_unit": {
+      "message": "小時"
+   },
+   "icon": {
+      "message": "圖標"
+   },
+   "icon_text": {
+      "message": "圖標文字"
+   },
+   "image_size_can_not_exceed": {
+      "message": "圖片大小不能超過$1"
+   },
+   "import_from_bookmarks": {
+      "message": "從書籤導入"
+   },
+   "import_from_bookmarks_error": {
+      "message": "超出數量上線，稍後可從\"設置->常規->導入\"分批次導入"
+   },
+   "import_successful": {
+      "message": "導入成功"
+   },
+   "important": {
+      "message": "重要"
+   },
+   "impressive": {
+      "message": "深刻"
+   },
+   "inconsistent": {
+      "message": "不一致"
+   },
+   "info": {
+      "message": "信息"
+   },
+   "internal_app": {
+      "message": "內置App"
+   },
+   "it_is_empty": {
+      "message": "這是空的"
+   },
+   "left_side": {
+      "message": "左側"
+   },
+   "lifestyle": {
+      "message": "生活方式"
+   },
+   "lightweight": {
+      "message": "輕巧"
+   },
+   "loading": {
+      "message": "載入中"
+   },
+   "local": {
+      "message": "本地"
+   },
+   "locating": {
+      "message": "定位中"
+   },
+   "location": {
+      "message": "定位"
+   },
+   "login": {
+      "message": "登錄"
+   },
+   "login_right_now": {
+      "message": "即刻登錄"
+   },
+   "logout": {
+      "message": "登出"
+   },
+   "main_view": {
+      "message": "主視圖"
+   },
+   "minute_unit": {
+      "message": "分鐘"
+   },
+   "modify": {
+      "message": "變更"
+   },
+   "modify_nickname": {
+      "message": "變更暱稱"
+   },
+   "modify_password": {
+      "message": "變更密碼"
+   },
+   "modify_portrait": {
+      "message": "變更頭像"
+   },
+   "modify_successful": {
+      "message": "變更成功"
+   },
+   "name": {
+      "message": "名稱"
+   },
+   "narrow_menu": {
+      "message": "窄距菜單"
+   },
+   "natural": {
+      "message": "自然"
+   },
+   "need_bookmarks_permission": {
+      "message": "請授予書籤訪問權限"
+   },
+   "network_error": {
+      "message": "網絡錯誤"
+   },
+   "never": {
+      "message": "從不"
+   },
+   "new_nickname": {
+      "message": "新暱稱"
+   },
+   "new_password": {
+      "message": "新密碼"
+   },
+   "new_tab": {
+      "message": "新標籤頁"
+   },
+   "news_and_reading": {
+      "message": "新聞與閱讀"
+   },
+   "next_one": {
+      "message": "下一個"
+   },
+   "next_step": {
+      "message": "下一步"
+   },
+   "next_wallpaper": {
+      "message": "下一張壁紙"
+   },
+   "nickname": {
+      "message": "暱稱"
+   },
+   "not_found": {
+      "message": "未尋到"
+   },
+   "not_have_account_register_right_now": {
+      "message": "沒有賬戶，即刻註冊"
+   },
+   "not_recognized": {
+      "message": "不能識別"
+   },
+   "not_supported_in_this_browser": {
+      "message": "此瀏覽器暫不支持"
+   },
+   "official": {
+      "message": "官方"
+   },
+   "official_lib": {
+      "message": "官方庫"
+   },
+   "old_password": {
+      "message": "舊密碼"
+   },
+   "old_password_not_match": {
+      "message": "舊密碼不正確"
+   },
+   "opacity": {
+      "message": "不透明度"
+   },
+   "open": {
+      "message": "打開"
+   },
+   "open_all": {
+      "message": "打開所有"
+   },
+   "open_in_background_tab": {
+      "message": "在後台頁中打開"
+   },
+   "open_in_incognito_window": {
+      "message": "在隱身窗口中打開"
+   },
+   "open_in_new_tab": {
+      "message": "在新標籤頁中打開"
+   },
+   "open_method": {
+      "message": "打開方式"
+   },
+   "optional": {
+      "message": "選填"
+   },
+   "others": {
+      "message": "其他"
+   },
+   "particular": {
+      "message": "詳細"
+   },
+   "password": {
+      "message": "密碼"
+   },
+   "people": {
+      "message": "人物"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "選擇您想要導入的書籤"
+   },
+   "please_complete_form": {
+      "message": "請完整填寫表單"
+   },
+   "popular": {
+      "message": "熱門"
+   },
+   "prev_step": {
+      "message": "上一步"
+   },
+   "preview": {
+      "message": "預覽"
+   },
+   "privacy_policy": {
+      "message": "隱私政策"
+   },
+   "privacy_policy_url_path": {
+      "message": "/zh-TW/privacy-policy"
+   },
+   "productivity": {
+      "message": "效率"
+   },
+   "pure_color": {
+      "message": "純色"
+   },
+   "rate_five_stars": {
+      "message": "五星好評"
+   },
+   "register": {
+      "message": "註冊"
+   },
+   "register_again": {
+      "message": "郵箱錯誤？重新註冊"
+   },
+   "register_to_sync_your_data": {
+      "message": "註冊一個賬號來同步您的資料"
+   },
+   "remember_the_last_visited_group": {
+      "message": "記住最後訪問的分組"
+   },
+   "replace": {
+      "message": "更換"
+   },
+   "replace_frequency": {
+      "message": "更換頻率"
+   },
+   "replace_location": {
+      "message": "更換定位"
+   },
+   "request_for_inclusion": {
+      "message": "申請收錄"
+   },
+   "request_for_inclusion_successful": {
+      "message": "申請收錄成功"
+   },
+   "required": {
+      "message": "必填項"
+   },
+   "right_side": {
+      "message": "右側"
+   },
+   "row_gap": {
+      "message": "行間距"
+   },
+   "scroll_or_click": {
+      "message": "滾動或單擊"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "滾動以切換分組"
+   },
+   "search": {
+      "message": "搜尋"
+   },
+   "search_box": {
+      "message": "搜尋框"
+   },
+   "search_engine": {
+      "message": "搜尋引擎"
+   },
+   "search_result": {
+      "message": "搜尋結果"
+   },
+   "searching": {
+      "message": "搜尋中"
+   },
+   "second_unit": {
+      "message": "秒"
+   },
+   "server_error": {
+      "message": "服務器錯誤"
+   },
+   "set_nickname_first": {
+      "message": "先設置一個暱稱"
+   },
+   "settings": {
+      "message": "設定"
+   },
+   "shadow": {
+      "message": "陰影"
+   },
+   "shopping": {
+      "message": "購物"
+   },
+   "sidebar": {
+      "message": "側邊欄"
+   },
+   "simple": {
+      "message": "簡單"
+   },
+   "size": {
+      "message": "大小"
+   },
+   "skip": {
+      "message": "跳過"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "跳過引導，直接進入"
+   },
+   "skip_login_enter_right_now": {
+      "message": "暫不登錄，直接進入"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "暫不註冊，直接進入"
+   },
+   "social": {
+      "message": "社交"
+   },
+   "standby_page": {
+      "message": "待機頁"
+   },
+   "standby_page_background": {
+      "message": "待機頁背景"
+   },
+   "standby_page_clock": {
+      "message": "待機頁時鐘"
+   },
+   "standby_page_weather": {
+      "message": "待機頁天氣"
+   },
+   "stay_logged_out": {
+      "message": "保持登出"
+   },
+   "success": {
+      "message": "成功"
+   },
+   "target_group": {
+      "message": "目標分組"
+   },
+   "technology_and_education": {
+      "message": "科技與教育"
+   },
+   "temperature_unit": {
+      "message": "溫度單位"
+   },
+   "terms_of_use": {
+      "message": "使用條款"
+   },
+   "terms_of_use_url_path": {
+      "message": "/zh-TW/terms-of-use"
+   },
+   "text": {
+      "message": "文字"
+   },
+   "the_end": {
+      "message": "到底了"
+   },
+   "theme": {
+      "message": "主題"
+   },
+   "theme_and_wallpaper": {
+      "message": "主題&壁紙"
+   },
+   "to_do": {
+      "message": "待辦事項"
+   },
+   "travel": {
+      "message": "旅行"
+   },
+   "uncompleted": {
+      "message": "未完成"
+   },
+   "unknown": {
+      "message": "未知"
+   },
+   "upload": {
+      "message": "上傳"
+   },
+   "upload_icon": {
+      "message": "上傳圖標"
+   },
+   "user_changed": {
+      "message": "用戶發生變化"
+   },
+   "visitor_slogan_1": {
+      "message": "登錄即享多端同步，"
+   },
+   "visitor_slogan_2": {
+      "message": "讓您的資料永不丟失"
+   },
+   "wallpaper": {
+      "message": "壁紙"
+   },
+   "warning": {
+      "message": "警告"
+   },
+   "website_desc": {
+      "message": "網站描述"
+   },
+   "website_name": {
+      "message": "網站名稱"
+   },
+   "welcome_back": {
+      "message": "歡迎回來"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "歡迎您加入 MONKNOW 新標籤頁的大家庭"
+   },
+   "width": {
+      "message": "寬度"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "龍捲風"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "熱帶風暴"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "凍雨"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "陣雨"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "雨"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "小陣雪"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "小陣雪"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "高吹雪"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "雪"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "冰雹"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "雨夾雪"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "沙塵"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "颱風"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "霧"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "霾"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "煙霧"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "大風"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "大風"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "寒冷"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "多雲"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "大部分多雲"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "大部分多雲"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "少部分多雲"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "大雷雨"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "少部分多雲"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "雨夾冰雹"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "熱"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "局部雷雨"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "大面積雷雨"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "大面積陣雨"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "雷雨"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "大雨"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "大面積陣雪"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "大雪"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "暴風雪"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "不可用"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "大面積陣雨"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "大面積陣雪"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "大面積雷陣雨"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "雨夾雪"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "雨夾雪"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "雨夾雪"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "凍毛毛雨"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "毛毛雨"
+   }
+}

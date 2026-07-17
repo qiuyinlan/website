@@ -1,0 +1,36 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "asset/icon/128.png",
+         "32": "asset/icon/32.png",
+         "64": "asset/icon/64.png",
+         "96": "asset/icon/96.png"
+      },
+      "default_popup": "asset/html/popup.html",
+      "default_title": "__MSG_extension_name__"
+   },
+   "background": {
+      "service_worker": "asset/js/898.js",
+      "type": "module"
+   },
+   "chrome_url_overrides": {
+      "newtab": "asset/html/newtab.html"
+   },
+   "default_locale": "en",
+   "description": "__MSG_extension_desc__",
+   "host_permissions": [ "*://*.monknow.com/*" ],
+   "icons": {
+      "128": "asset/icon/128.png",
+      "32": "asset/icon/32.png",
+      "64": "asset/icon/64.png",
+      "96": "asset/icon/96.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4OTyXUDxTnbXWIcLcaeN18oO1O4ZpDmyCWqe7Ocp2bxgtcgOhWB4mQyMJGvO1Gnfjrqy2By0j8J8QUpx9ALjpqF4g66ZEyD//m7jwHSiS2/OSpH8tQGIAqMpxi6Qdg7jpZ6w8q3UroBNUfYD67rDt85ZwZwReuBxELe2wtwjmPLOZimsrN7cdy4KZyt+PeEO1dMaZ97+ef+K7vfA6UMjJkkVe8u7iQIdpMAEHRRc+vdcEih1Wi1j4/uBdU0mjWH18n+C7XBmAHDika2lAXEP/tQmmdzt7mqbgmMc7qO9/3Vci2257QjEy3Oeft9vXeTyQ/YfZ7il+aNIzONHsl6q4wIDAQAB",
+   "manifest_version": 3,
+   "minimum_chrome_version": "120",
+   "name": "__MSG_extension_name__",
+   "optional_permissions": [ "bookmarks" ],
+   "permissions": [ "storage", "tabs", "alarms" ],
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "7.3.29"
+}

@@ -1,0 +1,815 @@
+{
+   "24_hour_system": {
+      "message": "24 घंटे की प्रणाली"
+   },
+   "about_us": {
+      "message": "हमारे बारे में"
+   },
+   "add": {
+      "message": "जोड़ना"
+   },
+   "add_and_continue": {
+      "message": "जोड़ें और जारी रखें"
+   },
+   "add_group": {
+      "message": "समूह जोड़ें"
+   },
+   "add_icon": {
+      "message": "आइकन जोड़ें"
+   },
+   "add_manually": {
+      "message": "मैन्युअल रूप से जोड़ें"
+   },
+   "add_successful": {
+      "message": "सफल जोड़ें"
+   },
+   "add_task": {
+      "message": "टास्क जोड़ें"
+   },
+   "address": {
+      "message": "पता"
+   },
+   "all": {
+      "message": "सब"
+   },
+   "all_bookmarks": {
+      "message": "सभी बुकमार्क"
+   },
+   "animal": {
+      "message": "जानवर"
+   },
+   "anime": {
+      "message": "एनिमे"
+   },
+   "any_important_plans": {
+      "message": "कोई महत्वपूर्ण योजना?"
+   },
+   "any_plans": {
+      "message": "कोई योजना?"
+   },
+   "appearance": {
+      "message": "दिखावट"
+   },
+   "architecture": {
+      "message": "आर्किटेक्चर"
+   },
+   "authorize": {
+      "message": "अधिकृत"
+   },
+   "auto_hide": {
+      "message": "स्वतः छिपना"
+   },
+   "background_color": {
+      "message": "पीछे का रंग"
+   },
+   "background_tab": {
+      "message": "बैकग्राउंड टैब"
+   },
+   "blur": {
+      "message": "कलंक"
+   },
+   "border_radius": {
+      "message": "सीमा त्रिज्या"
+   },
+   "brightness_color": {
+      "message": "हल्का रंग"
+   },
+   "cancel": {
+      "message": "रद्द करना"
+   },
+   "captcha": {
+      "message": "कैप्चा"
+   },
+   "captcha_expired": {
+      "message": "कैप्चा की समय - सीमा समाप्त हो गई"
+   },
+   "captcha_invalid": {
+      "message": "कैप्चा अमान्य है"
+   },
+   "category": {
+      "message": "वर्ग"
+   },
+   "celsius": {
+      "message": "सेल्सीयस"
+   },
+   "classic": {
+      "message": "क्लासिक"
+   },
+   "column_gap": {
+      "message": "स्तंभ गैप"
+   },
+   "completed": {
+      "message": "पूरा कर लिया है"
+   },
+   "confirm": {
+      "message": "की पुष्टि करें"
+   },
+   "confirm_new_password": {
+      "message": "नए पासवर्ड की पुष्टि करें"
+   },
+   "contact": {
+      "message": "संपर्क करें"
+   },
+   "contact_url_path": {
+      "message": "/hi/contact"
+   },
+   "current_tab": {
+      "message": "वर्तमान टैब"
+   },
+   "darkness_color": {
+      "message": "गाढ़ा रंग"
+   },
+   "delete": {
+      "message": "हटाएं"
+   },
+   "delete_all_completed_tasks": {
+      "message": "सभी पूर्ण कार्य हटाएं"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "क्या आप वाकई सभी पूर्ण किए गए कार्यों को हटाना चाहते हैं?"
+   },
+   "delete_confirmation": {
+      "message": "क्या आप पक्का इसे हटाना चाहते हैं?"
+   },
+   "desc": {
+      "message": "विवरण"
+   },
+   "display_add_btn": {
+      "message": "ऐड बटन दिखाएँ"
+   },
+   "display_notification_badge": {
+      "message": "नोटिफिकेशन बैज प्रदर्शित करें"
+   },
+   "display_width": {
+      "message": "चौड़ाई प्रदर्शित करें"
+   },
+   "download": {
+      "message": "डाउनलोड"
+   },
+   "download_wallpaper": {
+      "message": "वॉलपेपर डाउनलोड करें"
+   },
+   "edit": {
+      "message": "संपादित करें"
+   },
+   "edit_group": {
+      "message": "समूह संपादित करें"
+   },
+   "edit_icon": {
+      "message": "आइकन संपादित करें"
+   },
+   "efficient": {
+      "message": "कुशल"
+   },
+   "email": {
+      "message": "ईमेल"
+   },
+   "email_format_invalid": {
+      "message": "ईमेल प्रारूप अमान्य है"
+   },
+   "email_not_exists": {
+      "message": "ईमेल मौजूद नहीं है"
+   },
+   "email_or_password_invalid": {
+      "message": "ईमेल या पासवर्ड अमान्य है"
+   },
+   "email_registered": {
+      "message": "ईमेल पंजीकृत किया गया है"
+   },
+   "enable_clock": {
+      "message": "घड़ी सक्षम करें"
+   },
+   "enable_standby_page": {
+      "message": "लॉक स्क्रीन पेज सक्षम करें"
+   },
+   "enable_weather": {
+      "message": "मौसम सक्षम करें"
+   },
+   "enter_when_inactive": {
+      "message": "निष्क्रिय होने पर दर्ज करें"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "टैब खोलते समय दर्ज करें"
+   },
+   "entertainment": {
+      "message": "मनोरंजन"
+   },
+   "extension_desc": {
+      "message": "यह नया टैब है जिसका आप सपना देख रहे हैं। समर्थन वेबसाइट URL समूह प्रबंधन, डेटा सिंक, डार्क थीम मोड।"
+   },
+   "extension_name": {
+      "message": "MONKNOW नया टैब - व्यक्तिगत डैशबोर्ड"
+   },
+   "fahrenheit": {
+      "message": "फारेनहाइट"
+   },
+   "fail": {
+      "message": "विफल"
+   },
+   "feedback": {
+      "message": "प्रतिक्रिया"
+   },
+   "feedback_and_others": {
+      "message": "प्रतिक्रिया और अन्य"
+   },
+   "feedback_and_rate": {
+      "message": "प्रतिक्रिया और रेटिंग"
+   },
+   "finance": {
+      "message": "वित्त"
+   },
+   "find_password": {
+      "message": "पासवर्ड पता करो"
+   },
+   "find_password_successful": {
+      "message": "हमने $1 को एक ईमेल भेजा है, कृपया अपना पासवर्ड रीसेट करें"
+   },
+   "follow_the_system": {
+      "message": "सिस्टम का पालन करें"
+   },
+   "forgot_password": {
+      "message": "पासवर्ड भूल गए हैं?"
+   },
+   "general": {
+      "message": "सामान्य"
+   },
+   "graphic": {
+      "message": "ग्राफिक"
+   },
+   "group": {
+      "message": "समूह"
+   },
+   "have_account_login_right_now": {
+      "message": "मेरा खाता है, अभी लॉगिन करें"
+   },
+   "height": {
+      "message": "ऊंचाई"
+   },
+   "hide": {
+      "message": "छिपाना"
+   },
+   "homepage": {
+      "message": "मुखपृष्ठ"
+   },
+   "homepage_url_path": {
+      "message": "/hi"
+   },
+   "hour_unit": {
+      "message": "घंटा"
+   },
+   "icon": {
+      "message": "आइकन"
+   },
+   "icon_text": {
+      "message": "आइकन पाठ"
+   },
+   "image_size_can_not_exceed": {
+      "message": "छवि का आकार $1 से अधिक नहीं हो सकता है"
+   },
+   "import_from_bookmarks": {
+      "message": "बुकमार्क से आयात करें"
+   },
+   "import_from_bookmarks_error": {
+      "message": "कोटा सीमा से अधिक, आप बाद में 'सेटिंग्स -> सामान्य -> आयात' के माध्यम से बुकमार्क आयात कर सकते हैं"
+   },
+   "import_successful": {
+      "message": "आयात सफल हुआ"
+   },
+   "important": {
+      "message": "जरूरी"
+   },
+   "impressive": {
+      "message": "प्रभावशाली"
+   },
+   "inconsistent": {
+      "message": "असंगत"
+   },
+   "info": {
+      "message": "जानकारी"
+   },
+   "internal_app": {
+      "message": "आंतरिक अनुप्रयोग"
+   },
+   "it_is_empty": {
+      "message": "यह खाली है"
+   },
+   "left_side": {
+      "message": "बाईं तरफ"
+   },
+   "lifestyle": {
+      "message": "जीवन शैली"
+   },
+   "lightweight": {
+      "message": "लाइटवेट"
+   },
+   "loading": {
+      "message": "लोड हो रहा है"
+   },
+   "local": {
+      "message": "स्थानीय"
+   },
+   "locating": {
+      "message": "पोजिशनिंग"
+   },
+   "location": {
+      "message": "स्थान"
+   },
+   "login": {
+      "message": "लॉग इन करें"
+   },
+   "login_right_now": {
+      "message": "अभी लॉगिन करें"
+   },
+   "logout": {
+      "message": "लोग आउट"
+   },
+   "main_view": {
+      "message": "प्रमुख राय"
+   },
+   "minute_unit": {
+      "message": "मिनट"
+   },
+   "modify": {
+      "message": "परिवर्तन"
+   },
+   "modify_nickname": {
+      "message": "उपनाम संशोधित करें"
+   },
+   "modify_password": {
+      "message": "पासवर्ड संशोधित करें"
+   },
+   "modify_portrait": {
+      "message": "पोर्ट्रेट संशोधित करें"
+   },
+   "modify_successful": {
+      "message": "सफल संशोधित करें"
+   },
+   "name": {
+      "message": "नाम"
+   },
+   "narrow_menu": {
+      "message": "संकीर्ण मेनू"
+   },
+   "natural": {
+      "message": "प्राकृतिक"
+   },
+   "need_bookmarks_permission": {
+      "message": "कृपया बुकमार्क पहुँच प्रदान करें"
+   },
+   "network_error": {
+      "message": "नेटवर्क त्रुटि"
+   },
+   "never": {
+      "message": "कभी नहीँ"
+   },
+   "new_nickname": {
+      "message": "नया उपनाम"
+   },
+   "new_password": {
+      "message": "नया पासवर्ड"
+   },
+   "new_tab": {
+      "message": "नया टैब"
+   },
+   "news_and_reading": {
+      "message": "समाचार और पढ़ना"
+   },
+   "next_one": {
+      "message": "अगला"
+   },
+   "next_step": {
+      "message": "अगला कदम"
+   },
+   "next_wallpaper": {
+      "message": "अगला वॉलपेपर"
+   },
+   "nickname": {
+      "message": "उपनाम"
+   },
+   "not_found": {
+      "message": "नहीं मिला"
+   },
+   "not_have_account_register_right_now": {
+      "message": "मेरे पास खाता नहीं है, अभी पंजीकरण करें"
+   },
+   "not_recognized": {
+      "message": "मान्यता प्राप्त नहीं"
+   },
+   "not_supported_in_this_browser": {
+      "message": "इस ब्राउज़र में समर्थित नहीं है"
+   },
+   "official": {
+      "message": "आधिकारिक"
+   },
+   "official_lib": {
+      "message": "आधिकारिक पुस्तकालय"
+   },
+   "old_password": {
+      "message": "पुराना पासवर्ड"
+   },
+   "old_password_not_match": {
+      "message": "पुराना पासवर्ड मेल नहीं खाता"
+   },
+   "opacity": {
+      "message": "पारदर्शिता"
+   },
+   "open": {
+      "message": "खुला हुआ"
+   },
+   "open_all": {
+      "message": "सभी खुले"
+   },
+   "open_in_background_tab": {
+      "message": "पृष्ठभूमि टैब में खोलें"
+   },
+   "open_in_incognito_window": {
+      "message": "गुप्त विंडो में खोलें"
+   },
+   "open_in_new_tab": {
+      "message": "नये टैब में खोलें"
+   },
+   "open_method": {
+      "message": "ओपन मेथड"
+   },
+   "optional": {
+      "message": "ऐच्छिक"
+   },
+   "others": {
+      "message": "अन्य"
+   },
+   "particular": {
+      "message": "विस्तृत"
+   },
+   "password": {
+      "message": "पारण शब्द"
+   },
+   "people": {
+      "message": "लोग"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "उन बुकमार्क को चुनें जिन्हें आप आयात करना चाहते हैं"
+   },
+   "please_complete_form": {
+      "message": "कृपया फॉर्म को पूरा करें"
+   },
+   "popular": {
+      "message": "लोकप्रिय"
+   },
+   "prev_step": {
+      "message": "पीछे कदम"
+   },
+   "preview": {
+      "message": "पूर्वावलोकन"
+   },
+   "privacy_policy": {
+      "message": "गोपनीयता नीति"
+   },
+   "privacy_policy_url_path": {
+      "message": "/hi/privacy-policy"
+   },
+   "productivity": {
+      "message": "उत्पादकता"
+   },
+   "pure_color": {
+      "message": "शुद्ध रंग"
+   },
+   "rate_five_stars": {
+      "message": "पांच सितारा मूल्यांकन"
+   },
+   "register": {
+      "message": "रजिस्टर"
+   },
+   "register_again": {
+      "message": "गलत ईमेल पता? फिर से पंजीकरण करें"
+   },
+   "register_to_sync_your_data": {
+      "message": "अपने डेटा को सिंक करने के लिए रजिस्टर करें"
+   },
+   "remember_the_last_visited_group": {
+      "message": "अंतिम देखे गए समूह को याद रखें"
+   },
+   "replace": {
+      "message": "बदलने के"
+   },
+   "replace_frequency": {
+      "message": "फ्रीक्वेंसी को बदलें"
+   },
+   "replace_location": {
+      "message": "स्थान बदलें"
+   },
+   "request_for_inclusion": {
+      "message": "समावेश के लिए अनुरोध"
+   },
+   "request_for_inclusion_successful": {
+      "message": "समावेशन के लिए अनुरोध सफल"
+   },
+   "required": {
+      "message": "अपेक्षित"
+   },
+   "right_side": {
+      "message": "दाईं ओर"
+   },
+   "row_gap": {
+      "message": "रो गैप"
+   },
+   "scroll_or_click": {
+      "message": "स्क्रॉल या क्लिक करें"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "समूह स्विच करने के लिए स्क्रॉल करें"
+   },
+   "search": {
+      "message": "खोज"
+   },
+   "search_box": {
+      "message": "खोज बॉक्स"
+   },
+   "search_engine": {
+      "message": "खोज इंजन"
+   },
+   "search_result": {
+      "message": "परिणाम खोजें"
+   },
+   "searching": {
+      "message": "हम खोज रहे हैं"
+   },
+   "second_unit": {
+      "message": "सेकंड"
+   },
+   "server_error": {
+      "message": "सर्वर त्रुटि"
+   },
+   "set_nickname_first": {
+      "message": "प्रचलित नाम सेट करें"
+   },
+   "settings": {
+      "message": "सेटिंग्स"
+   },
+   "shadow": {
+      "message": "साया"
+   },
+   "shopping": {
+      "message": "खरीदारी"
+   },
+   "sidebar": {
+      "message": "साइडबार"
+   },
+   "simple": {
+      "message": "सरल"
+   },
+   "size": {
+      "message": "आकार"
+   },
+   "skip": {
+      "message": "छोड़ें"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "उपयोगकर्ता गाइड छोड़ें और उपयोग करना शुरू करें"
+   },
+   "skip_login_enter_right_now": {
+      "message": "अभी के लिए लॉग इन न करें, बस उपयोग करना शुरू करें"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "अभी के लिए पंजीकरण न करें, बस उपयोग करना शुरू करें"
+   },
+   "social": {
+      "message": "सामाजिक"
+   },
+   "standby_page": {
+      "message": "लॉक स्क्रीन पेज"
+   },
+   "standby_page_background": {
+      "message": "लॉक स्क्रीन पेज बैकग्राउंड"
+   },
+   "standby_page_clock": {
+      "message": "लॉक स्क्रीन पेज क्लॉक"
+   },
+   "standby_page_weather": {
+      "message": "लॉक स्क्रीन पेज मौसम"
+   },
+   "stay_logged_out": {
+      "message": "लॉग आउट रहें"
+   },
+   "success": {
+      "message": "सफलता"
+   },
+   "target_group": {
+      "message": "लक्ष्य समूह"
+   },
+   "technology_and_education": {
+      "message": "प्रौद्योगिकी और शिक्षा"
+   },
+   "temperature_unit": {
+      "message": "तापमान इकाई"
+   },
+   "terms_of_use": {
+      "message": "उपयोग की शर्तें"
+   },
+   "terms_of_use_url_path": {
+      "message": "/hi/terms-of-use"
+   },
+   "text": {
+      "message": "टेक्स्ट"
+   },
+   "the_end": {
+      "message": "समाप्त"
+   },
+   "theme": {
+      "message": "विषय"
+   },
+   "theme_and_wallpaper": {
+      "message": "थीम और वॉलपेपर"
+   },
+   "to_do": {
+      "message": "ToDo"
+   },
+   "travel": {
+      "message": "यात्रा"
+   },
+   "uncompleted": {
+      "message": "अपूर्ण"
+   },
+   "unknown": {
+      "message": "अनजान"
+   },
+   "upload": {
+      "message": "अपलोड"
+   },
+   "upload_icon": {
+      "message": "आइकन अपलोड करें"
+   },
+   "user_changed": {
+      "message": "उपयोगकर्ता परिवर्तित"
+   },
+   "visitor_slogan_1": {
+      "message": "सिंक करने के लिए लॉग इन करें, "
+   },
+   "visitor_slogan_2": {
+      "message": "सुनिश्चित करें कि आपका डेटा कभी खो नहीं जाएगा."
+   },
+   "wallpaper": {
+      "message": "वॉलपेपर"
+   },
+   "warning": {
+      "message": "चेतावनी"
+   },
+   "website_desc": {
+      "message": "वेबसाइट विवरण"
+   },
+   "website_name": {
+      "message": "वेबसाइट का नाम"
+   },
+   "welcome_back": {
+      "message": "वापसी पर स्वागत है"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "MONKNOW नए टैब में आपका स्वागत है"
+   },
+   "width": {
+      "message": "चौड़ाई"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "बवंडर"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "उष्णकटिबंधीय तूफान"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "बर्फ़ीली वर्षा"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "वर्षा"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "बारिश"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "स्नो फ़्लरीज़"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "हल्की बर्फ़बारी"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "उड़ती हुई बर्फ़"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "हिमपात"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "जय हो"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "ओले के साथ वर्षा"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "धूल"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "तूफान"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "धूमिल"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "धुन्ध"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "धुआं"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "धमकी से"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "तूफानी"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "सर्दी"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "धुंधला"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "अधिकतर बदली"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "अधिकतर बदली"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "आंशिक रूप से बादल छाएंगे"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "भयानक गर्जना"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "आंशिक रूप से बादल छाएंगे"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "सनी का दिन"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "धूप"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "सनी का दिन"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "सनी का दिन"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "मिश्रित बारिश और ओलों"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "गरम"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "अलग थलग बादलों का गरजना"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "अस्तव्यस्त आँधी"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "बिखरी हुई बारिश"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "गरज के साथ वर्षा"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "भारी वर्षा"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "बिखरे हुए हिमपात"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "भारी बर्फ"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "बर्फानी तूफान"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "उपलब्ध नहीं है"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "बिखरी हुई बारिश"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "बिखरे हुए हिमपात"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "बिखरे हुए थंडरशोवर्स"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "मिश्रित बारिश और हिमपात"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "मिश्रित बारिश और नींद"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "मिश्रित हिमपात और नींद"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "जमा देने वाली हवा"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "बूंदा बांदी"
+   }
+}

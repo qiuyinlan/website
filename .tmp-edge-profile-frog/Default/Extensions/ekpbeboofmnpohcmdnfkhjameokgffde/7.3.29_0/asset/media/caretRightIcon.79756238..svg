@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>caret-right</title>
+    <desc>Created with Sketch.</desc>
+    <g id="caret-right" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(7.000000, 4.000000)" fill="#333333" fill-rule="nonzero" id="fill">
+            <path d="M5.8844464,5.26105604 L0.4946503,9.9274873 C0.29462777,10.1000976 -8.8817842e-16,9.9453435 -8.8817842e-16,9.6655957 L-8.8817842e-16,0.335709309 C-8.8817842e-16,0.0559615188 0.29462777,-0.101768621 0.4946503,0.0738177588 L5.8844464,4.73727295 C6.0385179,4.87119476 6.0385179,5.12713423 5.8844464,5.26105604 Z" transform="translate(3.000000, 5.000000) scale(-1, 1) rotate(-180.000000) translate(-3.000000, -5.000000) "></path>
+        </g>
+    </g>
+</svg>

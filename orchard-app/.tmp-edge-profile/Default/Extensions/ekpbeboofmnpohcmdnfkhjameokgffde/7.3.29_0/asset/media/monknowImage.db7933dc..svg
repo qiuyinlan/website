@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128px" height="128px" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>128</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-39.8%" y="-58.3%" width="179.5%" height="216.7%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="6" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="6" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0.363636364   0 0 0 0 0.7  0 0 0 0.4 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <rect id="path-2" x="0" y="0" width="40" height="60" rx="2"></rect>
+        <rect id="path-4" x="0" y="0" width="40" height="60" rx="2"></rect>
+    </defs>
+    <g id="128" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#1890FF" x="0" y="0" width="128" height="128"></rect>
+        <g id="编组" filter="url(#filter-1)" transform="translate(20.000000, 34.000000)">
+            <g id="路径-2-+-路径-2-蒙版">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <g id="蒙版"></g>
+                <path d="M0.25,59.75 L39.5526089,59.75 L3.49040205,1.14891389 C2.98386278,0.32578756 1.90595583,0.0691430491 1.08282951,0.575682326 C0.565271427,0.894179605 0.25,1.45837814 0.25,2.06608438 L0.25,59.75 Z" id="路径-2" stroke-opacity="0.5" stroke="#FFFFFF" stroke-width="0.5" fill-opacity="0.8" fill="#FFFFFF" mask="url(#mask-3)"></path>
+                <path d="M0.25,59.75 L39.5526089,59.75 L3.49040205,1.14891389 C2.98386278,0.32578756 1.90595583,0.0691430491 1.08282951,0.575682326 C0.565271427,0.894179605 0.25,1.45837814 0.25,2.06608438 L0.25,59.75 Z" id="路径-2" stroke-opacity="0.5" stroke="#FFFFFF" stroke-width="0.5" fill-opacity="0.8" fill="#FFFFFF" mask="url(#mask-3)" transform="translate(20.000000, 27.500000) scale(-1, 1) translate(-20.000000, -27.500000) "></path>
+            </g>
+            <g id="路径-2-+-路径-2-蒙版" transform="translate(48.000000, 0.000000)">
+                <mask id="mask-5" fill="white">
+                    <use xlink:href="#path-4"></use>
+                </mask>
+                <g id="蒙版"></g>
+                <path d="M0.25,0.793091272 L0.25,59.75 L37.7745578,59.75 C38.851513,59.75 39.7245578,58.8769553 39.7245578,57.8 C39.7245578,57.3999144 39.601494,57.0095113 39.37206,56.6817484 L0.25,0.793091272 Z" id="路径-2" stroke-opacity="0.5" stroke="#FFFFFF" stroke-width="0.5" fill-opacity="0.8" fill="#FFFFFF" mask="url(#mask-5)"></path>
+                <path d="M0.25,0.793091272 L0.25,59.75 L37.7745578,59.75 C38.851513,59.75 39.7245578,58.8769553 39.7245578,57.8 C39.7245578,57.3999144 39.601494,57.0095113 39.37206,56.6817484 L0.25,0.793091272 Z" id="路径-2" stroke-opacity="0.5" stroke="#FFFFFF" stroke-width="0.5" fill-opacity="0.8" fill="#FFFFFF" mask="url(#mask-5)" transform="translate(21.000000, 30.000000) scale(1, -1) translate(-21.000000, -30.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

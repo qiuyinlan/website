@@ -1,0 +1,34 @@
+{
+   "action": {
+      "default_icon": "icon-34.png",
+      "default_title": "点击打开Kimi侧边栏"
+   },
+   "background": {
+      "service_worker": "background.bundle.js"
+   },
+   "content_scripts": [ {
+      "css": [ "content.styles.css" ],
+      "js": [ "contentScript.bundle.js" ],
+      "matches": [ "http://*/*", "https://*/*", "\u003Call_urls>" ]
+   } ],
+   "description": "Kimi侧边栏助手，帮助你在任何网页无须切换页面专注试用Kimi AI。",
+   "icons": {
+      "128": "icon-128.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4yc5Fmqu2+H/y0prukQGy/xZLCPcyfLQYXfbEDN9yQ5lksu2dpr8c8Z7jMcSIe+bRJiSqGH2Ul0oqcmdVX7s/dqg6rvBBd0pUywkSYA5XlieXs4DqFbRxj2sFPV7ULTOWZ5g8spJmzdTNJ9CIxSYjNxTqs0s0OONFgC5hkOQDf61XnpB1/I9fxu/808q9G8r+ZecZVq1u6yNrSXm1evp7AgCytjAC/milB8NCFMgAhyZ9Gr7fpyb93nibF2lMegO0kErJyIICjnU0MDlsgk/s+0xgN9xqPRK4Q6fx6NYSwpOvrB/1jAb47rIGgrORK2orn7TXIXNe68YLmZoYPbh9wIDAQAB",
+   "manifest_version": 3,
+   "minimum_chrome_version": "114",
+   "name": "Kimi Sidebar - Kimi侧边栏助手",
+   "options_page": "options.html",
+   "permissions": [ "sidePanel" ],
+   "side_panel": {
+      "default_path": "sidepanel.html",
+      "openPanelOnActionClick": true
+   },
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "0.0.1",
+   "web_accessible_resources": [ {
+      "matches": [  ],
+      "resources": [ "content.styles.css", "icon-128.png", "icon-34.png" ]
+   } ]
+}

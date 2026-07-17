@@ -1,0 +1,76 @@
+<div style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 1000000;" id="_ext-combine-wrap">
+    <div style="width: 1300px;background: #ccc">
+        <style>
+            ._ext-file-table {
+                border-spacing: 0;
+                border-collapse: collapse;
+                font-size: 14px;
+                width: 100%;
+            }
+
+            ._ext-file-table tbody tr {
+                cursor: grab;
+                height: 25px;
+                line-height: 25px;
+            }
+
+            ._ext-file-table tbody td {
+                border: 1px solid #000;
+                border-left: none;
+                border-right: none;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 400px;
+            }
+        </style>
+
+        <div>
+            <button style="float: right" id="_ext-combine-close">关闭</button>
+            <div style="clear:both"></div>
+        </div>
+        <div>
+            <div style="width: 50%;float:right">
+                <div class="selector-wrap">
+                    <p class="selector-text">拖拽文件或者点击此处选择文件</p>
+                    <input type="file" id="_ext-filesInput" multiple="multiple" accept="*">
+                </div>
+            </div>
+            <div style="width: 50%;"></div>
+            <div style="clear:both"></div>
+        </div>
+
+        <div>
+            <div style="width: 50%;float:right">
+
+                <table class="_ext-file-table">
+                    <tbody id="_ext-file-list-tbody">
+                    </tbody>
+                </table>
+
+            </div>
+            <div style="width: 50%;">
+                <table class="_ext-file-table">
+                    <tbody id="_ext-bilibili-file-list-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+
+        <div id="_ext-rename-option-wrap" class="option-wrap" style="display: block;">
+            <label for="_ext-rename-start-index">
+                <input type="text" value="1" id="_ext-rename-start-index" style="width: 50px">
+                替换符"#"第一集的序号. 有的集数是从0集开始的,
+                就把这个值设置为0. 如 Fate UBW 首集就从0开始
+            </label>
+        </div>
+        <input type="text" value="" id="_ext-rename-to" style="width: 100%"
+               placeholder="新的文件名, &quot;#&quot;为序号替换符. 一般使用&quot;##&quot;来替换12集的字幕文件">
+        <div>
+            <button type="button" id="_ext-download-combine" class="btn">
+                合并
+            </button>
+        </div>
+    </div>
+</div>

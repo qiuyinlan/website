@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+    <head>
+        <meta charset="UTF-8" />
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+        <title></title>
+
+        <style>
+            body {
+                background-color: white;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            #app{
+                max-width: 800px;
+                max-height: 600px;
+                overflow: auto;
+            }
+
+            #app::-webkit-scrollbar {
+                width : 5px;
+                height: 5px;
+            }
+            #app::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                background: #f3f3f3;
+                cursor: pointer;
+
+                &:hover{
+                    background: #e1e1e1;
+                }
+            }
+        </style>
+      <script type="module" crossorigin src="/js/6.js"></script>
+      <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-3cfb730f.js">
+      <link rel="modulepreload" crossorigin href="/assets/basicData-94421419.js">
+      <link rel="stylesheet" href="/assets/basicData-22a10bed.css">
+      <link rel="stylesheet" href="/assets/popup-764fb723.css">
+    </head>
+
+    <body>
+        <div id="app"></div>
+        
+    </body>
+</html>

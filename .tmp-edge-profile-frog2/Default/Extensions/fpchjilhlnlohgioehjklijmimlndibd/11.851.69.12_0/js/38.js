@@ -1,0 +1,1 @@
+!function(){let e=document.getSelection().toString().trim();e&&chrome.runtime.sendMessage({type:"daksskjpl",data:{num:4,word:e}})}();

@@ -71,6 +71,21 @@
     interestForm: document.getElementById("interest-form"),
     interestInput: document.getElementById("interest-input"),
     saveInterest: document.getElementById("save-interest"),
+    moodDialog: document.getElementById("mood-dialog"),
+    openMood: document.getElementById("open-mood"),
+    moodClose: document.getElementById("mood-close"),
+    moodProgress: document.getElementById("mood-progress"),
+    moodQuestion: document.getElementById("mood-question"),
+    moodOptionA: document.getElementById("mood-option-a"),
+    moodOptionB: document.getElementById("mood-option-b"),
+    frogDialog: document.getElementById("frog-dialog"),
+    openFrog: document.getElementById("open-frog"),
+    frogClose: document.getElementById("frog-close"),
+    frogInput: document.getElementById("frog-input"),
+    frogAdd: document.getElementById("frog-add"),
+    frogList: document.getElementById("frog-list"),
+    donelistOpenFrog: document.getElementById("donelist-open-frog"),
+    donelistFrogList: document.getElementById("donelist-frog-list"),
     openSettings: document.getElementById("open-settings"),
     closeSettings: document.getElementById("close-settings"),
     syncStatus: document.getElementById("sync-status"),
@@ -87,6 +102,25 @@
   let selectedMainlineId = null;
   let selectedPrincipleId = null;
   let selectedInterestId = null;
+  let moodStepIndex = 0;
+  const dismissedMoodSteps = new Set();
+  const moodSteps = [
+    {
+      question: "我想过_____的人生",
+      optionA: "用自己的人生来逃避内心的痛苦",
+      optionB: "主宰自己的人生，自由地活",
+    },
+    {
+      question: "你相信难受的感觉会消失吗？",
+      optionA: "不相信",
+      optionB: "相信",
+    },
+    {
+      question: "我担心的事情一定会发生吗，我在害怕什么",
+      optionA: "会",
+      optionB: "不会",
+    },
+  ];
   let persistPromise = Promise.resolve();
   let persistPending = false;
   let persistScheduled = false;
@@ -151,9 +185,105 @@
     });
   }
 
+  const UUID_PATTERN =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  function isUuid(value) {
+    return typeof value === "string" && UUID_PATTERN.test(value);
+  }
+
   function uid() {
-    if (crypto.randomUUID) return crypto.randomUUID();
-    return `habit-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const cryptoApi = globalThis.crypto || {};
+    if (typeof cryptoApi.randomUUID === "function") return cryptoApi.randomUUID();
+
+    const bytes =
+      typeof cryptoApi.getRandomValues === "function"
+        ? cryptoApi.getRandomValues(new Uint8Array(16))
+        : Uint8Array.from({ length: 16 }, () => Math.floor(Math.random() * 256));
+
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+    const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(
+      16,
+      20,
+    )}-${hex.slice(20)}`;
+  }
+
+  function remapStoredHabitIds(idMap, validIds) {
+    const remapId = (id) => idMap.get(id) || id;
+
+    Object.keys(state.completions).forEach((date) => {
+      const uniqueIds = [];
+      const seen = new Set();
+      const ids = Array.isArray(state.completions[date]) ? state.completions[date] : [];
+
+      ids.forEach((id) => {
+        const nextId = remapId(id);
+        if (!validIds.has(nextId) || seen.has(nextId)) return;
+        uniqueIds.push(nextId);
+        seen.add(nextId);
+      });
+
+      if (uniqueIds.length) {
+        state.completions[date] = uniqueIds;
+      } else {
+        delete state.completions[date];
+      }
+    });
+
+    state.skippedToday = Array.isArray(state.skippedToday)
+      ? state.skippedToday.map(remapId).filter((id) => validIds.has(id))
+      : [];
+
+    if (state.currentHabitId) {
+      const nextCurrentId = remapId(state.currentHabitId);
+      state.currentHabitId = validIds.has(nextCurrentId) ? nextCurrentId : null;
+    }
+  }
+
+  function ensureHabitIdsAreUuids() {
+    const idMap = new Map();
+    const usedIds = new Set();
+    let changed = false;
+
+    state.habits = (Array.isArray(state.habits) ? state.habits : [])
+      .map((habit, index) => {
+        if (!habit || typeof habit !== "object") {
+          changed = true;
+          return null;
+        }
+
+        const originalId = typeof habit.id === "string" ? habit.id.trim() : "";
+        let nextId = originalId;
+
+        if (!isUuid(nextId) || usedIds.has(nextId)) {
+          nextId = uid();
+          changed = true;
+          if (originalId && !idMap.has(originalId)) {
+            idMap.set(originalId, nextId);
+          }
+        }
+
+        usedIds.add(nextId);
+
+        return {
+          ...habit,
+          id: nextId,
+          title: typeof habit.title === "string" ? habit.title : "",
+          active: habit.active !== false,
+          order: Number.isFinite(habit.order) ? habit.order : index,
+          createdAt:
+            typeof habit.createdAt === "string" && habit.createdAt.trim()
+              ? habit.createdAt
+              : new Date().toISOString(),
+        };
+      })
+      .filter(Boolean);
+
+    remapStoredHabitIds(idMap, new Set(state.habits.map((habit) => habit.id)));
+    return changed || idMap.size > 0;
   }
 
   function loadLocalState() {
@@ -185,6 +315,7 @@
     state.mainlines = parseMainlinesContent(saved.mainlines, saved.mainline);
     state.principles = parsePrinciplesContent(saved.principles);
     state.interests = parseInterestsContent(saved.interests);
+    ensureHabitIdsAreUuids();
     selectedMainlineId = getSortedMainlines()[0]?.id || null;
     selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
     selectedInterestId = getSortedInterests()[0]?.id || null;
@@ -1293,6 +1424,10 @@
         (habitId) => habitId !== id,
       );
     });
+    state.skippedToday = state.skippedToday.filter((habitId) => habitId !== id);
+    if (state.currentHabitId === id) {
+      state.currentHabitId = null;
+    }
     normalizeOrders();
     await persistAll();
   }
@@ -1861,6 +1996,7 @@
           return;
         }
 
+        ensureHabitIdsAreUuids();
         const userId = session.user.id;
         const remoteHabits = state.habits.map((habit, index) => ({
           id: habit.id,
@@ -1930,6 +2066,7 @@
   let provider = localProvider;
 
   async function persistAll(flushRemote = false) {
+    ensureHabitIdsAreUuids();
     normalizeOrders();
     saveLocalState();
     renderMain();
@@ -2021,6 +2158,209 @@
     }
   }
 
+  function renderMoodDialog() {
+    const step = moodSteps[moodStepIndex];
+    const isComplete = !step;
+
+    if (isComplete) {
+      els.moodProgress.textContent = "完成";
+      els.moodQuestion.textContent = "你已经走到这一页了。";
+      els.moodOptionA.hidden = true;
+      els.moodOptionB.hidden = true;
+      return;
+    }
+
+    els.moodProgress.textContent = `第 ${moodStepIndex + 1} 页 / 共 ${moodSteps.length} 页`;
+    els.moodQuestion.textContent = step.question;
+    els.moodOptionA.hidden = dismissedMoodSteps.has(moodStepIndex);
+    els.moodOptionA.querySelector("strong").textContent = step.optionA;
+    els.moodOptionB.hidden = false;
+    els.moodOptionB.querySelector("strong").textContent = step.optionB;
+  }
+
+  function openMoodDialog() {
+    moodStepIndex = 0;
+    dismissedMoodSteps.clear();
+    renderMoodDialog();
+    if (!els.moodDialog.open) {
+      els.moodDialog.showModal();
+    }
+  }
+
+  function closeMoodDialog() {
+    if (els.moodDialog.open) {
+      els.moodDialog.close();
+    }
+  }
+
+  function dismissMoodOptionA() {
+    dismissedMoodSteps.add(moodStepIndex);
+    renderMoodDialog();
+  }
+
+  function goToNextMoodStep() {
+    moodStepIndex += 1;
+    renderMoodDialog();
+  }
+
+  const FROG_STORAGE_PREFIX = "micro-habit-frogs-";
+  let frogViewDate = TODAY();
+
+  function frogDateKey(dateStr = TODAY()) {
+    return `${FROG_STORAGE_PREFIX}${dateStr}`;
+  }
+
+  function normalizeFrogs(items) {
+    return Array.isArray(items)
+      ? items
+          .filter((item) => item && typeof item === "object")
+          .map((item) => ({
+            id: typeof item.id === "string" && item.id ? item.id : uid(),
+            title: typeof item.title === "string" ? item.title : "",
+            done: item.done === true,
+          }))
+          .filter((item) => item.title.trim())
+      : [];
+  }
+
+  function loadFrogsForDate(dateStr = TODAY()) {
+    try {
+      return normalizeFrogs(JSON.parse(localStorage.getItem(frogDateKey(dateStr)) || "[]"));
+    } catch {
+      return [];
+    }
+  }
+
+  function loadFrogDraftsForDate(dateStr = TODAY()) {
+    try {
+      const items = JSON.parse(localStorage.getItem(frogDateKey(dateStr)) || "[]");
+      return Array.isArray(items) ? items : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveFrogsForDate(dateStr, frogs) {
+    localStorage.setItem(frogDateKey(dateStr), JSON.stringify(normalizeFrogs(frogs)));
+    renderDonelistFrogSummary();
+  }
+
+  function getFrogStatusText(frog) {
+    return frog.done ? "已吃掉" : "未吃掉";
+  }
+
+  function renderFrogDialog() {
+    const frogs = loadFrogsForDate(frogViewDate);
+    els.frogList.innerHTML = "";
+
+    if (!frogs.length) {
+      const empty = document.createElement("li");
+      empty.className = "frog-empty";
+      empty.textContent = "还没有写今日的蛙。";
+      els.frogList.appendChild(empty);
+      return;
+    }
+
+    frogs.forEach((frog) => {
+      const li = document.createElement("li");
+      li.className = `frog-item${frog.done ? " done" : ""}`;
+
+      const check = document.createElement("button");
+      check.type = "button";
+      check.className = "frog-check";
+      check.setAttribute("aria-label", `${frog.title}：${getFrogStatusText(frog)}`);
+      check.addEventListener("click", () => {
+        const next = loadFrogsForDate(frogViewDate).map((item) =>
+          item.id === frog.id ? { ...item, done: !item.done } : item,
+        );
+        saveFrogsForDate(frogViewDate, next);
+        renderFrogDialog();
+      });
+
+      const input = document.createElement("input");
+      input.className = "frog-edit-input";
+      input.type = "text";
+      input.maxLength = 120;
+      input.value = frog.title;
+      input.addEventListener("input", () => {
+        const next = loadFrogDraftsForDate(frogViewDate).map((item) =>
+          item.id === frog.id ? { ...item, title: input.value } : item,
+        );
+        localStorage.setItem(frogDateKey(frogViewDate), JSON.stringify(next));
+        renderDonelistFrogSummary();
+      });
+      input.addEventListener("blur", () => {
+        const next = normalizeFrogs(loadFrogsForDate(frogViewDate));
+        saveFrogsForDate(frogViewDate, next);
+        renderFrogDialog();
+      });
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "small-button danger frog-delete";
+      remove.textContent = "删";
+      remove.addEventListener("click", () => {
+        const next = loadFrogsForDate(frogViewDate).filter((item) => item.id !== frog.id);
+        saveFrogsForDate(frogViewDate, next);
+        renderFrogDialog();
+      });
+
+      li.appendChild(check);
+      li.appendChild(input);
+      li.appendChild(remove);
+      els.frogList.appendChild(li);
+    });
+  }
+
+  function openFrogDialog(dateStr = TODAY()) {
+    frogViewDate = dateStr;
+    els.frogInput.value = "";
+    renderFrogDialog();
+    if (!els.frogDialog.open) {
+      els.frogDialog.showModal();
+    }
+  }
+
+  function addFrog() {
+    const title = els.frogInput.value.trim();
+    if (!title) return;
+    const frogs = loadFrogsForDate(frogViewDate);
+    frogs.push({ id: uid(), title, done: false });
+    saveFrogsForDate(frogViewDate, frogs);
+    els.frogInput.value = "";
+    renderFrogDialog();
+    els.frogInput.focus();
+  }
+
+  function formatFrogCopyBlock(dateStr = donelistViewDate) {
+    const frogs = loadFrogsForDate(dateStr);
+    const lines = frogs.length
+      ? frogs.map((frog) => `${frog.done ? "✓" : "○"} ${frog.title}（${getFrogStatusText(frog)}）`)
+      : ["暂无"];
+    return `• 蛙:\n${lines.join("\n")}`;
+  }
+
+  function renderDonelistFrogSummary(dateStr = donelistViewDate) {
+    if (!els.donelistFrogList) return;
+    const frogs = loadFrogsForDate(dateStr);
+    els.donelistFrogList.innerHTML = "";
+
+    if (!frogs.length) {
+      const empty = document.createElement("li");
+      empty.className = "frog-summary-empty";
+      empty.textContent = "还没有写今日的蛙。";
+      els.donelistFrogList.appendChild(empty);
+      return;
+    }
+
+    frogs.forEach((frog) => {
+      const li = document.createElement("li");
+      li.className = `frog-summary-item${frog.done ? " done" : ""}`;
+      li.innerHTML = `<span class="frog-summary-dot">${frog.done ? "✓" : ""}</span><span>${frog.title}</span><em>${getFrogStatusText(frog)}</em>`;
+      els.donelistFrogList.appendChild(li);
+    });
+  }
+
   function wireEvents() {
     els.openMainline.addEventListener("click", openMainlineDialog);
     els.mainlineClose.addEventListener("click", closeMainlineDialog);
@@ -2052,6 +2392,18 @@
       updateSelectedInterestFromForm();
       renderInterestsDialog();
     });
+
+    els.openMood.addEventListener("click", openMoodDialog);
+    els.moodClose.addEventListener("click", closeMoodDialog);
+    els.moodOptionA.addEventListener("click", dismissMoodOptionA);
+    els.moodOptionB.addEventListener("click", goToNextMoodStep);
+    els.openFrog.addEventListener("click", () => openFrogDialog(TODAY()));
+    els.frogClose.addEventListener("click", () => els.frogDialog.close());
+    els.frogAdd.addEventListener("click", addFrog);
+    els.frogInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") addFrog();
+    });
+    els.donelistOpenFrog.addEventListener("click", () => openFrogDialog(donelistViewDate));
 
     els.openSettings.addEventListener("click", () => els.settingsDialog.showModal());
     els.completeTask.addEventListener("click", completeCurrentHabit);
@@ -2295,6 +2647,7 @@
       emotionKit: "",
       vent: "",
       tomorrowPlan: "",
+      frogs: [],
     };
   }
 
@@ -2373,6 +2726,7 @@
       emotionKit: donelistEls.emotionKit.value,
       vent: donelistEls.vent.value,
       tomorrowPlan: donelistEls.tomorrowPlan.value,
+      frogs: loadFrogsForDate(donelistViewDate),
     };
   }
 
@@ -2446,6 +2800,9 @@
   }
 
   function renderDonelist(data) {
+    if (Array.isArray(data.frogs) && data.frogs.length) {
+      saveFrogsForDate(data.date || donelistViewDate, data.frogs);
+    }
     donelistEls.freeform.value = data.freeform || "";
     donelistEls.events.value = data.events || "";
     donelistEls.positive.value = data.positive || "";
@@ -2459,6 +2816,7 @@
     donelistEls.tomorrowPlan.value = data.tomorrowPlan || "";
     donelistStepIndex = getFirstEmptyReviewStepIndex(donelistSteps);
     setDonelistMode(data.mode);
+    renderDonelistFrogSummary(data.date || donelistViewDate);
     Object.values(donelistEls).forEach((el) => {
       if (el instanceof HTMLTextAreaElement) autoResizeTextarea(el);
     });
@@ -2482,9 +2840,12 @@
 
   function copyDonelist() {
     const dateStr = formatDonelistTag(donelistViewDate);
+    const frogBlock = formatFrogCopyBlock(donelistViewDate);
     if (getDonelistMode() === "free") {
       const freeform = donelistEls.freeform.value.trim();
-      const text = freeform ? `${dateStr}\n\n${freeform}` : `${dateStr}\n今天还没有记录。`;
+      const text = freeform
+        ? `${dateStr}\n\n${frogBlock}\n\n${freeform}`
+        : `${dateStr}\n\n${frogBlock}`;
       copyTextWithFeedback(text, donelistEls.copyBtn);
       return;
     }
@@ -2501,6 +2862,7 @@
     ];
 
     const parts = [];
+    parts.push(frogBlock);
     fields.forEach((f) => {
       const v = f.value.trim();
       if (v) parts.push(`• ${f.label}:\n${v}`);
@@ -2509,7 +2871,7 @@
     const planVal = donelistEls.tomorrowPlan.value.trim();
     if (planVal) parts.push(`• 明日计划:\n${planVal}`);
 
-    const text = parts.length ? `${dateStr}\n\n${parts.join("\n\n")}` : `${dateStr}\n今天还没有记录。`;
+    const text = `${dateStr}\n\n${parts.join("\n\n")}`;
     copyTextWithFeedback(text, donelistEls.copyBtn);
   }
 
@@ -2562,8 +2924,32 @@
     return `${WEEKLY_REVIEW_PREFIX}${dateKey}`;
   }
 
+  function startOfMondayWeek(date) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const mondayOffset = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - mondayOffset);
+    return d;
+  }
+
+  function addDays(date, days) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  function firstMondayWeekStartOfMonth(year, month) {
+    return startOfMondayWeek(new Date(year, month - 1, 1));
+  }
+
+  function getWeekRange(year, month, weekNum) {
+    const start = addDays(firstMondayWeekStartOfMonth(year, month), (weekNum - 1) * 7);
+    return { start, end: addDays(start, 6) };
+  }
+
   function getWeekOfMonth(date) {
-    return Math.ceil(date.getDate() / 7);
+    const firstStart = firstMondayWeekStartOfMonth(date.getFullYear(), date.getMonth() + 1);
+    const currentStart = startOfMondayWeek(date);
+    return Math.floor((currentStart - firstStart) / 604800000) + 1;
   }
 
   function weeklyReviewDateKey(date) {
@@ -3370,12 +3756,21 @@
   function donelistMonth() { return parseInt(donelistViewDate.slice(5, 7)); }
   function donelistDay() { return parseInt(donelistViewDate.slice(8, 10)); }
 
+  function formatFullDateLabel(year, month, day) {
+    return `${year}/${month}/${day}`;
+  }
+
+  function formatWeekRangeLabel(year, month, weekNum) {
+    const range = getWeekRange(year, month, weekNum);
+    return `${range.start.getFullYear()}/${range.start.getMonth() + 1}/${range.start.getDate()}-${range.end.getFullYear()}/${range.end.getMonth() + 1}/${range.end.getDate()}`;
+  }
+
   function renderDonelistNav() {
     var y = donelistYear(), m = donelistMonth(), d = donelistDay();
     document.getElementById("donelist-cur-month").textContent = m;
     document.getElementById("donelist-cur-day").textContent = d;
     var wd = new Date(y, m - 1, d).getDay();
-    document.getElementById("donelist-nav-weekday").textContent = WEEKDAY_NAMES[wd];
+    document.getElementById("donelist-nav-weekday").textContent = `${WEEKDAY_NAMES[wd]} · ${formatFullDateLabel(y, m, d)}`;
   }
 
   function donelistSaveAndLoad(dateStr) {
@@ -3436,6 +3831,7 @@
     var p = weeklyParseKey();
     document.getElementById("weekly-cur-month").textContent = p.m;
     document.getElementById("weekly-cur-week").textContent = p.w;
+    document.getElementById("weekly-date-range").textContent = formatWeekRangeLabel(p.y, p.m, p.w);
   }
 
   function weeklySaveAndLoad(key) {
@@ -3532,18 +3928,19 @@
   };
 
   // Helper: max weeks in month
-  function maxWeeksInMonth(year, month) { return Math.ceil(daysInMonth(year, month) / 7); }
+  function maxWeeksInMonth(year, month) {
+    const firstStart = firstMondayWeekStartOfMonth(year, month);
+    const lastStart = startOfMondayWeek(new Date(year, month - 1, daysInMonth(year, month)));
+    return Math.floor((lastStart - firstStart) / 604800000) + 1;
+  }
   function isFutureDay(year, month, day) {
     var now = new Date();
     return new Date(year, month - 1, day) > new Date(now.getFullYear(), now.getMonth(), now.getDate());
   }
   function isFutureWeek(year, month, weekNum) {
     var now = new Date();
-    if (year > now.getFullYear()) return true;
-    if (year < now.getFullYear()) return false;
-    if (month > now.getMonth() + 1) return true;
-    if (month < now.getMonth() + 1) return false;
-    return weekNum > getWeekOfMonth(now);
+    const range = getWeekRange(year, month, weekNum);
+    return range.start > startOfMondayWeek(now);
   }
   function isFutureMonth(year, month) {
     var now = new Date();
@@ -3649,7 +4046,7 @@
       h += `<button class="history-nav-btn" onclick="window.__hDayPrevD()">◀</button>`;
       h += `<span class="history-nav-label">${historyState.day}<span class="history-nav-unit">日</span></span>`;
       h += `<button class="history-nav-btn" onclick="window.__hDayNextD()">▶</button>`;
-      h += `<span class="history-nav-weekday">${WEEKDAY_NAMES[getWeekday(historyState.year, historyState.month, historyState.day)]}</span>`;
+      h += `<span class="history-nav-weekday">${WEEKDAY_NAMES[getWeekday(historyState.year, historyState.month, historyState.day)]} · ${formatFullDateLabel(historyState.year, historyState.month, historyState.day)}</span>`;
     } else if (historyState.tab === "week") {
       h += `<button class="history-nav-btn" onclick="window.__hWeekPrevM()">◀</button>`;
       h += `<span class="history-nav-label">${historyState.weekMonth}<span class="history-nav-unit">月</span></span>`;
@@ -3658,6 +4055,7 @@
       h += `<button class="history-nav-btn" onclick="window.__hWeekPrevW()">◀</button>`;
       h += `<span class="history-nav-label">${historyState.weekNum}<span class="history-nav-unit">周</span></span>`;
       h += `<button class="history-nav-btn" onclick="window.__hWeekNextW()">▶</button>`;
+      h += `<span class="history-nav-weekday">${formatWeekRangeLabel(historyState.weekYear, historyState.weekMonth, historyState.weekNum)}</span>`;
     } else {
       h += `<button class="history-nav-btn" onclick="window.__hMonthPrevY()">◀</button>`;
       h += `<span class="history-nav-label">${historyState.monthYear}<span class="history-nav-unit">年</span></span>`;

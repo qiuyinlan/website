@@ -1,0 +1,1 @@
+u.prototype.append=function(n,t){return this.adjacent(n,t,function(n,t){n.appendChild(t)})};

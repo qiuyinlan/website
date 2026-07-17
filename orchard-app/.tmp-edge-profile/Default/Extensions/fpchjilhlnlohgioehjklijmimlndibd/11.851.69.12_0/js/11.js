@@ -1,0 +1,1 @@
+export function setGlobalEval(a,t){var l=0,r=a.length;for(;l<r;l++){dataPriv.set(a[l],"globalEval",!t||dataPriv.get(t[l],"globalEval"))}}

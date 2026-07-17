@@ -1,0 +1,1 @@
+var runescape=new RegExp("\\\\[\\da-fA-F]{1,6}"+whitespace+"?|\\\\([^\\r\\n\\f])","g"),funescape=function(e,r){var n="0x"+e.slice(1)-65536;if(r){return r}return n<0?String.fromCharCode(n+65536):String.fromCharCode(n>>10|55296,n&1023|56320)};export function unescapeSelector(e){return e.replace(runescape,funescape)}

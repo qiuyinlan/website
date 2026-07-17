@@ -1,0 +1,1 @@
+module("Unit | Utility | foo/bar-baz");test("it works",function(o){let t=fooBarBaz();o.ok(t)});

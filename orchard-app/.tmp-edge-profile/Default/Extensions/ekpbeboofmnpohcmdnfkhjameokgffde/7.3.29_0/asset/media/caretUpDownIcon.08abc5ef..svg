@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>caret-up-down</title>
+    <desc>Created with Sketch.</desc>
+    <g id="caret-up-down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(5.000000, 4.000000)" fill="#333333" fill-rule="nonzero" id="fill">
+            <path d="M5.88444639,8.26105601 L2.49465029,11.9274873 C2.29462776,12.1000976 1.99999999,11.9453435 1.99999999,11.6655957 L1.99999999,4.33570932 C1.99999999,4.05596153 2.29462776,3.89823139 2.49465029,4.07381777 L5.88444639,7.73727291 C6.03851789,7.87119481 6.03851789,8.12713421 5.88444639,8.26105601 Z" transform="translate(4.000000, 8.000000) rotate(90.000000) translate(-4.000000, -8.000000) "></path>
+            <path d="M5.88444639,2.26105603 L2.49465029,5.92748726 C2.29462776,6.10009759 1.99999999,5.9453435 1.99999999,5.66559571 L1.99999999,-1.6642907 C1.99999999,-1.94403849 2.29462776,-2.10176863 2.49465029,-1.92618225 L5.88444639,1.73727294 C6.03851789,1.87119475 6.03851789,2.12713422 5.88444639,2.26105603 Z" transform="translate(4.000000, 2.000000) scale(-1, 1) rotate(-90.000000) translate(-4.000000, -2.000000) "></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,1 @@
+module("Unit | Mixin | foo");test("it works",function(e){let t=EmberObject.extend(FooMixin);let o=t.create();e.ok(o)});

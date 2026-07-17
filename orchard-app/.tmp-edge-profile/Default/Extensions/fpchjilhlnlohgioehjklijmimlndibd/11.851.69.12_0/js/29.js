@@ -1,0 +1,1 @@
+let adapter;moduleFor("ember-testing Adapter",class extends AbstractTestCase{constructor(){super();adapter=Adapter.create()}teardown(){run(adapter,adapter.destroy)}["@test exception throws"](e){let t="Hai";let a;try{adapter.exception(t)}catch(e){a=e}e.equal(a,t)}});

@@ -1,0 +1,63 @@
+{
+   "action": {
+   },
+   "author": "cuitrek@gmail.com",
+   "background": {
+      "service_worker": "service_worker.js"
+   },
+   "commands": {
+      "_execute_action": {
+         "description": "打开/关闭",
+         "suggested_key": {
+            "chromeos": "Ctrl+Shift+Y",
+            "default": "Alt+O",
+            "linux": "Ctrl+Shift+Y",
+            "mac": "Command+Shift+V",
+            "windows": "Alt+O"
+         }
+      },
+      "next_Song": {
+         "description": "下一首",
+         "suggested_key": {
+            "chromeos": "Ctrl+Shift+L",
+            "default": "Alt+N",
+            "linux": "Ctrl+Shift+L",
+            "mac": "Command+Shift+L",
+            "windows": "Alt+N"
+         }
+      },
+      "play_Song": {
+         "description": "播放/暂停",
+         "suggested_key": {
+            "chromeos": "Ctrl+Shift+I",
+            "default": "Alt+T",
+            "linux": "Ctrl+Shift+I",
+            "mac": "Command+Shift+I",
+            "windows": "Alt+T"
+         }
+      },
+      "pre_Song": {
+         "description": "上一首",
+         "suggested_key": {
+            "chromeos": "Ctrl+Shift+E",
+            "default": "Alt+P",
+            "linux": "Ctrl+Shift+E",
+            "mac": "Command+Shift+K",
+            "windows": "Alt+P"
+         }
+      }
+   },
+   "description": "聚合网易云音乐酷狗音乐QQ音乐咪咕音乐等,支持搜歌,歌曲下载等功能,畅听多平台vip歌曲",
+   "host_permissions": [ "*://*.tonzhon.com/", "*://*.toujianyun.com/", "*://*.fangpi.net/", "*://*.music.163.com/", "*://*.music.126.net/", "*://*.kuwo.cn/", "*://*.migu.cn/", "*://*.qq.com/*", "*://*.bilibili.com/*", "*://*.gtimg.cn/*", "*://*.taihe.com/*", "*://music.91q.com/*", "*://*.xiami.com/*", "*://*.kugou.com/", "*://*.52stars.cn/*", "*://*.qtfm.cn/*", "*:/*.xmsj.org/*", "*://*/*" ],
+   "icons": {
+      "128": "icon-128.png",
+      "16": "icon-128.png",
+      "48": "icon-128.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsCcC/6qtb9cagy5/Wni8vQ9K25w2mE/ghQOpxmK4zLYhTh0IpA2FaZ+Pu2l8l4rH2krPgrSKe1zILL8E6O3bg0ddLyd9++3f6LR0JglXNsFIlWNTmBgUSwjSzfdfD0rr3A3BB7cnfBwdh3PADAV0AxOX5P2Nc6QyfmC13IWxYL41Y3vHqSpd/0KbVT2T/GLafN7l2t0IyXibvutMs7YQTPaIixDg+zjJlVzWXMkAGyGMdlAXNsANLuM26o70/BLAz7oZSluHabpVemP63EQK9uiv1msfiVg65GdMh0k8XUAfTCdMIZ5bT6ngrgDbX2t8mfdgDI08OZ6Qsa3GPUaofQIDAQAB",
+   "manifest_version": 3,
+   "name": "云音乐",
+   "permissions": [ "cookies", "storage", "unlimitedStorage", "webRequest", "notifications", "contextMenus", "offscreen", "downloads", "downloads.open", "downloads.shelf", "declarativeNetRequest" ],
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "1.1.13"
+}

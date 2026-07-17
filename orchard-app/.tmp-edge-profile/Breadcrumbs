@@ -1,0 +1,122 @@
+0:02:39 Tab2 StartNav46 #renderer-script #auto_subframe
+0:02:39 Tab2 FinishNav46
+0:02:39 Tab2 PageLoad #failure
+0:02:39 Tab2 FinishNav45
+0:02:40 Tab2 PageLoad #failure
+0:03:02 Tab4 StartNav47 #typed
+0:03:02 Tab4 FinishNav47
+0:03:02 Tab4 PageLoad
+0:03:28 Tab4 StartNav49 #typed
+0:03:28 Tab4 FinishNav49
+0:03:28 Microsoft.ENP.Framework.CourtesyEngine.FrequencyCappingAllowed
+0:03:28 Microsoft.Nurturing.Framework.CourtesyEngine.FrequencyCappingAllowed
+0:03:28 Tab4 PageLoad
+0:04:46 Tab2 StartNav50 #renderer-script #link
+0:04:46 Tab2 FinishNav50
+0:04:46 Tab2 StartNav51 #renderer-script #link
+0:04:46 Tab2 FinishNav51
+0:04:46 Tab2 StartNav52 #renderer-script #link
+0:04:46 Tab2 FinishNav52
+0:04:47 Tab2 StartNav53 #renderer-script #auto_subframe
+0:04:47 Tab2 FinishNav53
+0:04:47 Tab2 PageLoad #failure
+0:04:47 Tab2 PageLoad
+0:04:47 Tab2 StartNav54 #renderer-script #auto_subframe
+0:04:48 Tab2 FinishNav54
+0:04:49 Tab2 StartNav55 #renderer-script #auto_subframe
+0:04:49 Tab2 FinishNav55
+0:04:49 Tab2 PageLoad #failure
+0:04:49 Tab2 PageLoad
+0:04:51 Tab2 StartNav56 #renderer-script #auto_subframe
+0:04:51 Tab2 FinishNav56
+0:04:51 Tab2 PageLoad #failure
+0:04:51 Tab2 StartNav57 #renderer-script #auto_subframe
+0:04:51 Tab2 StartNav58 #renderer-script #auto_subframe
+0:04:51 Tab2 FinishNav58
+0:04:51 Tab2 PageLoad #failure
+0:04:51 Tab2 FinishNav57
+0:04:51 Tab2 PageLoad #failure
+0:04:51 Tab2 StartNav59 #renderer-script #auto_subframe
+0:04:51 Tab2 FinishNav59
+0:04:51 Tab2 PageLoad #failure
+0:04:52 Tab2 StartNav60 #renderer-script #auto_subframe
+0:04:52 Tab2 FinishNav60
+0:04:52 Tab2 PageLoad #failure
+0:04:53 Tab2 StartNav61 #renderer-script #auto_subframe
+0:04:53 Tab2 FinishNav61
+0:04:53 Tab2 PageLoad #failure
+0:05:31 Tab4 StartNav62 #typed
+0:05:31 Tab4 FinishNav62
+0:05:31 Widget Closed: LocationBarBubbleDelegateView
+0:05:32 Tab4 PageLoad
+0:06:21 Tab4 StartNav63 #typed
+0:06:21 Tab4 FinishNav63
+0:06:22 Tab4 PageLoad
+0:07:03 Tab2 StartNav64 #renderer-script #link
+0:07:03 Tab2 FinishNav64
+0:07:03 Tab2 StartNav65 #renderer-script #link
+0:07:03 Tab2 FinishNav65
+0:07:04 Tab2 StartNav66 #renderer-script #link
+0:07:04 Tab2 FinishNav66
+0:07:04 Tab2 StartNav67 #renderer-script #auto_subframe
+0:07:04 Tab2 FinishNav67
+0:07:05 Tab2 PageLoad #failure
+0:07:05 Tab2 PageLoad
+0:07:05 Tab2 StartNav68 #renderer-script #auto_subframe
+0:07:05 Tab2 FinishNav68
+0:07:06 Tab2 StartNav69 #renderer-script #auto_subframe
+0:07:06 Tab2 FinishNav69
+0:07:07 Tab2 PageLoad #failure
+0:07:07 Tab2 PageLoad
+0:07:08 Tab2 StartNav70 #renderer-script #auto_subframe
+0:07:08 Tab2 FinishNav70
+0:07:08 Tab2 PageLoad #failure
+0:07:08 Tab2 StartNav71 #renderer-script #auto_subframe
+0:07:08 Tab2 FinishNav71
+0:07:08 Tab2 PageLoad #failure
+0:07:09 Tab2 StartNav72 #renderer-script #auto_subframe
+0:07:09 Tab2 StartNav73 #renderer-script #auto_subframe
+0:07:09 Tab2 FinishNav73
+0:07:09 Tab2 PageLoad #failure
+0:07:09 Tab2 FinishNav72
+0:07:09 Tab2 PageLoad #failure
+0:07:09 Tab2 StartNav74 #renderer-script #auto_subframe
+0:07:09 Tab2 FinishNav74
+0:07:09 Tab2 PageLoad #failure
+0:07:09 Tab2 StartNav75 #renderer-script #auto_subframe
+0:07:09 Tab2 FinishNav75
+0:07:10 Tab2 PageLoad #failure
+0:09:26 Tab2 StartNav76 #renderer-script #link
+0:09:26 Tab2 FinishNav76
+0:09:26 Tab2 StartNav77 #renderer-script #link
+0:09:26 Tab2 FinishNav77
+0:09:27 Tab2 StartNav78 #renderer-script #link
+0:09:27 Tab2 FinishNav78
+0:09:27 Tab2 StartNav79 #renderer-script #auto_subframe
+0:09:27 Tab2 FinishNav79
+0:09:28 Tab2 PageLoad #failure
+0:09:28 Tab2 PageLoad
+0:09:28 Tab2 StartNav80 #renderer-script #auto_subframe
+0:09:28 Tab2 FinishNav80
+0:09:30 Tab2 StartNav81 #renderer-script #auto_subframe
+0:09:30 Tab2 FinishNav81
+0:09:30 Tab2 PageLoad #failure
+0:09:30 Tab2 PageLoad
+0:09:31 Tab2 StartNav82 #renderer-script #auto_subframe
+0:09:31 Tab2 FinishNav82
+0:09:31 Tab2 PageLoad #failure
+0:09:31 Tab2 StartNav83 #renderer-script #auto_subframe
+0:09:31 Tab2 FinishNav83
+0:09:31 Tab2 PageLoad #failure
+0:09:32 Tab2 StartNav84 #renderer-script #auto_subframe
+0:09:32 Tab2 StartNav85 #renderer-script #auto_subframe
+0:09:32 Tab2 FinishNav85
+0:09:32 Tab2 PageLoad #failure
+0:09:32 Tab2 FinishNav84
+0:09:32 Tab2 PageLoad #failure
+0:09:32 Tab2 StartNav86 #renderer-script #auto_subframe
+0:09:32 Tab2 FinishNav86
+0:09:32 Tab2 PageLoad #failure
+0:09:32 Tab2 StartNav87 #renderer-script #auto_subframe
+0:09:32 Tab2 FinishNav87
+0:09:32 Tab2 PageLoad #failure

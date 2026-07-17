@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="96px" height="60px" viewBox="0 0 96 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>icon-sidebar-dark-right-narrow</title>
+    <desc>Created with Sketch.</desc>
+    <g id="左右切换" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-sidebar-dark-right-narrow" fill-rule="nonzero">
+            <rect id="Rectangle" fill="#393939" x="0" y="0" width="96" height="60"></rect>
+            <rect id="Rectangle" fill="#242424" x="84" y="0" width="12" height="60"></rect>
+            <circle id="Oval" fill="#676767" cx="90" cy="11" r="3"></circle>
+            <rect id="Rectangle" fill="#676767" x="87" y="20" width="6" height="3" rx="1"></rect>
+            <rect id="Rectangle" fill="#676767" x="87" y="27" width="6" height="3" rx="1"></rect>
+            <rect id="Rectangle" fill="#676767" x="87" y="34" width="6" height="3" rx="1"></rect>
+            <rect id="Rectangle" fill="#676767" x="87" y="41" width="6" height="3" rx="1"></rect>
+            <rect id="Rectangle" fill="#676767" x="87" y="48" width="6" height="3" rx="1"></rect>
+        </g>
+    </g>
+</svg>

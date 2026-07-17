@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="theme-color" content="#f4efe2" />
+    <title>微习惯系统</title>
+    <script>
+      (function () {
+        const LEGACY_CACHE_PREFIX = "micro-habit-pwa-";
+
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) =>
+              Promise.all(registrations.map((registration) => registration.unregister())),
+            )
+            .catch(() => {});
+        }
+
+        if ("caches" in window) {
+          caches
+            .keys()
+            .then((keys) =>
+              Promise.all(
+                keys
+                  .filter((key) => key.startsWith(LEGACY_CACHE_PREFIX))
+                  .map((key) => caches.delete(key)),
+              ),
+            )
+            .catch(() => {});
+        }
+      })();
+    </script>
+    <link rel="manifest" href="./manifest.webmanifest?v=2026.06.18-fireworks" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css?v=2026.06.18-fireworks" />
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="./config.js?v=2026.06.18-fireworks"></script>
+    <script defer src="./app.js?v=2026.06.18-fireworks"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <p class="eyebrow">Micro Habit</p>
+          <h1>微习惯系统</h1>
+          <p id="app-version" class="app-version">版本读取中</p>
+        </div>
+        <div class="topbar-actions">
+          <button id="open-donelist" class="donelist-button" type="button">日志</button>
+          <button id="open-weekly-review" class="review-button weekly-button" type="button">周复盘</button>
+          <button id="open-monthly-review" class="review-button monthly-button" type="button">月复盘</button>
+          <a href="./orchard/" class="orchard-button">春日果园</a>
+          <button id="open-mood" class="mood-button" type="button">心情</button>
+          <button id="open-mainline" class="secondary-button" type="button">主线</button>
+          <button id="open-principles" class="secondary-button" type="button">原则</button>
+          <button id="open-interests" class="secondary-button" type="button">兴趣</button>
+          <button id="open-timer" class="secondary-button" type="button">计时</button>
+          <button id="open-settings" class="ghost-button" type="button">设置</button>
+        </div>
+      </header>
+
+      <main class="stage">
+        <section class="task-card" aria-live="polite">
+          <p id="mode-badge" class="mode-badge">本地模式</p>
+          <p id="task-order" class="task-order">今天第 1 项</p>
+          <h2 id="task-title" class="task-title">先创建一个微习惯</h2>
+          <p id="task-hint" class="task-hint">
+            打开设置页，添加一些你想长期坚持的小动作。
+          </p>
+          <div class="task-actions">
+            <button id="complete-task" class="primary-button" type="button">
+              完成
+            </button>
+            <button id="skip-task" class="secondary-button" type="button">
+              跳过
+            </button>
+          </div>
+        </section>
+
+        <section class="today-panel">
+          <div class="today-header">
+            <h3>今日进度</h3>
+            <p id="today-progress">0 / 0</p>
+          </div>
+          <ul id="today-list" class="today-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="donelist-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Self Awareness Diary</p>
+            <h2>自我觉察日记</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <div class="review-mode-switch review-mode-switch-compact" role="group" aria-label="日志模式切换">
+              <button id="donelist-mode-template" class="review-mode-btn is-active" type="button" aria-pressed="true">模板</button>
+              <button id="donelist-mode-free" class="review-mode-btn" type="button" aria-pressed="false">随记</button>
+              <button id="donelist-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
+            </div>
+            <button id="donelist-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="donelist-clear" class="secondary-button danger-button" type="button">清空</button>
+            <button id="donelist-goto-history" class="secondary-button" type="button">回顾</button>
+            <button id="donelist-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div id="donelist-nav" class="donelist-nav">
+          <button class="donelist-nav-btn" id="donelist-prev-month">◀</button>
+          <span class="donelist-nav-num"><span id="donelist-cur-month">6</span>月</span>
+          <button class="donelist-nav-btn" id="donelist-next-month">▶</button>
+          <span class="donelist-nav-spacer"></span>
+          <button class="donelist-nav-btn" id="donelist-prev-day">◀</button>
+          <span class="donelist-nav-num"><span id="donelist-cur-day">9</span>日</span>
+          <button class="donelist-nav-btn" id="donelist-next-day">▶</button>
+          <span id="donelist-nav-weekday" class="donelist-nav-weekday">周二</span>
+        </div>
+
+        <section id="donelist-freeform-section" class="panel donelist-section review-mode-panel" hidden>
+          <div class="review-mode-head">
+            <h3 class="donelist-period-title">随记</h3>
+            <p class="donelist-hint">想到什么就写什么，复制时也会自动带上 #日期 标签。</p>
+          </div>
+          <textarea id="donelist-freeform" class="donelist-input review-freeform-input" placeholder="今天想怎么记都可以，随便写..."></textarea>
+        </section>
+
+        <div id="donelist-structured-shell" class="review-structured-shell is-template">
+          <section id="donelist-stepper" class="panel review-stepper" hidden>
+            <div class="review-stepper-meta">
+              <p id="donelist-step-count" class="review-step-count">1 / 10</p>
+              <h3 id="donelist-step-title" class="review-step-title">收获</h3>
+              <p class="donelist-hint">一次只展示这一项，写完点下一个就行；不想写也可以直接跳过。</p>
+            </div>
+            <div class="review-stepper-actions">
+              <button id="donelist-step-prev" class="secondary-button review-step-btn" type="button">上一个</button>
+              <button id="donelist-step-next" class="secondary-button review-step-btn" type="button">下一个</button>
+            </div>
+          </section>
+
+          <div id="donelist-structured-sections" class="review-guided-sections">
+            <section class="panel donelist-section review-step-panel" data-review-step="emotionKit">
+              <h3 class="donelist-period-title">收获</h3>
+              <p class="donelist-hint">比如完善了一条原则，收获了经验......无论小或大，都是记得记录的！</p>
+              <textarea id="donelist-emotion-kit" class="donelist-input" placeholder="今天收获了什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="review">
+              <h3 class="donelist-period-title">复盘</h3>
+              <textarea id="donelist-review" class="donelist-input" placeholder="今天的收获和反思..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="positive">
+              <h3 class="donelist-period-title">正向链接（生活中的美好）</h3>
+              <textarea id="donelist-positive" class="donelist-input" placeholder="今天遇到的美好事物..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="events">
+              <h3 class="donelist-period-title">具体事件</h3>
+              <textarea id="donelist-events" class="donelist-input" placeholder="今天发生了什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="gratitude">
+              <h3 class="donelist-period-title">感谢</h3>
+              <textarea id="donelist-gratitude" class="donelist-input" placeholder="今天想感谢什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="selfPraise">
+              <h3 class="donelist-period-title">夸夸自己</h3>
+              <textarea id="donelist-self-praise" class="donelist-input" placeholder="今天做得好的地方..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="body">
+              <h3 class="donelist-period-title">身体</h3>
+              <textarea id="donelist-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="emotion">
+              <h3 class="donelist-period-title">情绪</h3>
+              <textarea id="donelist-emotion" class="donelist-input" placeholder="今天情绪如何..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="vent">
+              <h3 class="donelist-period-title">自由发泄区</h3>
+              <textarea id="donelist-vent" class="donelist-input" placeholder="随便写点什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="tomorrowPlan">
+              <h3 class="donelist-period-title">明日计划</h3>
+              <textarea id="donelist-tomorrow-plan" class="donelist-input" placeholder="明天的计划是什么..."></textarea>
+            </section>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="weekly-review-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Weekly Review</p>
+            <h2>周复盘</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <div class="review-mode-switch review-mode-switch-compact" role="group" aria-label="周复盘模式切换">
+              <button id="weekly-mode-template" class="review-mode-btn is-active" type="button" aria-pressed="true">模板</button>
+              <button id="weekly-mode-free" class="review-mode-btn" type="button" aria-pressed="false">随记</button>
+              <button id="weekly-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
+            </div>
+            <button id="weekly-review-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="weekly-review-clear" class="secondary-button danger-button" type="button">清空</button>
+            <button id="weekly-review-goto-history" class="secondary-button" type="button">回顾</button>
+            <button id="weekly-review-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div id="weekly-nav" class="donelist-nav">
+          <button class="donelist-nav-btn" id="weekly-prev-month">◀</button>
+          <span class="donelist-nav-num"><span id="weekly-cur-month">6</span>月</span>
+          <button class="donelist-nav-btn" id="weekly-next-month">▶</button>
+          <span class="donelist-nav-spacer"></span>
+          <button class="donelist-nav-btn" id="weekly-prev-week">◀</button>
+          <span class="donelist-nav-num"><span id="weekly-cur-week">2</span>周</span>
+          <button class="donelist-nav-btn" id="weekly-next-week">▶</button>
+          <span id="weekly-date-range" class="donelist-nav-weekday">2026/6/8-6/14</span>
+        </div>
+
+        <section id="weekly-freeform-section" class="panel donelist-section review-mode-panel" hidden>
+          <div class="review-mode-head">
+            <h3 class="donelist-period-title">随记</h3>
+            <p class="donelist-hint">这一种会按你的原话复制出去，并自动带上对应的 #日期 标签。</p>
+          </div>
+          <textarea id="weekly-freeform" class="donelist-input review-freeform-input" placeholder="这周想怎么复盘都可以，随便写..."></textarea>
+        </section>
+
+        <div id="weekly-guided-shell" class="review-structured-shell is-template">
+          <section id="weekly-stepper" class="panel review-stepper" hidden>
+            <div class="review-stepper-meta">
+              <p id="weekly-step-count" class="review-step-count">1 / 7</p>
+              <h3 id="weekly-step-title" class="review-step-title">本周事件</h3>
+              <p class="donelist-hint">一次只展示这一项，写完点下一个就行；不想写也可以直接跳过。</p>
+            </div>
+            <div class="review-stepper-actions">
+              <button id="weekly-step-prev" class="secondary-button review-step-btn" type="button">上一个</button>
+              <button id="weekly-step-next" class="secondary-button review-step-btn" type="button">下一个</button>
+            </div>
+          </section>
+
+          <div id="weekly-guided-sections" class="review-guided-sections">
+            <section class="panel donelist-section review-step-panel" data-review-step="events">
+              <h3 class="donelist-period-title">本周事件</h3>
+              <textarea id="weekly-events" class="donelist-input" placeholder="这周发生了什么事情..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="body">
+              <h3 class="donelist-period-title">身体</h3>
+              <textarea id="weekly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="gratitude">
+              <h3 class="donelist-period-title">感恩的事情</h3>
+              <textarea id="weekly-gratitude" class="donelist-input" placeholder="这周想感恩什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="progress">
+              <h3 class="donelist-period-title">本周进步</h3>
+              <textarea id="weekly-progress" class="donelist-input" placeholder="这周进步了什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="knowledge">
+              <h3 class="donelist-period-title">本周收获知识</h3>
+              <textarea id="weekly-knowledge" class="donelist-input" placeholder="这周学到了什么新知识..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="reflection">
+              <h3 class="donelist-period-title">本周反思</h3>
+              <textarea id="weekly-reflection" class="donelist-input" placeholder="这周的收获和反思..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="nextPlan">
+              <h3 class="donelist-period-title">下周计划</h3>
+              <textarea id="weekly-next-plan" class="donelist-input" placeholder="下周的计划是什么..."></textarea>
+            </section>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="monthly-review-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Monthly Review</p>
+            <h2>月复盘</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <div class="review-mode-switch review-mode-switch-compact" role="group" aria-label="月复盘模式切换">
+              <button id="monthly-mode-template" class="review-mode-btn is-active" type="button" aria-pressed="true">模板</button>
+              <button id="monthly-mode-free" class="review-mode-btn" type="button" aria-pressed="false">随记</button>
+              <button id="monthly-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
+            </div>
+            <button id="monthly-review-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="monthly-review-clear" class="secondary-button danger-button" type="button">清空</button>
+            <button id="monthly-review-goto-history" class="secondary-button" type="button">回顾</button>
+            <button id="monthly-review-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div id="monthly-nav" class="donelist-nav">
+          <button class="donelist-nav-btn" id="monthly-prev-year">◀</button>
+          <span class="donelist-nav-num"><span id="monthly-cur-year">2026</span>年</span>
+          <button class="donelist-nav-btn" id="monthly-next-year">▶</button>
+          <span class="donelist-nav-spacer"></span>
+          <button class="donelist-nav-btn" id="monthly-prev-month">◀</button>
+          <span class="donelist-nav-num"><span id="monthly-cur-month">6</span>月</span>
+          <button class="donelist-nav-btn" id="monthly-next-month">▶</button>
+        </div>
+
+        <section id="monthly-freeform-section" class="panel donelist-section review-mode-panel" hidden>
+          <div class="review-mode-head">
+            <h3 class="donelist-period-title">随记</h3>
+            <p class="donelist-hint">这一种会按你的原话复制出去，并自动带上对应的 #日期 标签。</p>
+          </div>
+          <textarea id="monthly-freeform" class="donelist-input review-freeform-input" placeholder="这个月想怎么复盘都可以，随便写..."></textarea>
+        </section>
+
+        <div id="monthly-guided-shell" class="review-structured-shell is-template">
+          <section id="monthly-stepper" class="panel review-stepper" hidden>
+            <div class="review-stepper-meta">
+              <p id="monthly-step-count" class="review-step-count">1 / 8</p>
+              <h3 id="monthly-step-title" class="review-step-title">本月的关键词</h3>
+              <p class="donelist-hint">一次只展示这一项，写完点下一个就行；不想写也可以直接跳过。</p>
+            </div>
+            <div class="review-stepper-actions">
+              <button id="monthly-step-prev" class="secondary-button review-step-btn" type="button">上一个</button>
+              <button id="monthly-step-next" class="secondary-button review-step-btn" type="button">下一个</button>
+            </div>
+          </section>
+
+          <div id="monthly-guided-sections" class="review-guided-sections">
+            <section class="panel donelist-section review-step-panel" data-review-step="keywords">
+              <h3 class="donelist-period-title">本月的关键词</h3>
+              <textarea id="monthly-keywords" class="donelist-input" placeholder="用几个关键词概括这个月..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="events">
+              <h3 class="donelist-period-title">本月事件</h3>
+              <textarea id="monthly-events" class="donelist-input" placeholder="这个月发生了什么事情..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="body">
+              <h3 class="donelist-period-title">身体</h3>
+              <textarea id="monthly-body" class="donelist-input" placeholder="身体状况、运动、睡眠..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="gratitude">
+              <h3 class="donelist-period-title">感恩的事情</h3>
+              <textarea id="monthly-gratitude" class="donelist-input" placeholder="这个月想感恩什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="progress">
+              <h3 class="donelist-period-title">本月进步</h3>
+              <textarea id="monthly-progress" class="donelist-input" placeholder="这个月进步了什么..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="knowledge">
+              <h3 class="donelist-period-title">本月收获知识</h3>
+              <textarea id="monthly-knowledge" class="donelist-input" placeholder="这个月学到了什么新知识..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="reflection">
+              <h3 class="donelist-period-title">本月反思</h3>
+              <textarea id="monthly-reflection" class="donelist-input" placeholder="这个月的收获和反思..."></textarea>
+            </section>
+
+            <section class="panel donelist-section review-step-panel" data-review-step="nextPlan">
+              <h3 class="donelist-period-title">下月计划</h3>
+              <textarea id="monthly-next-plan" class="donelist-input" placeholder="下个月的计划是什么..."></textarea>
+            </section>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="mood-dialog" class="settings-dialog mood-dialog">
+      <div class="settings-shell mood-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Mood</p>
+            <h2>心情选项</h2>
+          </div>
+          <button id="mood-close" class="ghost-button" type="button">关闭</button>
+        </header>
+
+        <section class="panel mood-panel" aria-live="polite">
+          <p id="mood-progress" class="mood-progress">第 1 页</p>
+          <h3 id="mood-question" class="mood-question">我想过_____的人生</h3>
+          <p id="mood-hint" class="mood-hint">点 a，a 会消失；点 b，进入下一页。</p>
+
+          <div class="mood-options">
+            <button id="mood-option-a" class="mood-option mood-option-a" type="button">
+              <span>a</span>
+              <strong>用自己的人生来逃避内心的痛苦</strong>
+            </button>
+            <button id="mood-option-b" class="mood-option mood-option-b" type="button">
+              <span>b</span>
+              <strong>主宰自己的人生，自由地活</strong>
+            </button>
+          </div>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="settings-dialog" class="settings-dialog">
+      <form method="dialog" class="settings-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Settings</p>
+            <h2>设置你的微习惯</h2>
+          </div>
+          <button id="close-settings" class="ghost-button" type="submit">关闭</button>
+        </header>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>同步状态</h3>
+            <p id="sync-status">未连接 Supabase，当前只保存在本机。</p>
+          </div>
+
+          <div class="auth-grid">
+            <label>
+              邮箱
+              <input id="auth-email" type="email" autocomplete="email" />
+            </label>
+            <label>
+              密码
+              <input
+                id="auth-password"
+                type="password"
+                autocomplete="current-password"
+              />
+            </label>
+          </div>
+
+          <div class="auth-actions">
+            <button id="sign-in" class="secondary-button" type="button">登录</button>
+            <button id="sign-up" class="secondary-button" type="button">注册</button>
+            <button id="sign-out" class="ghost-button" type="button">退出登录</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>新增微习惯</h3>
+            <p>建议写成 1 分钟内能完成的动作。</p>
+          </div>
+
+          <div class="habit-form">
+            <label>
+              习惯内容
+              <input
+                id="habit-title-input"
+                type="text"
+                maxlength="80"
+                placeholder="例如：喝一口水"
+              />
+            </label>
+            <button id="add-habit" class="primary-button" type="button">添加</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>我的习惯列表</h3>
+            <p>可直接编辑、拖动排序、停用和删除。</p>
+          </div>
+          <ul id="habit-list" class="habit-list"></ul>
+        </section>
+      </form>
+    </dialog>
+
+    <dialog id="mainline-dialog" class="mainline-dialog">
+      <div class="mainline-shell">
+        <header class="mainline-header">
+          <div>
+            <p class="eyebrow">Main Line</p>
+            <h2>我的主线</h2>
+          </div>
+          <div class="mainline-actions">
+            <button id="add-mainline" class="secondary-button" type="button">新增主线</button>
+            <button id="delete-mainline" class="ghost-button" type="button">删除当前</button>
+            <button id="mainline-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div class="mainline-workspace">
+          <section class="mainline-list-panel">
+            <div class="panel-header">
+              <h3>主线列表</h3>
+              <p id="mainline-count" class="mainline-list-count">0 条</p>
+            </div>
+            <p id="mainline-empty" class="mainline-empty">
+              你还没有添加主线，先点上方“新增主线”。
+            </p>
+            <ul id="mainline-list" class="mainline-list"></ul>
+          </section>
+
+          <section id="mainline-editor-panel" class="mainline-editor-panel">
+            <p id="mainline-editor-empty" class="mainline-editor-empty">
+              选中一条主线后，就可以填写为什么做、做成什么样、第一步是什么。
+            </p>
+            <div id="mainline-form" class="mainline-form" hidden>
+              <label class="mainline-label" for="mainline-title-input">主线名称</label>
+              <input
+                id="mainline-title-input"
+                class="mainline-title-input"
+                type="text"
+                maxlength="80"
+                placeholder="例如：把英语重新拉回主线"
+              />
+
+              <label class="mainline-label" for="mainline-why-input">为什么做</label>
+              <textarea
+                id="mainline-why-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="这件事为什么重要？它解决什么问题？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-outcome-input">做成什么样</label>
+              <textarea
+                id="mainline-outcome-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="你希望最后达到什么状态？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-first-step-input">第一步是什么</label>
+              <textarea
+                id="mainline-first-step-input"
+                class="mainline-input"
+                maxlength="240"
+                placeholder="先做的最小动作是什么？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-how-where-input">怎么做，在哪做</label>
+              <textarea
+                id="mainline-how-where-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="怎么推进？在什么场景、什么地点做？"
+              ></textarea>
+
+              <label class="mainline-label" for="mainline-cost-input">不做的代价是什么</label>
+              <textarea
+                id="mainline-cost-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="如果继续不做，会失去什么？"
+              ></textarea>
+
+              <p class="mainline-editor-hint">保存后，这条主线会同步到你当前使用的存储方式里。</p>
+              <div class="mainline-actions">
+                <button id="save-mainline" class="primary-button" type="button">
+                  保存当前主线
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="principles-dialog" class="mainline-dialog">
+      <div class="mainline-shell">
+        <header class="mainline-header">
+          <div>
+            <p class="eyebrow">Principles</p>
+            <h2>我的原则</h2>
+          </div>
+          <div class="mainline-actions">
+            <button id="add-principle" class="secondary-button" type="button">新增原则</button>
+            <button id="delete-principle" class="ghost-button" type="button">删除当前</button>
+            <button id="principles-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div class="mainline-workspace">
+          <section class="mainline-list-panel">
+            <div class="panel-header">
+              <h3>原则板块</h3>
+              <p id="principle-count" class="mainline-list-count">0 条</p>
+            </div>
+            <p id="principle-empty" class="mainline-empty">
+              你还没有添加原则板块，先点上方“新增原则”。
+            </p>
+            <ul id="principle-list" class="mainline-list"></ul>
+          </section>
+
+          <section class="mainline-editor-panel">
+            <p id="principle-editor-empty" class="mainline-editor-empty">
+              选中一个原则板块后，就可以填写标题，并往下面继续添加原则点。
+            </p>
+            <div id="principle-form" class="mainline-form" hidden>
+              <label class="mainline-label" for="principle-title-input">原则板块名称</label>
+              <input
+                id="principle-title-input"
+                class="mainline-title-input"
+                type="text"
+                maxlength="80"
+                placeholder="例如：工作原则"
+              />
+
+              <div class="panel-header">
+                <h3>原则点</h3>
+                <button id="add-principle-point" class="secondary-button" type="button">
+                  添加原则点
+                </button>
+              </div>
+
+              <p id="principle-points-empty" class="mainline-editor-hint">
+                还没有原则点，可以先写一条最常提醒自己的话。
+              </p>
+              <div id="principle-points" class="principle-point-list"></div>
+
+              <p class="mainline-editor-hint">保存后，这组原则会同步到你当前使用的存储方式里。</p>
+              <div class="mainline-actions">
+                <button id="save-principle" class="primary-button" type="button">
+                  保存当前原则
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="timer-dialog" class="settings-dialog">
+      <div class="settings-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Timer</p>
+            <h2>倒计时</h2>
+          </div>
+          <button id="timer-close" class="ghost-button" type="button">关闭</button>
+        </header>
+
+        <section class="panel">
+          <div id="timer-setup" class="timer-setup">
+            <div class="timer-form">
+              <label>
+                任务名称
+                <input id="timer-task-input" type="text" maxlength="80" placeholder="例如：专注阅读" />
+              </label>
+              <label>
+                时长（分钟）
+                <input id="timer-duration-input" type="number" min="1" max="180" placeholder="25" />
+              </label>
+            </div>
+            <button id="timer-start" class="primary-button" type="button">开始计时</button>
+          </div>
+
+          <div id="timer-running" class="timer-running" hidden>
+            <p id="timer-task-name" class="timer-task-name"></p>
+            <p id="timer-display" class="timer-display">00:00</p>
+            <div class="timer-progress-bar">
+              <div id="timer-progress" class="timer-progress"></div>
+            </div>
+            <div class="timer-actions">
+              <button id="timer-pause" class="secondary-button" type="button">暂停</button>
+              <button id="timer-reset" class="ghost-button" type="button">重置</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="interests-dialog" class="mainline-dialog">
+      <div class="mainline-shell">
+        <header class="mainline-header">
+          <div>
+            <p class="eyebrow">Interests</p>
+            <h2>我的兴趣</h2>
+          </div>
+          <div class="mainline-actions">
+            <button id="add-interest" class="secondary-button" type="button">新增兴趣</button>
+            <button id="delete-interest" class="ghost-button" type="button">删除当前</button>
+            <button id="interests-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div class="mainline-workspace">
+          <section class="mainline-list-panel">
+            <div class="panel-header">
+              <h3>兴趣列表</h3>
+              <p id="interest-count" class="mainline-list-count">0 条</p>
+            </div>
+            <p id="interest-empty" class="mainline-empty">
+              你还没有添加兴趣，先点上方“新增兴趣”。
+            </p>
+            <ul id="interest-list" class="mainline-list"></ul>
+          </section>
+
+          <section class="mainline-editor-panel">
+            <p id="interest-editor-empty" class="mainline-editor-empty">
+              选中一条兴趣后，就可以写下你真正感兴趣的事情。
+            </p>
+            <div id="interest-form" class="mainline-form" hidden>
+              <label class="mainline-label" for="interest-input">兴趣内容</label>
+              <textarea
+                id="interest-input"
+                class="mainline-input"
+                maxlength="400"
+                placeholder="例如：真正想长期钻研的主题、想持续接近的人事物。"
+              ></textarea>
+
+              <p class="mainline-editor-hint">保存后，这条兴趣会同步到你当前使用的存储方式里。</p>
+              <div class="mainline-actions">
+                <button id="save-interest" class="primary-button" type="button">
+                  保存当前兴趣
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="history-dialog" class="settings-dialog">
+      <div class="settings-shell donelist-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">History</p>
+            <h2>历史回顾</h2>
+          </div>
+          <div class="donelist-header-actions">
+            <div class="history-tabs">
+              <button id="history-tab-day" class="history-tab is-active" type="button">日</button>
+              <button id="history-tab-week" class="history-tab" type="button">周</button>
+              <button id="history-tab-month" class="history-tab" type="button">月</button>
+            </div>
+            <button id="history-close" class="ghost-button" type="button">关闭</button>
+          </div>
+        </header>
+
+        <div id="history-nav" class="history-nav">
+          <!-- 动态渲染导航栏 -->
+        </div>
+
+        <div id="history-content" class="history-edit-area">
+          <!-- 动态渲染 textarea -->
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

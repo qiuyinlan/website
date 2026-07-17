@@ -1,0 +1,1 @@
+u.prototype.addClass=function(){return this.eacharg(arguments,function(t,a){t.classList.add(a)})};

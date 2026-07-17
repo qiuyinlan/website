@@ -1,0 +1,18 @@
+{
+   "appDescription": {
+      "description": "扩展程序描述",
+      "message": "给任意网站视频添加字幕列表，通过视频学课程、学外语的好助手，Bilibili、YouTube有特别对接，提供字幕翻译、章节与AI总结。"
+   },
+   "appName": {
+      "description": "扩展程序名称",
+      "message": "vCaptions - 网站视频字幕列表"
+   },
+   "commandCopySubtitles": {
+      "description": "命令描述",
+      "message": "按当前下载格式复制字幕"
+   },
+   "commandDownloadSubtitles": {
+      "description": "命令描述",
+      "message": "按当前下载格式下载字幕"
+   }
+}

@@ -1,0 +1,1 @@
+const{HtmlDiffer}=require("html-differ");const htmlDiffer=new HtmlDiffer({ignoreAttributes:["id"],ignoreWhitespaces:true});module.exports={register(){QUnit.assert.htmlMatches=function(e,t,s){let i=htmlDiffer.isEqual(e,t);this.pushResult({result:i,actual:e,expected:t,message:s})}}};

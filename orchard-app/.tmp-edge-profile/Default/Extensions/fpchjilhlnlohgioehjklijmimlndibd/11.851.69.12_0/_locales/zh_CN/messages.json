@@ -1,0 +1,792 @@
+{
+   "addonAction_popup_default_title": {
+      "message": "点击打开插件菜单"
+   },
+   "addonCommands_action_popup": {
+      "message": "激活插件菜单"
+   },
+   "addonCommands_backup_page": {
+      "message": "保存页面到本地硬盘"
+   },
+   "addonCommands_save_to_xlj_fav": {
+      "message": "收藏当前页面到「效率集」"
+   },
+   "addonCommands_shortcut_key_1": {
+      "message": "快捷键1"
+   },
+   "addonCommands_shortcut_key_2": {
+      "message": "快捷键2"
+   },
+   "addonCommands_shortcut_key_3": {
+      "message": "快捷键3"
+   },
+   "addonCommands_shortcut_key_4": {
+      "message": "快捷键4"
+   },
+   "addonCommands_shortcut_key_5": {
+      "message": "快捷键5"
+   },
+   "addonDescription_xlj": {
+      "description": "",
+      "message": "最强搜索工具。全网搜索电子书，用户也可根据自身需要添加待搜索的网站。选项丰富，细节满满，期待你的好评。"
+   },
+   "addonName_xlj": {
+      "description": "",
+      "message": "电子书全网搜"
+   },
+   "addonOptions_DiySsz_config_add": {
+      "message": "新增搜索组"
+   },
+   "addonOptions_DiySsz_config_description": {
+      "message": "该功能需要有一定计算机基础，建议高级用户使用。用户可以在此预设搜索组，以便于在划词搜索，拖拽搜索，右键菜单搜索，快捷键搜索等功能模块下调用。"
+   },
+   "addonOptions_DiySsz_config_name": {
+      "message": "自定义搜索组"
+   },
+   "addonOptions_DiySsz_th_engine_list": {
+      "message": "引擎列表"
+   },
+   "addonOptions_DiySsz_th_name": {
+      "message": "名称"
+   },
+   "addonOptions_DiySsz_th_setting": {
+      "message": "操作"
+   },
+   "addonOptions_advanced_search_config_add": {
+      "message": "新增高级搜索语法"
+   },
+   "addonOptions_advanced_search_config_description": {
+      "message": "该功能需要有一定搜索语法基础，建议高级用户使用。用户可以在此预设常用的高级搜索语法或者搜索规则。当调用相应引擎时，插件会自动附带该规则进行搜索。默认情况下，设定的内容会自动添加到在搜索关键字的后面。用户也可以使用 $name1$ 或者 $name2$ 做为关键字标记选中的内容，使用 \\n 标记换行，使搜索规则更加灵活。",
+      "placeholders": {
+         "name1": {
+            "content": "$1"
+         },
+         "name2": {
+            "content": "$2"
+         }
+      }
+   },
+   "addonOptions_advanced_search_config_name": {
+      "message": "【高级搜索】设置"
+   },
+   "addonOptions_advanced_search_config_th_content": {
+      "message": "关键字附加内容"
+   },
+   "addonOptions_advanced_search_config_th_engine": {
+      "message": "搜索引擎"
+   },
+   "addonOptions_advanced_search_config_th_match_type": {
+      "message": "精确匹配"
+   },
+   "addonOptions_advanced_search_config_th_match_type_description": {
+      "message": "勾选精确匹配后，查询时将在关键字左右两端自动加上双引号，并且会使用空格与所设置的附加内容相连接"
+   },
+   "addonOptions_advanced_search_config_th_name": {
+      "message": "简称"
+   },
+   "addonOptions_ai_chat_config_add": {
+      "message": "新增AI需求指令"
+   },
+   "addonOptions_ai_chat_config_description": {
+      "message": "在页面上选中内容后显示AI对话菜单。用户可以在此设置常用的AI需求指令。默认情况下，选中的内容会自动添加到指令内容的最后位置。用户也可以使用 $name1$ 或者 $name2$ 做为关键字标记选中的内容，使用 \\n 标记换行，使指令更加灵活。特别说明，所调用的引擎均为官网，需要用户提前注册账号并登陆后才能正常使用。",
+      "placeholders": {
+         "name1": {
+            "content": "$1"
+         },
+         "name2": {
+            "content": "$2"
+         }
+      }
+   },
+   "addonOptions_ai_chat_config_name": {
+      "message": "启用AI对话菜单"
+   },
+   "addonOptions_ai_chat_config_title": {
+      "message": "在页面中选中文字后显示AI对话菜单"
+   },
+   "addonOptions_ai_chat_menu_enter_placeholder": {
+      "message": "按Enter键或点击右侧图标发送"
+   },
+   "addonOptions_ai_chat_menu_input_placeholder": {
+      "message": "选中内容已完成加载，请输入需求:)"
+   },
+   "addonOptions_ai_chat_menu_send": {
+      "message": "发送到AI助力团"
+   },
+   "addonOptions_ai_chat_th_command": {
+      "message": "需求指令详情"
+   },
+   "addonOptions_ai_chat_th_name": {
+      "message": "简称"
+   },
+   "addonOptions_backup_button_export": {
+      "message": "导出到文件"
+   },
+   "addonOptions_backup_button_import": {
+      "message": "从文件导入"
+   },
+   "addonOptions_backup_description": {
+      "message": "导入的配置将覆盖当前配置且不可恢复。强烈建议先导出当前配置备份，再进行导入操作"
+   },
+   "addonOptions_backup_name": {
+      "message": "导入导出配置"
+   },
+   "addonOptions_backup_process_import_error_0": {
+      "message": "未知错误"
+   },
+   "addonOptions_backup_process_import_error_1": {
+      "message": "无法解析该文件"
+   },
+   "addonOptions_backup_process_import_error_2": {
+      "message": "配置文件与当前插件不匹配"
+   },
+   "addonOptions_backup_process_import_error_3": {
+      "message": "配置文件数据损坏"
+   },
+   "addonOptions_backup_process_import_error_4": {
+      "message": "网络异常，请重新启动浏览器并在确保网络可用的情况下重试"
+   },
+   "addonOptions_context_menu_config_description": {
+      "message": "可以在此设置鼠标右键菜单中聚合搜索菜单里需要显示的搜索引擎。如果在图片上点击右键，仅会显示「相似图片搜索引擎」。"
+   },
+   "addonOptions_context_menu_config_name": {
+      "message": "点击鼠标右键后显示聚合搜索菜单"
+   },
+   "addonOptions_diy_search_engine_alert_diff": {
+      "message": "引擎名 [ $enginename$ ] 重复，请修改后再添加!",
+      "placeholders": {
+         "enginename": {
+            "content": "$1"
+         }
+      }
+   },
+   "addonOptions_diy_search_engine_alert_update": {
+      "message": "已完成自定义引擎列表的更改，请注意对各功能模块的自定义引擎调用进行更新设置 :)"
+   },
+   "addonOptions_diy_search_engine_alert_zhi": {
+      "message": "当前最大支持 $slz$ 个自定义搜索引擎",
+      "placeholders": {
+         "slz": {
+            "content": "$1"
+         }
+      }
+   },
+   "addonOptions_diy_search_engine_description": {
+      "message": "该功能需要有一定计算机基础，建议高级用户使用。用户最多可自定义 $slz$ 个搜索引擎。保存后，在划词搜索，拖拽搜索，右键菜单搜索，快捷键搜索，以图搜图及搜索组中可以直接调用。",
+      "placeholders": {
+         "slz": {
+            "content": "$1"
+         }
+      }
+   },
+   "addonOptions_diy_search_engine_name": {
+      "message": "自定义搜索引擎"
+   },
+   "addonOptions_diy_search_engine_textarea_description": {
+      "message": "文本输入框中默认为设置范例，请替换为自己的内容。每行为一个自定义的搜索引擎。引擎名与URL之间使用\" | \"分隔（注意：| 符号左右必须各有一个英文空格）。URL必须以http或者https开头。引擎名不能重复。关键字参数值请使用\"%s\"或者\"%ds\"做占位符，该占位符为必填项。当\"%s\"无法正常显示搜索结果时，可尝试使用\"%ds\"替代。该方式能满足大部分搜索引擎的规则，部分特殊规则的引擎可能无法实现，请尝试可用后再保存。"
+   },
+   "addonOptions_drag_config_default_engine": {
+      "message": "默认搜索引擎"
+   },
+   "addonOptions_drag_config_description": {
+      "message": "当鼠标选中文字后拖动内容并释放按键时会调用下面设定的搜索引擎进行搜索。如果选中的内容包含有链接，会直接打开对应链接。"
+   },
+   "addonOptions_drag_config_img": {
+      "message": "拖放【图片】后在新页面中打开"
+   },
+   "addonOptions_drag_config_link": {
+      "message": "拖放【链接】后在新页面中打开"
+   },
+   "addonOptions_drag_config_name": {
+      "message": "启用超级拖拽"
+   },
+   "addonOptions_drag_config_open_type": {
+      "message": "显示方式"
+   },
+   "addonOptions_drag_config_open_type_background": {
+      "message": "后台静默打开页面"
+   },
+   "addonOptions_drag_config_open_type_return": {
+      "message": "跳转到目标页面"
+   },
+   "addonOptions_drag_config_text": {
+      "message": "拖放【选中文字】后在新页面中搜索"
+   },
+   "addonOptions_group_delete_warning": {
+      "message": "列表中至少需要保留一个选项"
+   },
+   "addonOptions_head_link_feedback": {
+      "message": "交流反馈"
+   },
+   "addonOptions_head_link_help": {
+      "message": "使用帮助"
+   },
+   "addonOptions_head_name": {
+      "message": "「电子书全网搜」设置"
+   },
+   "addonOptions_item_delete_DiySsz_confirm": {
+      "message": "确认删除该搜索组吗？"
+   },
+   "addonOptions_item_delete_advanced_search_confirm": {
+      "message": "确认删除该高级搜索设置吗？"
+   },
+   "addonOptions_item_delete_command_confirm": {
+      "message": "确认删除该AI需求吗？"
+   },
+   "addonOptions_notice": {
+      "message": "最新公告"
+   },
+   "addonOptions_popup_config_add": {
+      "message": "新增"
+   },
+   "addonOptions_popup_config_auto_get_page_selector": {
+      "message": "自动获取当前页面选中的内容并做为默认值"
+   },
+   "addonOptions_popup_config_auto_get_page_selector_title": {
+      "message": "自动获取当前页面选中的内容并做为搜索默认值"
+   },
+   "addonOptions_popup_config_description": {
+      "message": "在此可以设置用户点击插件图标后菜单中所显示的搜索引擎，包括需要显示的引擎及顺序。第一个引擎将做为输入关键字后回车时所调用的默认引擎。"
+   },
+   "addonOptions_popup_config_input_multi_line_title": {
+      "message": "多行模式下，Enter 仅换行，Ctrl + Enter 发送；单行模式下 Shift + Enter 换行，Enter 发送"
+   },
+   "addonOptions_popup_config_input_single_line_title": {
+      "message": "单行模式下 Enter 发送，Shift + Enter 换行；多行模式下，Enter 仅换行，Ctrl + Enter 发送"
+   },
+   "addonOptions_popup_config_name": {
+      "message": "插件菜单页面搜索设置"
+   },
+   "addonOptions_popup_config_show_last_search": {
+      "message": "将最近一次的搜索关键字做为默认值"
+   },
+   "addonOptions_popup_config_show_last_search_title": {
+      "message": "如在输入框中不录入任何内容时搜索，搜索记录将被全部清空"
+   },
+   "addonOptions_search_group_config_description": {
+      "message": "通过搜索组搜索，用户可一次在多个不同搜索引擎中查询内容。实现在线比价，在线翻译，信息，视频，网络资源全网搜索。搜索组的引擎可以根据用户需要增减及排序，用户设置好搜索组后，可在划词搜索，拖拽搜索，右键菜单搜索及快捷键搜索设置中直接调用。"
+   },
+   "addonOptions_search_group_config_name": {
+      "message": "【搜索组】设置"
+   },
+   "addonOptions_search_group_config_show_more": {
+      "message": "查看更多"
+   },
+   "addonOptions_search_group_config_window_size_name": {
+      "message": "窗口显示大小"
+   },
+   "addonOptions_shortcut_key_search_config_description_1": {
+      "message": "当鼠标选中文字后按下设定好的快捷键将直达搜索结果。使用前为避免快捷键冲突，需要先在浏览器插件快捷键设置页面设好快捷键（"
+   },
+   "addonOptions_shortcut_key_search_config_description_2": {
+      "message": " 点此设置插件快捷键 "
+   },
+   "addonOptions_shortcut_key_search_config_description_3": {
+      "message": "），再在此处设置快捷键对应的搜索引擎。该功能对于使用搜索频率很高的场景能大幅提高效率。"
+   },
+   "addonOptions_shortcut_key_search_config_name": {
+      "message": "启用键盘快捷键搜索"
+   },
+   "addonOptions_shortcut_key_search_config_th_1": {
+      "message": "名称"
+   },
+   "addonOptions_shortcut_key_search_config_th_2": {
+      "message": "键值"
+   },
+   "addonOptions_shortcut_key_search_config_th_3": {
+      "message": "搜索引擎"
+   },
+   "addonOptions_shortcut_menu_config_copy_enable": {
+      "message": "显示复制"
+   },
+   "addonOptions_shortcut_menu_config_ctrl": {
+      "message": "按住 Ctrl键 后选中文字时"
+   },
+   "addonOptions_shortcut_menu_config_ctrl_options_not_show_description": {
+      "message": "默认情况下不按住Ctrl键选中文字时总是显示划词菜单。而在按住Ctrl键后选中文字时则本次临时不显示菜单。"
+   },
+   "addonOptions_shortcut_menu_config_ctrl_options_not_show_name": {
+      "message": "本次不显示浮动菜单"
+   },
+   "addonOptions_shortcut_menu_config_ctrl_options_show_description": {
+      "message": "默认情况下不按住Ctrl键选中文字时总是不显示划词菜单。而在按住Ctrl键后选中文字时则本次临时显示菜单。"
+   },
+   "addonOptions_shortcut_menu_config_ctrl_options_show_name": {
+      "message": "显示浮动菜单"
+   },
+   "addonOptions_shortcut_menu_config_description": {
+      "message": "当鼠标选中内容后会显示浮动菜单，包含复制，搜索功能。如果选中的内容包含有链接，会显示打开链接。"
+   },
+   "addonOptions_shortcut_menu_config_engine": {
+      "message": "搜索引擎"
+   },
+   "addonOptions_shortcut_menu_config_logo_text_description": {
+      "message": "选中文字后的浮动菜单将显示图标及文字"
+   },
+   "addonOptions_shortcut_menu_config_logo_text_name": {
+      "message": "图标及文字"
+   },
+   "addonOptions_shortcut_menu_config_name": {
+      "message": "启用划词搜索"
+   },
+   "addonOptions_shortcut_menu_config_only_logo_description": {
+      "message": "选中文字后的浮动菜单只显示图标不显示文字（搜索引擎除外）"
+   },
+   "addonOptions_shortcut_menu_config_only_logo_name": {
+      "message": "仅图标"
+   },
+   "addonOptions_shortcut_menu_config_show_sort": {
+      "message": "显示顺序"
+   },
+   "addonOptions_shortcut_menu_config_show_sort_copy_first_description": {
+      "message": "复制在前，搜索在后"
+   },
+   "addonOptions_shortcut_menu_config_show_sort_copy_first_name": {
+      "message": "复制，搜索"
+   },
+   "addonOptions_shortcut_menu_config_show_sort_search_first_description": {
+      "message": "搜索在前，复制在后"
+   },
+   "addonOptions_shortcut_menu_config_show_sort_search_first_name": {
+      "message": "搜索，复制"
+   },
+   "addonOptions_shortcut_menu_config_show_type": {
+      "message": "显示样式"
+   },
+   "addonOptions_shortcut_menu_config_toolbar_style": {
+      "message": "主题"
+   },
+   "addonOptions_shortcut_menu_config_toolbar_style_dark_description": {
+      "message": "暗色主题"
+   },
+   "addonOptions_shortcut_menu_config_toolbar_style_dark_name": {
+      "message": "暗色"
+   },
+   "addonOptions_shortcut_menu_config_toolbar_style_light_description": {
+      "message": "浅色主题"
+   },
+   "addonOptions_shortcut_menu_config_toolbar_style_light_name": {
+      "message": "浅色"
+   },
+   "addonOptions_similar_image_config_default_engine": {
+      "message": "默认搜索引擎"
+   },
+   "addonOptions_similar_image_config_description": {
+      "message": "在网页中的图片或者图片链接上点击鼠标右键后，菜单中将显示以图搜图功能。除了调用单个搜图引擎外，用户也可以选择在此设置的搜图引擎组，执行查询时会一次调用多个预先设定的引擎同时获取多个查询结果。"
+   },
+   "addonOptions_similar_image_config_name": {
+      "message": "启用鼠标右键以图搜图功能"
+   },
+   "addonOptions_similar_image_config_search_group": {
+      "message": "搜图引擎组"
+   },
+   "addonOptions_ssz_open_type_page_description": {
+      "message": "多个引擎结果会在单一页面中显示，部分引擎可能存在兼容性问题，导致无法显示或者页面显示异常，请测试一切正常后慎重选择"
+   },
+   "addonOptions_ssz_open_type_page_name": {
+      "message": "单页面显示（Beta）"
+   },
+   "addonOptions_ssz_open_type_win_description": {
+      "message": "新窗口多标签页"
+   },
+   "addonOptions_ssz_open_type_win_name": {
+      "message": "新窗口多标签页"
+   },
+   "addonOptions_update_time": {
+      "message": "引擎数据最后更新时间"
+   },
+   "addonOptions_warning_save_error": {
+      "message": "该功能当前仅对正式会员开放"
+   },
+   "addonPopup_backup": {
+      "message": "保存当前页面到本地硬盘"
+   },
+   "addonPopup_backup_error": {
+      "message": "保存页面出错，请重试！"
+   },
+   "addonPopup_backup_title": {
+      "message": "保存当前页面到本地硬盘。互联网上的网页可能会无法访问，一般用于重要网页的备份。默认文件名为页面title名，如果默认文件名异常，可能是浏览器安装了别的具有下载功能的插件，导致默认文件名被强制更改，如有遇到，请排查处理。该异常为chrome插件开发下载接口的强制规定，不可避免，也暂无方案。"
+   },
+   "addonPopup_context_menu_config_title": {
+      "message": "在页面中选中文字并点击鼠标右键后，菜单中将显示插件的相关功能选项"
+   },
+   "addonPopup_drag_config_title": {
+      "message": "启用超级拖拽"
+   },
+   "addonPopup_fav": {
+      "message": "收藏当前页面到「效率集」"
+   },
+   "addonPopup_fav_title": {
+      "message": "将当前页面收藏到「效率集」自定义导航"
+   },
+   "addonPopup_help": {
+      "message": "使用帮助"
+   },
+   "addonPopup_help_title": {
+      "message": "插件使用说明"
+   },
+   "addonPopup_more_setting": {
+      "message": "更多设置"
+   },
+   "addonPopup_search_open_title": {
+      "message": "查询结果将在新窗口中打开"
+   },
+   "addonPopup_search_placeholder": {
+      "message": "电子书全网搜"
+   },
+   "addonPopup_setting": {
+      "message": "设置"
+   },
+   "addonPopup_shortcut_key_search_config_title": {
+      "message": "启用选中页面文字后快捷键一键搜索"
+   },
+   "addonPopup_shortcut_menu_config_title": {
+      "message": "在页面中选中文字后显示浮动菜单"
+   },
+   "addonPopup_show_last_word": {
+      "message": "录入最近一次的关键字「 $lasttext$ 」。如在输入框中不录入任何内容时搜索，搜索记录将被全部清空",
+      "placeholders": {
+         "lasttext": {
+            "content": "$1"
+         }
+      }
+   },
+   "addonPopup_website": {
+      "message": "访问「效率集」网站"
+   },
+   "addonPopup_website_title": {
+      "message": "访问「效率集」网站"
+   },
+   "addonRemark_about": {
+      "message": "关于本插件"
+   },
+   "addonRemark_about_install": {
+      "message": "当前所有插件均可免费下载，内置引擎需要长期维护与更新，这是一个长期而艰巨的任务。你在应用商店的五星好评是我们持续维护的动力，更期待你能将它介绍给更多人：）"
+   },
+   "addonRemark_about_xlj": {
+      "message": "当互联网越来越分裂，巨头各自跑马圈地，单纯靠百度查信息的时代一去不复返。「效率集」聚合搜索可以协助用户输入一个关键词后在多个不同的搜索引擎及AI平台中查询，解决互联网信息茧房（百度无法直接搜索微信公众号，小红书，头条新闻，微博等）的局限，从更多渠道协助用户最高效地获取自己需要的信息与资源。"
+   },
+   "addonRemark_about_xlj_description": {
+      "message": "本插件集成了百余款常用的搜索引擎，遍及网文，购物，视频，音乐，网盘，电子书，词典，翻译，学术论文等，并会得到开发者的持续长期维护。引擎目录以最新版插件为准。内置的部分搜索引擎不排除可能会有失效的情况，用户可在设置中移除该引擎，或者通过自定义搜索引擎的功能，添加新的引擎地址，再加入到对应搜索组或者相应功能组即可。"
+   },
+   "addonRemark_about_xlj_title": {
+      "message": "关于本插件"
+   },
+   "addonRemark_addon_about": {
+      "message": "「效率集」聚合搜索是用户必备的终极搜索工具，最强的信息查询与资源搜索插件。内置了更丰富的搜索引擎与AI大模型平台资源。同时也是开发者的持续优先维护的项目。"
+   },
+   "addonRemark_addon_tuijian": {
+      "message": "需要升级的用户可以通过下面的链接下载安装。"
+   },
+   "addonRemark_donate": {
+      "message": "打个赏"
+   },
+   "addonRemark_donate_description": {
+      "message": "本插件完全免费，如果它对你有所帮助，可以通过下面的二维码支持本项目。"
+   },
+   "addonRemark_remind": {
+      "message": "特别说明"
+   },
+   "addonRemark_remind_content_1": {
+      "message": "本插件使用Google Chrome Manifest v3版本规范进行开发，该规范提高了用户隐私保护，安装前需要确保Chrome内核版本不低于 88 版本。如果低于该版本，或者安装后无法正常工作，请务必先进行浏览器升级后再安装。"
+   },
+   "addonRemark_remind_content_2": {
+      "message": "本插件免费提供，主要用于研究学习，致力于探讨如何提高用户获取互联网信息的效率，使用的技术源自于Chrome官方插件开发文档提供的公开接口。所有被调用的搜索引擎均来自于公开的互联网。如果您觉得本插件无意中冒犯到了您的权益，可以通过 shiniqq#163.com 告知我们，我们收到反馈会第一时间停止该引擎的调用。"
+   },
+   "addonRemark_remind_content_4": {
+      "message": ""
+   },
+   "addonRemark_remind_search_group_warning": {
+      "message": "搜索组的引擎数据会不定期维护整理，以确保可用性。数据更新后不可避免地会导致对应搜索组被重置。插件默认搜索组内的个性化操作仅适用于简单排序与基于默认数据源下的临时增删。如果需要对插件默认搜索组进行自定义请在【自定义搜索组】栏目下创建新的自定义搜索组，不要在【搜索组】设置栏目中操作，会重置，会重置，会重置！"
+   },
+   "addonRemark_xlj_copyright": {
+      "message": "深圳市一零动力信息科技有限公司 版权所有"
+   },
+   "addonRemark_xlj_web": {
+      "message": "关于效率集"
+   },
+   "addonRemark_xlj_web_content_1": {
+      "message": "「效率集」支持自定义网络资源导航，用户可以将自己常用的网站，在线工具，公司系统，OA，网盘文件，文档（例如:在线的office文档，音乐，视频等文件）统一聚合在导航中。同时，导航内容支持分级管理，可设置公开及私有的网址及目录。导航内容还支持加密查看。不论是公司，团队，还是个人，在任何连网设备（电脑，手机，平板，智能电视等），任何浏览器上都可以便捷查看。用户也可以将自己收集整理的资源分享给任何人一起使用。"
+   },
+   "addonRemark_xlj_web_content_2": {
+      "message": "「效率集」资源起始页支持灵活的页面模块订制，可按需显示用户指定的栏目。起始页内容不受系统，浏览器限制，即使重装电脑，使用不同设备，更换浏览器，都能获得同样的使用体验。用户也可以便捷地将其分享给同事，朋友，家人使用。是网络达人们高效利用网络资源的利器。尤其非常适合企业及团队共享互联网上的内外网资源，进行协同办公，远程办公等。"
+   },
+   "addonShortName_xlj": {
+      "message": "电子书全网搜"
+   },
+   "addon_button_cancel": {
+      "message": "取消"
+   },
+   "addon_button_edit": {
+      "message": "修改"
+   },
+   "addon_button_item_cancel": {
+      "message": "取消"
+   },
+   "addon_button_item_confirm": {
+      "message": "确定"
+   },
+   "addon_button_save": {
+      "message": "保存"
+   },
+   "addon_clean_item": {
+      "message": "清空"
+   },
+   "addon_contextMenu_save_to_xlj": {
+      "message": "将当前页面收藏到「效率集」自定义导航"
+   },
+   "addon_contextMenu_search_advanced_search": {
+      "message": "在 高级搜索「$name$」中搜 \" %s \"",
+      "placeholders": {
+         "name": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_contextMenu_search_ai_chat": {
+      "message": "在 AI助力团「$name$」中咨询 \" %s \"",
+      "placeholders": {
+         "name": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_contextMenu_search_diy_ssz": {
+      "message": "在 自定义搜索组「$name$」中搜 \" %s \"",
+      "placeholders": {
+         "name": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_contextMenu_search_more": {
+      "message": "引擎库"
+   },
+   "addon_contextMenu_search_normal": {
+      "message": "在「$name$」中搜 \" %s \"",
+      "placeholders": {
+         "name": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_contextMenu_search_ssz": {
+      "message": "在 搜索组「$name$」中搜 \" %s \"",
+      "placeholders": {
+         "name": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_contextMenu_search_type": {
+      "message": "在$type$「$name$」中搜 \" %s \"",
+      "placeholders": {
+         "name": {
+            "content": "$2"
+         },
+         "type": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_contextMenu_setting": {
+      "message": "设置..."
+   },
+   "addon_contextMenu_similar_image": {
+      "message": "以图搜图"
+   },
+   "addon_copy_item": {
+      "message": "复制"
+   },
+   "addon_delete_item": {
+      "message": "删除"
+   },
+   "addon_drag_item": {
+      "message": "拖动排序"
+   },
+   "addon_item_name_advanced_search": {
+      "message": "高级搜索"
+   },
+   "addon_item_name_ai_search_group": {
+      "message": "AI助力团"
+   },
+   "addon_item_name_aichat_group_contextMenu": {
+      "message": " AI助力团"
+   },
+   "addon_item_name_diy_ssz": {
+      "message": "自定义组"
+   },
+   "addon_item_name_keyword": {
+      "message": "关键字"
+   },
+   "addon_item_name_search_group": {
+      "message": "搜索组"
+   },
+   "addon_item_name_search_group_contextMenu": {
+      "message": " 搜索组"
+   },
+   "addon_item_name_user_diy": {
+      "message": "自定义引擎"
+   },
+   "addon_no_item": {
+      "message": "无"
+   },
+   "addon_noun_official_download": {
+      "message": "官方下载"
+   },
+   "addon_noun_webstore": {
+      "message": "应用商店"
+   },
+   "addon_open_item": {
+      "message": "打开"
+   },
+   "addon_open_item_title": {
+      "message": "在新标签页中打开「 $link$ 」",
+      "placeholders": {
+         "link": {
+            "content": "$1"
+         }
+      }
+   },
+   "addon_option_chathub_add_app": {
+      "message": "新增应用"
+   },
+   "addon_option_chathub_add_person_show_warning": {
+      "message": "该引擎在单页面结果中存在兼容性问题。您可以尝试在新页面中打开并使用。也可以在插件设置中改为【弹窗多TAB显示】方式，以获取更好的兼容性"
+   },
+   "addon_option_chathub_add_person_warning": {
+      "message": "部分引擎需要用户登陆后才能返回查询结果；如果添加的引擎不能正常显示，可尝试在新页面中打开。您也可以在插件设置中改为【新窗口多标签页】方式，以获取更好的兼容性"
+   },
+   "addon_option_chathub_close_fullsrc_item": {
+      "message": "退出全屏"
+   },
+   "addon_option_chathub_close_item": {
+      "message": "移除"
+   },
+   "addon_option_chathub_fullsrc_item": {
+      "message": "全屏显示"
+   },
+   "addon_option_chathub_history_clear": {
+      "message": "清除所有记录"
+   },
+   "addon_option_chathub_history_item": {
+      "message": "历史记录"
+   },
+   "addon_option_chathub_new_chat": {
+      "message": "新建对话"
+   },
+   "addon_option_chathub_open_link_item": {
+      "message": "在新标签页中打开"
+   },
+   "addon_option_chathub_refresh_item": {
+      "message": "初始化"
+   },
+   "addon_option_chathub_send": {
+      "message": "发送"
+   },
+   "addon_option_chathub_setting_addon_setting_link": {
+      "message": "插件设置"
+   },
+   "addon_option_chathub_setting_all_item_width_description": {
+      "message": "用于设置所有引擎的默认显示宽度，共有2级可选"
+   },
+   "addon_option_chathub_setting_all_item_width_name": {
+      "message": "默认全局显示宽度"
+   },
+   "addon_option_chathub_setting_item_width_description": {
+      "message": "开启后，可以在对应的每个全局显示宽度基础上对每一个引擎设置精确的宽度值，该功能适用于高级用户。"
+   },
+   "addon_option_chathub_setting_item_width_name": {
+      "message": "开启对每个引擎的宽度调节"
+   },
+   "addon_option_chathub_setting_menu_name": {
+      "message": "页面喜好"
+   },
+   "addon_option_chathub_setting_style_color": {
+      "message": "主题色"
+   },
+   "addon_option_chathub_show_group_name": {
+      "message": "当前引擎"
+   },
+   "addon_option_chathub_slogan": {
+      "message": "专注提升互联网信息与资源搜索效率。浏览器必备插件；)"
+   },
+   "addon_option_chathub_textarea_placeholder": {
+      "message": "Enter换行，Ctrl + Enter发送"
+   },
+   "addon_option_chathub_zoom_default_description": {
+      "message": "各引擎均显示为默认宽度"
+   },
+   "addon_option_chathub_zoom_default_name": {
+      "message": "默认"
+   },
+   "addon_option_chathub_zoom_in": {
+      "message": "放大界面"
+   },
+   "addon_option_chathub_zoom_menu_diy_width": {
+      "message": "自定义宽度"
+   },
+   "addon_option_chathub_zoom_menu_input_limit": {
+      "message": "必须是不小于100的整数"
+   },
+   "addon_option_chathub_zoom_out": {
+      "message": "缩小界面"
+   },
+   "addon_option_chathub_zoom_zoomout_description": {
+      "message": "各引擎均显示为相比默认更大的宽度"
+   },
+   "addon_option_chathub_zoom_zoomout_name": {
+      "message": "较大"
+   },
+   "addon_option_menu_name_about": {
+      "message": "关于"
+   },
+   "addon_option_menu_name_advancedsearch": {
+      "message": "高级搜索"
+   },
+   "addon_option_menu_name_aichat": {
+      "message": "AI菜单"
+   },
+   "addon_option_menu_name_backup": {
+      "message": "导入导出"
+   },
+   "addon_option_menu_name_contextmenu": {
+      "message": "右键搜索"
+   },
+   "addon_option_menu_name_diysearchengine": {
+      "message": "自定义引擎"
+   },
+   "addon_option_menu_name_diyssz": {
+      "message": "自定义搜索组"
+   },
+   "addon_option_menu_name_drag": {
+      "message": "超级拖拽"
+   },
+   "addon_option_menu_name_popup": {
+      "message": "插件菜单"
+   },
+   "addon_option_menu_name_searchgroup": {
+      "message": "搜索组"
+   },
+   "addon_option_menu_name_shortcutkeysearch": {
+      "message": "快捷键搜索"
+   },
+   "addon_option_menu_name_shortcutmenu": {
+      "message": "划词搜索"
+   },
+   "addon_option_menu_name_similarimage": {
+      "message": "以图搜图"
+   },
+   "addon_option_ssz_show_type": {
+      "message": "打开方式"
+   },
+   "addon_search_textedit_title": {
+      "message": "如果需要修改选中的内容，请直接在浏览器工具栏上点本插件的图标，会自动录入页面上选中的文字到搜索框以待用户进一步操作"
+   },
+   "addon_user_type_addon_who_use": {
+      "message": "适用于只需要电子书搜索功能的用户。"
+   },
+   "addon_user_type_description": {
+      "message": "本插件作为「效率集」聚合搜索的子模块，"
+   }
+}

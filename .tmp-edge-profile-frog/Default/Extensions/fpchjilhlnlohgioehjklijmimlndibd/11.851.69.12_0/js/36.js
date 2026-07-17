@@ -1,0 +1,1 @@
+moduleForAcceptance("Acceptance | foo/bar");test("visiting /foo/bar",function(o){visit("/foo/bar");andThen(function(){o.strictEqual(currentURL(),"/foo/bar")})});

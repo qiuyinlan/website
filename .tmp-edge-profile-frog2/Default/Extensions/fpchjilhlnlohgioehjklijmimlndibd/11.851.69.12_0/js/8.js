@@ -1,0 +1,1 @@
+export function selectorError(r){ls.error("Syntax error, unrecognized expression: "+r)}

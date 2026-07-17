@@ -1,0 +1,815 @@
+{
+   "24_hour_system": {
+      "message": "24-часовой формат"
+   },
+   "about_us": {
+      "message": "О нас"
+   },
+   "add": {
+      "message": "Добавить"
+   },
+   "add_and_continue": {
+      "message": "Добавить и продолжить"
+   },
+   "add_group": {
+      "message": "Добавить группу"
+   },
+   "add_icon": {
+      "message": "Добавить иконку"
+   },
+   "add_manually": {
+      "message": "Добавить вручную"
+   },
+   "add_successful": {
+      "message": "Добавлено успешно"
+   },
+   "add_task": {
+      "message": "Добавить задачу"
+   },
+   "address": {
+      "message": "Адрес"
+   },
+   "all": {
+      "message": "Все"
+   },
+   "all_bookmarks": {
+      "message": "Все закладки"
+   },
+   "animal": {
+      "message": "Животные"
+   },
+   "anime": {
+      "message": "Аниме"
+   },
+   "any_important_plans": {
+      "message": "Какие-нибудь важные планы?"
+   },
+   "any_plans": {
+      "message": "Какие-либо планы?"
+   },
+   "appearance": {
+      "message": "Внешний вид"
+   },
+   "architecture": {
+      "message": "Архитектура"
+   },
+   "authorize": {
+      "message": "дать согласие"
+   },
+   "auto_hide": {
+      "message": "Авто-скрытие"
+   },
+   "background_color": {
+      "message": "Фоновый цвет"
+   },
+   "background_tab": {
+      "message": "Новая вкладка в фоне"
+   },
+   "blur": {
+      "message": "Размытие"
+   },
+   "border_radius": {
+      "message": "Радиус скругления"
+   },
+   "brightness_color": {
+      "message": "Светлый цвет"
+   },
+   "cancel": {
+      "message": "Отмена"
+   },
+   "captcha": {
+      "message": "Защитный код"
+   },
+   "captcha_expired": {
+      "message": "Код безопасности недействителен"
+   },
+   "captcha_invalid": {
+      "message": "Код безопасности неверный"
+   },
+   "category": {
+      "message": "Категория"
+   },
+   "celsius": {
+      "message": "Цельсий"
+   },
+   "classic": {
+      "message": "Классический"
+   },
+   "column_gap": {
+      "message": "Расстояние между колонками"
+   },
+   "completed": {
+      "message": "Завершенный"
+   },
+   "confirm": {
+      "message": "Подтвердить"
+   },
+   "confirm_new_password": {
+      "message": "Подтвердите новый пароль"
+   },
+   "contact": {
+      "message": "Связь"
+   },
+   "contact_url_path": {
+      "message": "/ru/contact"
+   },
+   "current_tab": {
+      "message": "Текущая вкладка"
+   },
+   "darkness_color": {
+      "message": "Темные цвет"
+   },
+   "delete": {
+      "message": "Удалить"
+   },
+   "delete_all_completed_tasks": {
+      "message": "Удалить все выполненные задачи"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "Вы уверены, что хотите удалить все выполненные задачи?"
+   },
+   "delete_confirmation": {
+      "message": "Вы уверены, что хотите удалить?"
+   },
+   "desc": {
+      "message": "Описание"
+   },
+   "display_add_btn": {
+      "message": "Показать кнопку добавления"
+   },
+   "display_notification_badge": {
+      "message": "Отображать значок уведомления"
+   },
+   "display_width": {
+      "message": "Ширина экрана"
+   },
+   "download": {
+      "message": "Скачать"
+   },
+   "download_wallpaper": {
+      "message": "Скачать обои"
+   },
+   "edit": {
+      "message": "Редактировать"
+   },
+   "edit_group": {
+      "message": "Редактировать группу"
+   },
+   "edit_icon": {
+      "message": "Редактировать иконку"
+   },
+   "efficient": {
+      "message": "Эффективный"
+   },
+   "email": {
+      "message": "Эл. адрес"
+   },
+   "email_format_invalid": {
+      "message": "Неверный формат электронной почты"
+   },
+   "email_not_exists": {
+      "message": "Электронная почта не существует"
+   },
+   "email_or_password_invalid": {
+      "message": "Неверный адрес электронной почты или пароль"
+   },
+   "email_registered": {
+      "message": "Электронная почта уже использвалась ранее"
+   },
+   "enable_clock": {
+      "message": "Включить часы"
+   },
+   "enable_standby_page": {
+      "message": "Включить Экран блокировки"
+   },
+   "enable_weather": {
+      "message": "Включить погоду"
+   },
+   "enter_when_inactive": {
+      "message": "Блокировать когда неактивен"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "Блокировать новую вкладку сразу"
+   },
+   "entertainment": {
+      "message": "Развлечения"
+   },
+   "extension_desc": {
+      "message": "Это новая вкладка о которой вы мечтали. Поддержка управления группами сайтов, синхронизация данных, поддержка темной темы."
+   },
+   "extension_name": {
+      "message": "MONKNOW Новая вкладка - Личная панель инструментов"
+   },
+   "fahrenheit": {
+      "message": "Фаренгейт"
+   },
+   "fail": {
+      "message": "Провал"
+   },
+   "feedback": {
+      "message": "Обратная связь"
+   },
+   "feedback_and_others": {
+      "message": "Обратная связь & Другое"
+   },
+   "feedback_and_rate": {
+      "message": "Обратная связь и Оценка"
+   },
+   "finance": {
+      "message": "Финансы"
+   },
+   "find_password": {
+      "message": "Восстановление пароля"
+   },
+   "find_password_successful": {
+      "message": "Мы отправили письмо на почту $1, перейдите по ссылке и сбросьте пароль"
+   },
+   "follow_the_system": {
+      "message": "Следуйте Системе"
+   },
+   "forgot_password": {
+      "message": "Забыли пароль?"
+   },
+   "general": {
+      "message": "Общее"
+   },
+   "graphic": {
+      "message": "Графика"
+   },
+   "group": {
+      "message": "Группа"
+   },
+   "have_account_login_right_now": {
+      "message": "У меня уже есть аккаунт, войти"
+   },
+   "height": {
+      "message": "Высота"
+   },
+   "hide": {
+      "message": "Скрыть"
+   },
+   "homepage": {
+      "message": "Домашняя страница"
+   },
+   "homepage_url_path": {
+      "message": "/ru"
+   },
+   "hour_unit": {
+      "message": "час"
+   },
+   "icon": {
+      "message": "Значок"
+   },
+   "icon_text": {
+      "message": "Значок Текст"
+   },
+   "image_size_can_not_exceed": {
+      "message": "Размер изображения не должен превышать $1"
+   },
+   "import_from_bookmarks": {
+      "message": "Импорт из закладок"
+   },
+   "import_from_bookmarks_error": {
+      "message": "Превышение квоты, вы можете импортировать закладки через «Настройки -> Общее -> Импорт» позже"
+   },
+   "import_successful": {
+      "message": "Успешно ипортировано"
+   },
+   "important": {
+      "message": "Важный"
+   },
+   "impressive": {
+      "message": "Впечатляющий"
+   },
+   "inconsistent": {
+      "message": "Непоследовательный"
+   },
+   "info": {
+      "message": "Информация"
+   },
+   "internal_app": {
+      "message": "Встроенные приложения"
+   },
+   "it_is_empty": {
+      "message": "Пусто"
+   },
+   "left_side": {
+      "message": "Слева"
+   },
+   "lifestyle": {
+      "message": "Образ жизни"
+   },
+   "lightweight": {
+      "message": "Облегченный"
+   },
+   "loading": {
+      "message": "Загрузка"
+   },
+   "local": {
+      "message": "Локальное"
+   },
+   "locating": {
+      "message": "Определить"
+   },
+   "location": {
+      "message": "Местоположение"
+   },
+   "login": {
+      "message": "Авторизоваться"
+   },
+   "login_right_now": {
+      "message": "Войти сейчас"
+   },
+   "logout": {
+      "message": "Выйти"
+   },
+   "main_view": {
+      "message": "Главный вид"
+   },
+   "minute_unit": {
+      "message": "минут"
+   },
+   "modify": {
+      "message": "Изменить"
+   },
+   "modify_nickname": {
+      "message": "Изменить имя"
+   },
+   "modify_password": {
+      "message": "Изменить пароль"
+   },
+   "modify_portrait": {
+      "message": "Изменить аватар"
+   },
+   "modify_successful": {
+      "message": "Изменено успешно"
+   },
+   "name": {
+      "message": "Название"
+   },
+   "narrow_menu": {
+      "message": "Компактная панель"
+   },
+   "natural": {
+      "message": "Натуральный"
+   },
+   "need_bookmarks_permission": {
+      "message": "Пожалуйста, предоставьте доступ к закладкам"
+   },
+   "network_error": {
+      "message": "Сетевая ошибка"
+   },
+   "never": {
+      "message": "Никогда"
+   },
+   "new_nickname": {
+      "message": "Новое имя"
+   },
+   "new_password": {
+      "message": "Новый пароль"
+   },
+   "new_tab": {
+      "message": "Новая вкладка"
+   },
+   "news_and_reading": {
+      "message": "Новости & Чтение"
+   },
+   "next_one": {
+      "message": "Следующий"
+   },
+   "next_step": {
+      "message": "Следующий шаг"
+   },
+   "next_wallpaper": {
+      "message": "Следующие обои"
+   },
+   "nickname": {
+      "message": "Имя"
+   },
+   "not_found": {
+      "message": "Не обнаружено"
+   },
+   "not_have_account_register_right_now": {
+      "message": "У меня нет аккаунта, зарегистрироватся прямо сейчас"
+   },
+   "not_recognized": {
+      "message": "Не опознано"
+   },
+   "not_supported_in_this_browser": {
+      "message": "Не поддерживается в этом браузере"
+   },
+   "official": {
+      "message": "Официальная"
+   },
+   "official_lib": {
+      "message": "Официальная библиотека"
+   },
+   "old_password": {
+      "message": "Прежний пароль"
+   },
+   "old_password_not_match": {
+      "message": "Старый пароль не совпадает"
+   },
+   "opacity": {
+      "message": "Прозрачность"
+   },
+   "open": {
+      "message": "открыто"
+   },
+   "open_all": {
+      "message": "Открыть все"
+   },
+   "open_in_background_tab": {
+      "message": "Открыть в вкладка в фоне"
+   },
+   "open_in_incognito_window": {
+      "message": "Открыть в окне инкогнито"
+   },
+   "open_in_new_tab": {
+      "message": "Открыть в Новая вкладка"
+   },
+   "open_method": {
+      "message": "Метод открытия"
+   },
+   "optional": {
+      "message": "Не обязательно"
+   },
+   "others": {
+      "message": "Другое"
+   },
+   "particular": {
+      "message": "Детальный"
+   },
+   "password": {
+      "message": "Пароль"
+   },
+   "people": {
+      "message": "Люди"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "Выберите закладки, которые вы хотите импортировать"
+   },
+   "please_complete_form": {
+      "message": "Пожалуйста, заполните все поля"
+   },
+   "popular": {
+      "message": "Популярные"
+   },
+   "prev_step": {
+      "message": "Предыдущий шаг"
+   },
+   "preview": {
+      "message": "Предварительный просмотр"
+   },
+   "privacy_policy": {
+      "message": "Политика конфиденциальности"
+   },
+   "privacy_policy_url_path": {
+      "message": "/ru/privacy-policy"
+   },
+   "productivity": {
+      "message": "Работа"
+   },
+   "pure_color": {
+      "message": "Чистый цвет"
+   },
+   "rate_five_stars": {
+      "message": "Оценить в 5 звезд"
+   },
+   "register": {
+      "message": "Регистр"
+   },
+   "register_again": {
+      "message": "Неправильный адрес электронной почты? Зарегистрируйтесь пвторно"
+   },
+   "register_to_sync_your_data": {
+      "message": "Зарегистрируйтесь, чтобы синхронизировать ваши данные"
+   },
+   "remember_the_last_visited_group": {
+      "message": "Помните последнюю посещенную группу"
+   },
+   "replace": {
+      "message": "Заменить"
+   },
+   "replace_frequency": {
+      "message": "Изменить частоту"
+   },
+   "replace_location": {
+      "message": "Изменить местоположение"
+   },
+   "request_for_inclusion": {
+      "message": "Запрос на включение"
+   },
+   "request_for_inclusion_successful": {
+      "message": "Запрос на включение успешно"
+   },
+   "required": {
+      "message": "Обязательно"
+   },
+   "right_side": {
+      "message": "Справа"
+   },
+   "row_gap": {
+      "message": "Расстояние между рядами"
+   },
+   "scroll_or_click": {
+      "message": "Прокрутите или нажмите"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "Прокрутите, чтобы переключить группу"
+   },
+   "search": {
+      "message": "Поиск"
+   },
+   "search_box": {
+      "message": "Поисковая строка"
+   },
+   "search_engine": {
+      "message": "Поисковый движок"
+   },
+   "search_result": {
+      "message": "Результат поиска"
+   },
+   "searching": {
+      "message": "Ищем"
+   },
+   "second_unit": {
+      "message": "сек"
+   },
+   "server_error": {
+      "message": "Ошибка сервера"
+   },
+   "set_nickname_first": {
+      "message": "Сначала укажите Ваше имя"
+   },
+   "settings": {
+      "message": "Настройки"
+   },
+   "shadow": {
+      "message": "Тень"
+   },
+   "shopping": {
+      "message": "Магазины"
+   },
+   "sidebar": {
+      "message": "Боковая панель"
+   },
+   "simple": {
+      "message": "Простой"
+   },
+   "size": {
+      "message": "Размер"
+   },
+   "skip": {
+      "message": "Пропустить"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "Пропустить руководство и войти сейчас"
+   },
+   "skip_login_enter_right_now": {
+      "message": "Пропустить логин, используйте прямо сейчас"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "Пропустить регистрацию, использовать прямо сейчас"
+   },
+   "social": {
+      "message": "Социальные"
+   },
+   "standby_page": {
+      "message": "Экран блокировки"
+   },
+   "standby_page_background": {
+      "message": "Фон Экрана блокировки"
+   },
+   "standby_page_clock": {
+      "message": "Часы Экрана блокировки"
+   },
+   "standby_page_weather": {
+      "message": "Погода Экрана блокировки"
+   },
+   "stay_logged_out": {
+      "message": "Оставайтся в автономном режиме"
+   },
+   "success": {
+      "message": "Успех"
+   },
+   "target_group": {
+      "message": "Целевая группа"
+   },
+   "technology_and_education": {
+      "message": "Технологии & Образование"
+   },
+   "temperature_unit": {
+      "message": "Единица измерения температуры"
+   },
+   "terms_of_use": {
+      "message": "Условия использования"
+   },
+   "terms_of_use_url_path": {
+      "message": "/ru/terms-of-use"
+   },
+   "text": {
+      "message": "Текст"
+   },
+   "the_end": {
+      "message": "Конец"
+   },
+   "theme": {
+      "message": "Тема"
+   },
+   "theme_and_wallpaper": {
+      "message": "Тема & Обои"
+   },
+   "to_do": {
+      "message": "ToDo"
+   },
+   "travel": {
+      "message": "Путешествия"
+   },
+   "uncompleted": {
+      "message": "Незаконченное"
+   },
+   "unknown": {
+      "message": "Неизвестно"
+   },
+   "upload": {
+      "message": "Загрузить"
+   },
+   "upload_icon": {
+      "message": "Загрузить значок"
+   },
+   "user_changed": {
+      "message": "Пользователь изменен"
+   },
+   "visitor_slogan_1": {
+      "message": "Пожалуйста, войдите для синхронизации, "
+   },
+   "visitor_slogan_2": {
+      "message": "чтобы ваши данные никогда не были потеряны."
+   },
+   "wallpaper": {
+      "message": "Обои"
+   },
+   "warning": {
+      "message": "Предупреждение"
+   },
+   "website_desc": {
+      "message": "Описание сайта"
+   },
+   "website_name": {
+      "message": "Название сайта"
+   },
+   "welcome_back": {
+      "message": "С возвращением"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "Добро пожаловать в MONKNOW Новая вкладка"
+   },
+   "width": {
+      "message": "Ширина"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "Торнадо"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "Тропический шторм"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "Холодный дождь"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "Ливень"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "Дождь"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "Порывы снега"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "Легкий снегопад"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "Низовая метель"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "Снег"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "Град"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "Мокрый снег"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "Пыль"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "ураганный"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "Туман"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "Мгла"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "Дымчатый"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "Бурный ветер"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "Ветренно"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "Холодный"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "Облачно"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "В основном облачно"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "В основном облачно"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "Переменная облачность"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "Сильные грозы"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "Переменная облачность"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "Ясно"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "Солнечно"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "Ясно"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "Ясно"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "Дождь и град"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "Жарко"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "Изолированные грозы"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "Рассеянные грозы"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "Рассеянные дожди"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "Грозы"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "Ливень"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "Рассеянный снегопад"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "Снегопад"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "Снежная буря"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "Недоступно"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "Рассеянные дожди"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "Рассеянный снегопад"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "Грозовые дожди"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "Дождь со снегом"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "Дождь и мокрый снег"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "Смешанный мокрый снег"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "Изморозь"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "Изморось"
+   }
+}

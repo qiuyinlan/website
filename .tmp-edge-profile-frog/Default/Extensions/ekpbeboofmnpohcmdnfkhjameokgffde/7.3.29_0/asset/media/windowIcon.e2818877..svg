@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>icon-website</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon-website" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/interface/53.image/outline" transform="translate(1.000000, 3.000000)" fill="#333333" fill-rule="nonzero">
+            <path d="M15.4285714,0 L0.571428571,0 C0.255357143,0 0,0.2234375 0,0.5 L0,11.5 C0,11.7765625 0.255357143,12 0.571428571,12 L15.4285714,12 C15.7446429,12 16,11.7765625 16,11.5 L16,0.5 C16,0.2234375 15.7446429,0 15.4285714,0 Z M15,11 L1,11 L1,3 L15,3 L15,11 Z M1.5,1 C1.77678571,1 2,1.22321429 2,1.5 C2,1.77678571 1.77678571,2 1.5,2 C1.22321429,2 1,1.77678571 1,1.5 C1,1.22321429 1.22321429,1 1.5,1 Z M3.5,1 C3.77678571,1 4,1.22321429 4,1.5 C4,1.77678571 3.77678571,2 3.5,2 C3.22321429,2 3,1.77678571 3,1.5 C3,1.22321429 3.22321429,1 3.5,1 Z M5.5,1 C5.77678571,1 6,1.22321429 6,1.5 C6,1.77678571 5.77678571,2 5.5,2 C5.22321429,2 5,1.77678571 5,1.5 C5,1.22321429 5.22321429,1 5.5,1 Z" id="fill"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,83 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "icon128.plasmo.b89b7dfa.png",
+         "16": "icon16.plasmo.00ac8b83.png",
+         "32": "icon32.plasmo.9ad0c5b6.png",
+         "48": "icon48.plasmo.cae3a6b3.png",
+         "64": "icon64.plasmo.e4b604fc.png"
+      }
+   },
+   "author": "kongkongye",
+   "background": {
+      "service_worker": "static/background/index.js"
+   },
+   "commands": {
+      "copy-subtitles": {
+         "description": "__MSG_commandCopySubtitles__",
+         "suggested_key": {
+            "default": "Ctrl+Shift+C",
+            "mac": "Command+Shift+C"
+         }
+      },
+      "download-subtitles": {
+         "description": "__MSG_commandDownloadSubtitles__",
+         "suggested_key": {
+            "default": "Ctrl+Shift+D",
+            "mac": "Command+Shift+D"
+         }
+      }
+   },
+   "content_scripts": [ {
+      "css": [  ],
+      "js": [ "MainCS.277dcde3.js" ],
+      "matches": [ "\u003Call_urls>" ]
+   }, {
+      "all_frames": true,
+      "css": [  ],
+      "js": [ "IFrameCS.26275720.js" ],
+      "matches": [ "\u003Call_urls>" ]
+   }, {
+      "css": [  ],
+      "js": [ "WebappCS.8b5d7cd6.js" ],
+      "matches": [ "https://*.vcaptions.com/*" ],
+      "run_at": "document_start"
+   }, {
+      "css": [  ],
+      "js": [ "Main.00175a8f.js" ],
+      "matches": [ "\u003Call_urls>" ]
+   }, {
+      "all_frames": false,
+      "css": [  ],
+      "js": [ "SubtitleBar.f2dae354.js" ],
+      "matches": [ "\u003Call_urls>" ]
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_appDescription__",
+   "host_permissions": [ "https://*/*", "http://*/*" ],
+   "icons": {
+      "128": "icon128.plasmo.b89b7dfa.png",
+      "16": "icon16.plasmo.00ac8b83.png",
+      "32": "icon32.plasmo.9ad0c5b6.png",
+      "48": "icon48.plasmo.cae3a6b3.png",
+      "64": "icon64.plasmo.e4b604fc.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtRvIHOMNVoWNH7cMHBVQARm8JyTgwF9biS94yGA92oerAc/XwK83ur63wRUvx64HuHFWJ8iUNygHKtecMIeZlrl85wxUbJoxqFkEkC3qsF6B+UZf7sN2HmiihlU9oLXem2Xig2UB0aGYw1xEPdtiimCrIgSdtMqbGlDrfA/khG+PO/tSGKUAY1Lak9tew6GQR2qz/mPk2r+x8rttnAUt5hSNcv8PpsSCZnumbD+nHaj+UKP1QmXdO8QVkUwtcl8a5xX230aA8RGcWqSOyqD/JrdvgeVUkuIzUIeAbCrGWTGYHXuz8JPThLnYQCEHocuRAnV+L5FdTIRFEfaZ9f4aeQIDAQAB",
+   "manifest_version": 3,
+   "name": "__MSG_appName__",
+   "options_page": "options.html",
+   "options_ui": {
+      "open_in_tab": true,
+      "page": "options.html"
+   },
+   "permissions": [ "storage", "scripting", "sidePanel", "tabs", "activeTab" ],
+   "side_panel": {
+      "default_path": "sidepanel.html"
+   },
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "2.4.6",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "*.css" ]
+   } ]
+}

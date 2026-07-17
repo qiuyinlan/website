@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="./favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="/fl-highlights.css" rel="stylesheet">
+    <style>
+        /* 主题色变量 */
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #7c4dff;
+            --accent-color: #00c2ff;
+            --dark-bg: #f0f2f5;
+            --light-text: #333333;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --gradient-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--light-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            padding: 16px;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 标题区域 */
+        .header-section {
+            text-align: center;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        /* Logo */
+        .logo {
+            position: relative;
+            width: 44px;
+            margin-right: 16px;
+            filter: drop-shadow(0 4px 8px rgba(66, 133, 244, 0.3));
+            animation: gentle-pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes gentle-pulse {
+            0% { filter: drop-shadow(0 2px 4px rgba(66, 133, 244, 0.4)); }
+            50% { filter: drop-shadow(0 4px 12px rgba(66, 133, 244, 0.6)); }
+            100% { filter: drop-shadow(0 2px 4px rgba(66, 133, 244, 0.4)); }
+        }
+
+        /* 主标题 */
+        .title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: none;
+        }
+
+        /* 副标题容器 */
+        .subtitle-container {
+            margin-top: 8px;
+            margin-bottom: 24px;
+        }
+
+        /* 副标题 */
+        .sub-title {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(74, 170, 180, 0.15);
+            font-size: 14px;
+            color: rgba(58, 139, 143, 0.8);
+            margin: 0;
+            border-radius: 12px;
+            border: 1px solid rgba(74, 170, 180, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        /* 内容区域 */
+        .content-section {
+            width: 80%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 文件选择卡片 */
+        .file-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 48px 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-medium);
+            border: 2px dashed rgba(66, 133, 244, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.03) 0%, rgba(124, 77, 255, 0.03) 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.05) 0%, rgba(124, 77, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .file-card:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.08) 0%, rgba(124, 77, 255, 0.08) 100%);
+            box-shadow: 0 4px 16px rgba(66, 133, 244, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .file-card:hover::before {
+            opacity: 1;
+        }
+
+        .file-input-wrapper {
+            margin-bottom: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .file-input-icon {
+            font-size: 64px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 4px 8px rgba(66, 133, 244, 0.3));
+            display: block;
+        }
+
+        .file-card:hover .file-input-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 12px rgba(66, 133, 244, 0.4));
+        }
+
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 40px;
+            background: var(--gradient-bg);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 3px 8px rgba(66, 133, 244, 0.3);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-label::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+        }
+
+        .file-input-label:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .file-input-label:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+        }
+
+        .file-input-label-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .file-input-label-icon {
+            position: relative;
+            z-index: 1;
+            font-size: 18px;
+        }
+
+        .file-input-label input[type="file"] {
+            display: none;
+        }
+
+        .file-input-hint {
+            margin-top: 16px;
+            font-size: 14px;
+            color: rgba(51, 51, 51, 0.6);
+            font-weight: 400;
+        }
+
+        /* 视频卡片 */
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-bg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-card:hover {
+            box-shadow: var(--shadow-heavy);
+            border-color: rgba(66, 133, 244, 0.3);
+        }
+
+        .video-card:hover::before {
+            opacity: 1;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .video-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: var(--gradient-bg);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            filter: blur(20px);
+        }
+
+        .video-wrapper:hover::before {
+            opacity: 0.3;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            border: 3px solid var(--primary-color);
+            border-radius: 16px;
+            background-color: #000;
+            box-shadow: 0 8px 32px rgba(66, 133, 244, 0.3),
+                        0 4px 16px rgba(0, 0, 0, 0.2),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: block;
+            margin: 0 auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-wrapper video:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 12px 40px rgba(66, 133, 244, 0.4),
+                        0 6px 20px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* 顶部信息容器 */
+        .infoContainer {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 8px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-medium);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        /* 头像样式 */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--primary-color);
+            object-fit: cover;
+            box-shadow: var(--shadow-light);
+        }
+
+        .avatar:hover {
+            transform: scale(1.1);
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* 登录按钮 */
+        .loginBtn {
+            margin-left: 10px;
+            padding: 6px 16px;
+            background: var(--gradient-bg);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .loginBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* VIP标识 */
+        .vip {
+            position: absolute;
+            top: 4px;
+            left: 40px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            filter: drop-shadow(0 2px 4px rgba(66, 133, 244, 0.3));
+        }
+
+        .vip img {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 用户昵称 */
+        .nickname {
+            color: var(--light-text);
+            margin: 0 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .nickname:hover {
+            color: var(--primary-color);
+        }
+
+        /* 主页按钮 */
+        .home-btn {
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            margin-left: 8px;
+            padding: 4px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(66, 133, 244, 0.1);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .home-btn:hover {
+            background: rgba(66, 133, 244, 0.2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* 右侧按钮 */
+        .right-btn {
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            margin-left: 8px;
+            padding: 4px;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(66, 133, 244, 0.1);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .right-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .right-btn:hover {
+            background: rgba(66, 133, 244, 0.2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部信息栏 -->
+        <div class="infoContainer" id="infoContainer">
+            <img
+                class="avatar"
+                id="avatarImg"
+                src=""
+                alt="Avatar"
+                title=""
+            />
+            <button class="loginBtn" id="loginBtn" style="display: none;">登录</button>
+            <button class="vip" id="vipBtn" style="display: none;" title="VIP">
+                <img src="" alt="VIP"/>
+            </button>
+            <button class="nickname" id="nicknameBtn" style="display: none;" title="User Profile"></button>
+            <button class="right-btn" id="homeBtn" title="书城">
+                <img src="" alt="书城"/>
+            </button>
+            <button class="right-btn" id="videoNotesBtn" title="视频笔记">
+                <img src="" alt="视频笔记"/>
+            </button>
+            <button class="right-btn" id="video2pdfBtn" title="视频转PDF">
+                <img src="" alt="视频转PDF"/>
+            </button>
+            <button class="right-btn" id="settingBtn" title="设置">
+                <img src="" alt="设置"/>
+            </button>
+            <button class="right-btn" id="guideBtn" title="使用教程">
+                <img src="" alt="使用教程"/>
+            </button>
+        </div>
+
+        <!-- 标题区域 -->
+        <div class="header-section">
+            <h1 class="title">
+                <img class="logo" id="logoImg" alt="Logo"/>
+                <span>视频转PDF笔记</span>
+            </h1>
+            <div class="subtitle-container">
+                <span class="sub-title">完全本地化，绝对隐私</span>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content-section">
+            <!-- 文件选择卡片 -->
+            <div class="file-card">
+                <div class="file-input-wrapper">
+                    <span class="file-input-icon">🎬</span>
+                    <label class="file-input-label">
+                        <input type="file" id="videoFileInput" accept="video/*">
+                        <span class="file-input-label-icon">📁</span>
+                        <span class="file-input-label-text">选择本地视频文件</span>
+                    </label>
+                    <div class="file-input-hint">支持 MP4、WebM、OGG 等常见视频格式</div>
+                </div>
+            </div>
+
+            <!-- 视频播放卡片 -->
+            <div class="video-card">
+                <div class="video-wrapper">
+                    <div class="video-container" id="videoContainer">
+                        <video id="videoPlayer" controls style="display: none;"></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./video2pdf-inner.js"></script>
+</body>
+</html>

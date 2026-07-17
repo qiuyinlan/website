@@ -1,0 +1,815 @@
+{
+   "24_hour_system": {
+      "message": "Système 24 heures"
+   },
+   "about_us": {
+      "message": "À propos de nous"
+   },
+   "add": {
+      "message": "Ajouter"
+   },
+   "add_and_continue": {
+      "message": "Ajouter et continuer"
+   },
+   "add_group": {
+      "message": "Ajouter groupe"
+   },
+   "add_icon": {
+      "message": "Ajouter icône"
+   },
+   "add_manually": {
+      "message": "Ajouter manuellement"
+   },
+   "add_successful": {
+      "message": "Ajout réussi"
+   },
+   "add_task": {
+      "message": "Ajouter une tâche"
+   },
+   "address": {
+      "message": "Adresse"
+   },
+   "all": {
+      "message": "Tout"
+   },
+   "all_bookmarks": {
+      "message": "Tous les signets"
+   },
+   "animal": {
+      "message": "Animal"
+   },
+   "anime": {
+      "message": "Manga"
+   },
+   "any_important_plans": {
+      "message": "Des projets importants?"
+   },
+   "any_plans": {
+      "message": "Des plans?"
+   },
+   "appearance": {
+      "message": "Apparence"
+   },
+   "architecture": {
+      "message": "Architecture"
+   },
+   "authorize": {
+      "message": "Autoriser"
+   },
+   "auto_hide": {
+      "message": "Masquage automatique"
+   },
+   "background_color": {
+      "message": "Couleur de fond"
+   },
+   "background_tab": {
+      "message": "Derrière onglet"
+   },
+   "blur": {
+      "message": "Brouiller"
+   },
+   "border_radius": {
+      "message": "Rayon de bordure"
+   },
+   "brightness_color": {
+      "message": "Luminosité Couleur"
+   },
+   "cancel": {
+      "message": "Annuler"
+   },
+   "captcha": {
+      "message": "Captcha"
+   },
+   "captcha_expired": {
+      "message": "Captcha est expirée"
+   },
+   "captcha_invalid": {
+      "message": "Captcha invalide"
+   },
+   "category": {
+      "message": "Catégorie"
+   },
+   "celsius": {
+      "message": "Celsius"
+   },
+   "classic": {
+      "message": "Classique"
+   },
+   "column_gap": {
+      "message": "Espacement des colonnes"
+   },
+   "completed": {
+      "message": "Terminé"
+   },
+   "confirm": {
+      "message": "Confirmer"
+   },
+   "confirm_new_password": {
+      "message": "Confirmer nouveau mot de passe"
+   },
+   "contact": {
+      "message": "Contact"
+   },
+   "contact_url_path": {
+      "message": "/fr/contact"
+   },
+   "current_tab": {
+      "message": "Onglet actuel"
+   },
+   "darkness_color": {
+      "message": "Obscurité Couleur"
+   },
+   "delete": {
+      "message": "Supprimer"
+   },
+   "delete_all_completed_tasks": {
+      "message": "Supprimer toutes les tâches terminées"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "Êtes-vous sûr de vouloir supprimer toutes les tâches terminées?"
+   },
+   "delete_confirmation": {
+      "message": "Etes-vous sûr que vous voulez supprimer?"
+   },
+   "desc": {
+      "message": "Description"
+   },
+   "display_add_btn": {
+      "message": "Afficher le bouton Ajouter"
+   },
+   "display_notification_badge": {
+      "message": "Afficher le badge de notification"
+   },
+   "display_width": {
+      "message": "Largeur d'affichage"
+   },
+   "download": {
+      "message": "Télécharger"
+   },
+   "download_wallpaper": {
+      "message": "Télécharger le fond d'écran"
+   },
+   "edit": {
+      "message": "Modifier"
+   },
+   "edit_group": {
+      "message": "Modifier groupe"
+   },
+   "edit_icon": {
+      "message": "Modifier icône"
+   },
+   "efficient": {
+      "message": "Efficace"
+   },
+   "email": {
+      "message": "Email"
+   },
+   "email_format_invalid": {
+      "message": "Format d'email non valide"
+   },
+   "email_not_exists": {
+      "message": "Email n'existe pas"
+   },
+   "email_or_password_invalid": {
+      "message": "Email ou mot de passe invalide"
+   },
+   "email_registered": {
+      "message": "Email existe déjà"
+   },
+   "enable_clock": {
+      "message": "Activer Horloge"
+   },
+   "enable_standby_page": {
+      "message": "Activer Écran de verrouillage"
+   },
+   "enable_weather": {
+      "message": "Activer Météo"
+   },
+   "enter_when_inactive": {
+      "message": "Entrez lorsque inactif"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "Entrez à l'ouverture d'un nouvel onglet"
+   },
+   "entertainment": {
+      "message": "Divertissement"
+   },
+   "extension_desc": {
+      "message": "C'est le nouvel onglet dont vous rêvez. Prise en charge de la gestion des groupes d'URL du site Web, de la synchronisation des données, du mode thème sombre."
+   },
+   "extension_name": {
+      "message": "MONKNOW Nouvel onglet - Tableau de bord personnel"
+   },
+   "fahrenheit": {
+      "message": "Fahrenheit"
+   },
+   "fail": {
+      "message": "Échouer"
+   },
+   "feedback": {
+      "message": "Rétroaction"
+   },
+   "feedback_and_others": {
+      "message": "Rétroaction & Autres"
+   },
+   "feedback_and_rate": {
+      "message": "Rétroaction et Taux"
+   },
+   "finance": {
+      "message": "Finance"
+   },
+   "find_password": {
+      "message": "Trouver le mot de passe"
+   },
+   "find_password_successful": {
+      "message": "Nous avons envoyé un e-mail à $1 , veuillez réinitialiser votre mot de passe"
+   },
+   "follow_the_system": {
+      "message": "Suivez le système"
+   },
+   "forgot_password": {
+      "message": "Mot de passe oublié??"
+   },
+   "general": {
+      "message": "Général"
+   },
+   "graphic": {
+      "message": "Graphique"
+   },
+   "group": {
+      "message": "Groupe"
+   },
+   "have_account_login_right_now": {
+      "message": "J'ai un compte, connectez-vous maintenant"
+   },
+   "height": {
+      "message": "la taille"
+   },
+   "hide": {
+      "message": "Cacher"
+   },
+   "homepage": {
+      "message": "Accueil"
+   },
+   "homepage_url_path": {
+      "message": "/fr"
+   },
+   "hour_unit": {
+      "message": "h"
+   },
+   "icon": {
+      "message": "Icône"
+   },
+   "icon_text": {
+      "message": "Texte de icône"
+   },
+   "image_size_can_not_exceed": {
+      "message": "Taille de l'image ne peut pas dépasser $1"
+   },
+   "import_from_bookmarks": {
+      "message": "Importer à partir des signets"
+   },
+   "import_from_bookmarks_error": {
+      "message": "Excès de limites de quota, vous pouvez importer des signets via 'Paramètres -> Général -> Importer' plus tard"
+   },
+   "import_successful": {
+      "message": "Importation réussie"
+   },
+   "important": {
+      "message": "Important"
+   },
+   "impressive": {
+      "message": "Impressionnant"
+   },
+   "inconsistent": {
+      "message": "Inconsistant"
+   },
+   "info": {
+      "message": "Info"
+   },
+   "internal_app": {
+      "message": "App interne"
+   },
+   "it_is_empty": {
+      "message": "C'est vide"
+   },
+   "left_side": {
+      "message": "Côté gauche"
+   },
+   "lifestyle": {
+      "message": "Mode de vie"
+   },
+   "lightweight": {
+      "message": "Poids léger"
+   },
+   "loading": {
+      "message": "Chargement"
+   },
+   "local": {
+      "message": "Local"
+   },
+   "locating": {
+      "message": "Localisation"
+   },
+   "location": {
+      "message": "Emplacement"
+   },
+   "login": {
+      "message": "S'identifier"
+   },
+   "login_right_now": {
+      "message": "Connectez-vous dès maintenant"
+   },
+   "logout": {
+      "message": "Connectez - Out"
+   },
+   "main_view": {
+      "message": "Vue principale"
+   },
+   "minute_unit": {
+      "message": "min"
+   },
+   "modify": {
+      "message": "Modifier"
+   },
+   "modify_nickname": {
+      "message": "Modifier pseudo"
+   },
+   "modify_password": {
+      "message": "Modifier mot de passe"
+   },
+   "modify_portrait": {
+      "message": "Modifier portrait"
+   },
+   "modify_successful": {
+      "message": "Modification réussie"
+   },
+   "name": {
+      "message": "Prénom"
+   },
+   "narrow_menu": {
+      "message": "Menu étroit"
+   },
+   "natural": {
+      "message": "Naturel"
+   },
+   "need_bookmarks_permission": {
+      "message": "Veuillez accorder l'accès aux signets"
+   },
+   "network_error": {
+      "message": "Erreur réseau"
+   },
+   "never": {
+      "message": "Jamais"
+   },
+   "new_nickname": {
+      "message": "Nouveau surnom"
+   },
+   "new_password": {
+      "message": "Nouveau mot de passe"
+   },
+   "new_tab": {
+      "message": "Nouvel onglet"
+   },
+   "news_and_reading": {
+      "message": "Nouvelles & Lisez"
+   },
+   "next_one": {
+      "message": "Prochain"
+   },
+   "next_step": {
+      "message": "Étape suivante"
+   },
+   "next_wallpaper": {
+      "message": "Fond d'écran suivant"
+   },
+   "nickname": {
+      "message": "Surnom"
+   },
+   "not_found": {
+      "message": "Pas trouvé"
+   },
+   "not_have_account_register_right_now": {
+      "message": "Je n'ai pas de compte, inscrivez-vous dès maintenant"
+   },
+   "not_recognized": {
+      "message": "Pas reconnu"
+   },
+   "not_supported_in_this_browser": {
+      "message": "Non pris en charge dans ce navigateur"
+   },
+   "official": {
+      "message": "Officiel"
+   },
+   "official_lib": {
+      "message": "Bibliothèque officielle"
+   },
+   "old_password": {
+      "message": "Ancien mot de passe"
+   },
+   "old_password_not_match": {
+      "message": "Ancien mot de passe ne correspond pas"
+   },
+   "opacity": {
+      "message": "Opacité"
+   },
+   "open": {
+      "message": "Ouvert"
+   },
+   "open_all": {
+      "message": "Ouvre tout"
+   },
+   "open_in_background_tab": {
+      "message": "Ouvrir dans l'onglet Arrière-plan"
+   },
+   "open_in_incognito_window": {
+      "message": "Ouvrir dans la fenêtre de navigation privée"
+   },
+   "open_in_new_tab": {
+      "message": "Ouvrir dans un nouvel onglet"
+   },
+   "open_method": {
+      "message": "Méthode ouverte"
+   },
+   "optional": {
+      "message": "Optionnel"
+   },
+   "others": {
+      "message": "Autres"
+   },
+   "particular": {
+      "message": "Particulier"
+   },
+   "password": {
+      "message": "Mot de passe"
+   },
+   "people": {
+      "message": "Gens"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "Choisissez les signets que vous souhaitez importer"
+   },
+   "please_complete_form": {
+      "message": "S'il vous plaît remplir le formulaire"
+   },
+   "popular": {
+      "message": "Populaire"
+   },
+   "prev_step": {
+      "message": "Étape précédente"
+   },
+   "preview": {
+      "message": "Aperçu"
+   },
+   "privacy_policy": {
+      "message": "Politique de confidentialité"
+   },
+   "privacy_policy_url_path": {
+      "message": "/fr/privacy-policy"
+   },
+   "productivity": {
+      "message": "Productivité"
+   },
+   "pure_color": {
+      "message": "Couleur pure"
+   },
+   "rate_five_stars": {
+      "message": "Note 5 étoiles"
+   },
+   "register": {
+      "message": "Registre"
+   },
+   "register_again": {
+      "message": "Mauvaise adresse email? Enregistrez-vous à nouveau"
+   },
+   "register_to_sync_your_data": {
+      "message": "Inscrivez-vous pour synchroniser vos données"
+   },
+   "remember_the_last_visited_group": {
+      "message": "Souvenez-vous du dernier groupe visité"
+   },
+   "replace": {
+      "message": "Remplacer"
+   },
+   "replace_frequency": {
+      "message": "Remplacer fréquence"
+   },
+   "replace_location": {
+      "message": "Remplacer emplacement"
+   },
+   "request_for_inclusion": {
+      "message": "Demande d'inclusion"
+   },
+   "request_for_inclusion_successful": {
+      "message": "Demande d'inclusion réussie"
+   },
+   "required": {
+      "message": "Champs obligatoires"
+   },
+   "right_side": {
+      "message": "Côté droit"
+   },
+   "row_gap": {
+      "message": "Espacement des lignes"
+   },
+   "scroll_or_click": {
+      "message": "Faites défiler ou cliquez"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "Faites défiler pour changer de groupe"
+   },
+   "search": {
+      "message": "Chercher"
+   },
+   "search_box": {
+      "message": "Barre de recherche"
+   },
+   "search_engine": {
+      "message": "Moteur de recherche"
+   },
+   "search_result": {
+      "message": "Résultat de recherche"
+   },
+   "searching": {
+      "message": "Recherche"
+   },
+   "second_unit": {
+      "message": "sec"
+   },
+   "server_error": {
+      "message": "Erreur serveur"
+   },
+   "set_nickname_first": {
+      "message": "Définir le pseudo en premier"
+   },
+   "settings": {
+      "message": "Paramètres"
+   },
+   "shadow": {
+      "message": "Ombre"
+   },
+   "shopping": {
+      "message": "Achats"
+   },
+   "sidebar": {
+      "message": "Barre latérale"
+   },
+   "simple": {
+      "message": "Simple"
+   },
+   "size": {
+      "message": "Taille"
+   },
+   "skip": {
+      "message": "Sauter"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "Ignorer le guide, entrez dès maintenant"
+   },
+   "skip_login_enter_right_now": {
+      "message": "Pas encore connecté, entrez maintenant"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "Pas encore inscrit, entrez dès maintenant"
+   },
+   "social": {
+      "message": "Social"
+   },
+   "standby_page": {
+      "message": "Écran de verrouillage"
+   },
+   "standby_page_background": {
+      "message": "Fond d'écran de verrouillage"
+   },
+   "standby_page_clock": {
+      "message": "Écran de verrouillage Horloge"
+   },
+   "standby_page_weather": {
+      "message": "Écran de verrouillage Météo"
+   },
+   "stay_logged_out": {
+      "message": "Restez déconnecté"
+   },
+   "success": {
+      "message": "Succès"
+   },
+   "target_group": {
+      "message": "Groupe ciblé"
+   },
+   "technology_and_education": {
+      "message": "Technologie & Éducation"
+   },
+   "temperature_unit": {
+      "message": "Unité de température"
+   },
+   "terms_of_use": {
+      "message": "Conditions d'utilisation"
+   },
+   "terms_of_use_url_path": {
+      "message": "/fr/terms-of-use"
+   },
+   "text": {
+      "message": "Texte"
+   },
+   "the_end": {
+      "message": "La fin"
+   },
+   "theme": {
+      "message": "Thème"
+   },
+   "theme_and_wallpaper": {
+      "message": "Thème & Fond d'écran"
+   },
+   "to_do": {
+      "message": "ToDo"
+   },
+   "travel": {
+      "message": "Voyage"
+   },
+   "uncompleted": {
+      "message": "Inachevé"
+   },
+   "unknown": {
+      "message": "Inconnu"
+   },
+   "upload": {
+      "message": "Upload"
+   },
+   "upload_icon": {
+      "message": "Upload icône"
+   },
+   "user_changed": {
+      "message": "Changements d'utilisateur"
+   },
+   "visitor_slogan_1": {
+      "message": "Connectez-vous pour synchroniser, "
+   },
+   "visitor_slogan_2": {
+      "message": "afin que vos données ne soient jamais perdues."
+   },
+   "wallpaper": {
+      "message": "Fond d'écran"
+   },
+   "warning": {
+      "message": "Attention"
+   },
+   "website_desc": {
+      "message": "Description du site"
+   },
+   "website_name": {
+      "message": "Nom du site"
+   },
+   "welcome_back": {
+      "message": "Nous saluons le retour"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "Bienvenue dans MONKNOW Nouvel onglet"
+   },
+   "width": {
+      "message": "Largeur"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "Tornade"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "Tempête tropicale"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "Pluie verglaçante"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "Douches"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "Pluie"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "Averses de neige"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "Légère chute de neige"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "Poudrerie"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "Neige"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "Saluer"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "Neige fondue"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "Poussière"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "Ouragan"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "Brumeux"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "Brume"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "Fumeux"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "De tempête"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "Venteux"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "Du froid"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "Nuageux"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "Plutôt nuageux"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "Plutôt nuageux"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "Partiellement nuageux"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "Orages violents"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "Partiellement nuageux"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "Clair"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "Ensoleillé"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "Juste"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "Juste"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "Pluie et grêle mixtes"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "Chaud"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "Orages isolés"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "Orages dispersés"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "Averses éparses"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "Des orages"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "Pluie forte"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "Averses de neige dispersées"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "Beaucoup de neige"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "Blizzard"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "Indisponible"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "Averses éparses"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "Averses de neige dispersées"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "Orages épars"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "Pluie et neige mixtes"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "Pluie et grésil mixtes"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "Neige et grésil mixtes"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "Bruine verglaçante"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "Bruine"
+   }
+}

@@ -1,0 +1,1 @@
+u.prototype.args=function(t,i,n){if(typeof t==="function"){t=t(i,n)}if(typeof t!=="string"){t=this.slice(t).map(this.str(i,n))}return t.toString().split(/[\s,]+/).filter(function(t){return t.length})};

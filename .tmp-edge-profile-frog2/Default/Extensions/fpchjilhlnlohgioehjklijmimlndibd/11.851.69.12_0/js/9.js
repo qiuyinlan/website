@@ -1,0 +1,1 @@
+!function(){let e=document.getElementById("strong_search_menu_id");e&&(document.body.removeChild(e),document.getSelection().empty())}();

@@ -1,0 +1,5 @@
+2026/07/17-16:11:13.233 1177c Creating DB C:\Users\29785\project\website\orchard-app\.tmp-edge-profile\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/07/17-16:11:13.243 1177c Reusing MANIFEST C:\Users\29785\project\website\orchard-app\.tmp-edge-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/07/17-16:11:13.847 16e60 Level-0 table #5: started
+2026/07/17-16:11:13.850 16e60 Level-0 table #5: 683041 bytes OK
+2026/07/17-16:11:13.852 16e60 Delete type=0 #3

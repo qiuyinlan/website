@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>26-cloudy</title>
+    <desc>Created with Sketch.</desc>
+    <g id="26-cloudy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cloudy-fill" transform="translate(4.000000, 15.000000)" fill="#333333" fill-rule="nonzero">
+            <path d="M33.3984375,70.8401042 C16.6543629,69.8483631 2.90220032,57.2468745 0.454829673,40.6529611 C-1.99254097,24.0590477 7.53612646,8.02396158 23.280962,2.24055967 C39.0257976,-3.54284224 56.6684279,2.51166747 65.5442708,16.7442708 C79.9278163,17.2037149 91.4404608,28.831772 91.7564119,43.2191848 C92.0723629,57.6065975 81.0812807,69.7288419 66.7317708,70.8192708 L66.7317708,70.8984375 L33.3984375,70.8984375 L33.3984375,70.8401042 Z" id="路径"></path>
+        </g>
+    </g>
+</svg>

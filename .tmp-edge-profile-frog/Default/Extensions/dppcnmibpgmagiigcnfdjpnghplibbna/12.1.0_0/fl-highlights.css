@@ -1,0 +1,870 @@
+fl-div {
+    display: block;
+}
+
+fl-span {
+    display: inline;
+}
+
+.fl-highlight-red {
+    background-color: #ff595e !important;
+    color: white !important;
+}
+
+.fl-highlight-brown {
+    background-color: #78290f !important;
+    color: white !important;
+}
+
+.fl-highlight-yellow {
+    background-color: #ffca3a !important;
+    color: white !important;
+}
+
+.fl-highlight-green {
+    background-color: #8ac926 !important;
+    color: white !important;
+}
+
+
+.fl-highlight-blue {
+    background-color: #1982c4 !important;
+    color: white !important;
+}
+
+.fl-highlight-purple {
+    background-color: #6a4c93 !important;
+    color: white !important;
+}
+
+/*
+* ---------- Anno
+* */
+.fl-anno-container {
+    position: absolute;
+    display: none;
+    background-color: rgba(98, 103, 105, 0.38);
+    padding: 6px 8px;
+    z-index: 99999999;
+}
+
+.fl-anno-action {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    margin-left: 3px;
+    margin-right: 3px;
+    border: 1px solid transparent;
+}
+
+.fl-anno-action-selected {
+    outline: 2px solid #1982c4;
+}
+
+.fl-anno-action:hover {
+    border: 1px solid white;
+}
+
+.fl-anno-active {
+    border: 1px solid white;
+}
+
+.fl-anno-action-close {
+    float: right;
+}
+
+
+.fl-anno-cursor-container {
+    position: absolute;
+    z-index: 999999999;
+    left: 0;
+    top: 0;
+    display: none;
+}
+
+.anno-cursor {
+    width: 18px;
+    height: 18px;
+    /*border-radius: 50%;*/
+    cursor: pointer;
+}
+
+.anno-cursor-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+/*
+* 图片 pin 区域
+*/
+.fl-pic-pinned-conainer {
+    position: fixed;
+    z-index: 999999999;
+    right: 20px;
+    top: 80px;
+    left: auto;
+    display: none;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: box-shadow 0.3s ease;
+    width: 600px;
+    max-width: 80vw;
+    max-height: 80vh;
+}
+
+.fl-pic-pinned-conainer.dragging,
+.fl-pic-pinned-conainer.resizing {
+    transform: none;
+}
+
+.fl-pic-pinned-conainer:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fl-pic-pinned-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 10px 16px;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    user-select: none;
+    position: relative;
+    cursor: move;
+}
+
+.fl-pic-pinned-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.fl-pic-pinned-actions-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.fl-pic-pinned-actions {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    opacity: 0.85;
+    filter: brightness(0) invert(1);
+}
+
+.fl-pic-pinned-actions:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.fl-pic-pinned-actions:active {
+    transform: scale(0.95);
+}
+
+.fl-pic-pinned {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(80vh - 60px);
+    object-fit: contain;
+    background: #f5f5f5;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+/* 拖动区域样式优化 */
+#fl-pic-drag-overlay,
+#fl-pic-drag-overlay-right {
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+#fl-pic-drag-overlay:hover,
+#fl-pic-drag-overlay-right:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+#fl-pic-drag-overlay:active,
+#fl-pic-drag-overlay-right:active {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* 拖动时的视觉反馈 */
+.fl-pic-pinned-conainer.dragging {
+    cursor: move;
+    user-select: none;
+    opacity: 0.95;
+}
+
+.fl-pic-pinned-conainer.resizing {
+    cursor: nwse-resize;
+    user-select: none;
+}
+
+/* 画笔工具栏 */
+.fl-pic-pinned-toolbar {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fl-pic-pinned-toolbar-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fl-pic-paint-btn,
+.fl-pic-color-btn,
+.fl-pic-clear-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    font-size: 18px;
+    user-select: none;
+}
+
+.fl-pic-paint-btn {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.fl-pic-paint-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: scale(1.1);
+}
+
+.fl-pic-paint-btn.fl-pic-paint-active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.fl-pic-color-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.fl-pic-color-red {
+    background: #ff595e;
+}
+
+.fl-pic-color-yellow {
+    background: #ffca3a;
+}
+
+.fl-pic-color-green {
+    background: #8ac926;
+}
+
+.fl-pic-color-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.fl-pic-color-btn.fl-pic-color-active {
+    border-color: #333;
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.fl-pic-clear-btn {
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.fl-pic-clear-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+    transform: scale(1.1);
+}
+
+/* 图片容器 */
+.fl-pic-pinned-image-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.fl-pic-pinned-canvas {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 画笔模式下的鼠标样式 - 使用crosshair确保精确对齐 */
+.fl-pic-pinned-canvas.paint-mode {
+    cursor: crosshair !important;
+}
+
+.fl-pic-pinned-conainer.paint-mode {
+    cursor: crosshair !important;
+}
+
+/*
+* ---------- Sticker
+*/
+.fl-anno-sticker-side {
+    position: fixed;
+    right: 0;
+    top: 100px;
+    z-index: 999999;
+    overflow: scroll;
+    white-space: nowrap;
+    max-width: 412px;
+    max-height: 80%;
+}
+
+.fl-anno-sticker-container {
+    width: 340px;
+    float: right;
+    margin-top: 20px;
+    border: 1px solid rgba(136, 136, 136, 0.63);
+    white-space: nowrap;
+    background-color: white;
+    font-size: 14px;
+    color: black;
+    overflow: hidden;
+    /*    右下角阴影 */
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(136, 136, 136, 0.63);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(136, 136, 136, 0.63);
+    box-shadow: 0px 0px 5px 0px rgba(136, 136, 136, 0.63);
+}
+
+.fl-anno-sticker-container:hover {
+    cursor: pointer;
+    border: 2px solid #488edc;
+    /*  0.5s 内宽度逐渐变为 410，以 ease 模式  */
+    transition: width 0.5s ease;
+    width: 410px;
+}
+
+.fl-anno-sticker-missing {
+    outline: #f67003 solid 2px;
+}
+
+.fl-anno-sticker-time {
+    display: inline-block;
+    /*width: 100px;*/
+    padding: 8px 4px;
+    margin-right: 8px;
+    text-align: center;
+    color: white;
+}
+
+/* 注释样式占位符 */
+
+/* 样式隔离：防止被页面样式影响 */
+.fl-tip-container {
+    position: fixed !important;
+    top: 30px !important;
+    right: -100% !important;
+    display: none;
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 12px 16px !important;
+    z-index: 999999999 !important;
+    border-radius: 12px 0 0 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-right: none !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+    max-width: 300px !important;
+    /* 样式重置和隔离 */
+    margin: 0 !important;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip: auto !important;
+    clip-path: none !important;
+    mask: none !important;
+    mask-image: none !important;
+    mask-size: auto !important;
+    mask-repeat: repeat !important;
+    mask-position: 0% 0% !important;
+    mask-clip: border-box !important;
+    mask-origin: border-box !important;
+    mask-composite: add !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+    all: unset !important;
+    /* 重新设置关键样式 */
+    position: fixed !important;
+    top: 30px !important;
+    right: -100% !important;
+    display: none;
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 12px 16px !important;
+    z-index: 999999999 !important;
+    border-radius: 12px 0 0 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-right: none !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+    max-width: 300px !important;
+}
+
+/* 当提示框显示时滑入到正确位置 */
+.fl-tip-container[style*="display: block"] {
+    right: 0 !important;
+}
+
+.fl-tip-title {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 0 0 6px 0 !important;
+    padding: 0 !important;
+    color: #4285f4 !important;
+    background: linear-gradient(135deg, #4285f4, #7c4dff) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    letter-spacing: 0.3px !important;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
+    line-height: 1.4 !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    border: none !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+.fl-tip-desc {
+    font-size: 14px !important;
+    max-width: 280px !important;
+    color: #333333 !important;
+    line-height: 1.5 !important;
+    opacity: 0.9 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
+    font-weight: normal !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    border: none !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* 主菜单容器样式隔离 */
+.fl-menu-container {
+    display: block;
+    position: fixed !important;
+    top: 100px !important;
+    right: 0 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 8px 6px !important;
+    z-index: 999999999 !important;
+    border-radius: 12px 0 0 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-right: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+    /* 样式重置和隔离 */
+    margin: 0 !important;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+}
+
+.fl-menu-cell {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.fl-menu-item {
+    display: inline-block !important;
+    width: 28px !important;
+    height: 28px !important;
+    cursor: pointer !important;
+    margin: 2px !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    background: rgba(66, 133, 244, 0.05) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    /* 样式重置和隔离 */
+    padding: 0 !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+}
+
+.fire-menu {
+    position: absolute;
+    left: -10px;
+    width: 18px;
+}
+
+.divider-h {
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, rgba(66, 133, 244, 0.3), transparent) !important;
+    margin: 6px 0 !important;
+    border-radius: 1px !important;
+    box-shadow: 0 1px 2px rgba(66, 133, 244, 0.1) !important;
+    /* 样式重置和隔离 */
+    width: auto !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    display: block !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+}
+
+.divider-v {
+    display: inline-block !important;
+    height: 30px !important;
+    width: 2px !important;
+    background: linear-gradient(180deg, transparent, rgba(66, 133, 244, 0.3), transparent) !important;
+    border-radius: 1px !important;
+    box-shadow: 0 1px 2px rgba(66, 133, 244, 0.1) !important;
+    margin: 0 4px !important;
+    /* 样式重置和隔离 */
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+}
+
+.fl-menu-item:hover {
+    border: 1px solid #4285f4 !important;
+    background: rgba(66, 133, 244, 0.15) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(66, 133, 244, 0.25) !important;
+}
+
+/* 子菜单容器样式隔离 */
+.fl-submenu-container {
+    position: fixed !important;
+    right: 36px !important;
+    display: none;
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 4px 6px !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    z-index: 999999999 !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+    /* 样式重置和隔离 */
+    margin: 0 !important;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+}
+
+/* 当子菜单显示时使用 flex 布局 */
+.fl-submenu-container[style*="display: block"] {
+    display: flex !important;
+}
+
+.fl-submenu-item {
+    display: inline-block !important;
+    width: 28px !important;
+    height: 28px !important;
+    cursor: pointer !important;
+    margin: 2px !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    background: rgba(66, 133, 244, 0.05) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    /* 样式重置和隔离 */
+    padding: 0 !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-indent: 0 !important;
+    text-shadow: none !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    white-space: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    overflow: visible !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    isolation: isolate !important;
+    mix-blend-mode: normal !important;
+    will-change: auto !important;
+    contain: none !important;
+}
+
+.fl-submenu-item:hover {
+    border: 1px solid #4285f4 !important;
+    background: rgba(66, 133, 244, 0.15) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(66, 133, 244, 0.25) !important;
+}
+
+/*
+* 从右向左进入的动画
+* */
+/* 定义从右向左浮现的动画 */
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 定义从右向左浮现的动画 */
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
+.anno-slideInFromRight {
+    animation: slideInFromRight 0.3s ease-out forwards;
+}
+
+.anno-slideInFromLeft {
+    animation: slideInFromLeft 0.3s ease-out forwards;
+}

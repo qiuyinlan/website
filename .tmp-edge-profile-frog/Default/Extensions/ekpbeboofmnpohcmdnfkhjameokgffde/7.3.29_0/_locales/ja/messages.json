@@ -1,0 +1,815 @@
+{
+   "24_hour_system": {
+      "message": "24 時間制"
+   },
+   "about_us": {
+      "message": "私達について"
+   },
+   "add": {
+      "message": "加える"
+   },
+   "add_and_continue": {
+      "message": "追加して続行"
+   },
+   "add_group": {
+      "message": "グループを追加"
+   },
+   "add_icon": {
+      "message": "追加アイコン"
+   },
+   "add_manually": {
+      "message": "手動で追加"
+   },
+   "add_successful": {
+      "message": "追加成功"
+   },
+   "add_task": {
+      "message": "タスクを追加"
+   },
+   "address": {
+      "message": "住所"
+   },
+   "all": {
+      "message": "すべて"
+   },
+   "all_bookmarks": {
+      "message": "すべてのブックマーク"
+   },
+   "animal": {
+      "message": "動物"
+   },
+   "anime": {
+      "message": "アニメ"
+   },
+   "any_important_plans": {
+      "message": "重要な計画はありますか？"
+   },
+   "any_plans": {
+      "message": "何か計画は？"
+   },
+   "appearance": {
+      "message": "外観"
+   },
+   "architecture": {
+      "message": "建築"
+   },
+   "authorize": {
+      "message": "許可する"
+   },
+   "auto_hide": {
+      "message": "自動非表示"
+   },
+   "background_color": {
+      "message": "背景色"
+   },
+   "background_tab": {
+      "message": "後ろのラベル"
+   },
+   "blur": {
+      "message": "ぼかし"
+   },
+   "border_radius": {
+      "message": "フィレ"
+   },
+   "brightness_color": {
+      "message": "明色"
+   },
+   "cancel": {
+      "message": "取消"
+   },
+   "captcha": {
+      "message": "キャプチャ"
+   },
+   "captcha_expired": {
+      "message": "キャプチャの有効期限が切れました"
+   },
+   "captcha_invalid": {
+      "message": "キャプチャが無効です"
+   },
+   "category": {
+      "message": "カテゴリー"
+   },
+   "celsius": {
+      "message": "摂氏"
+   },
+   "classic": {
+      "message": "クラシック"
+   },
+   "column_gap": {
+      "message": "列間隔"
+   },
+   "completed": {
+      "message": "完了しました"
+   },
+   "confirm": {
+      "message": "確認する"
+   },
+   "confirm_new_password": {
+      "message": "新しいパスワードを確認"
+   },
+   "contact": {
+      "message": "連絡先"
+   },
+   "contact_url_path": {
+      "message": "/ja/contact"
+   },
+   "current_tab": {
+      "message": "現在のタブ"
+   },
+   "darkness_color": {
+      "message": "暗色"
+   },
+   "delete": {
+      "message": "削除"
+   },
+   "delete_all_completed_tasks": {
+      "message": "完了したタスクをすべて削除"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "完了したタスクをすべて削除してもよろしいですか？"
+   },
+   "delete_confirmation": {
+      "message": "消去してもよろしいですか？"
+   },
+   "desc": {
+      "message": "説明"
+   },
+   "display_add_btn": {
+      "message": "追加ボタンを表示"
+   },
+   "display_notification_badge": {
+      "message": "通知バッジを表示"
+   },
+   "display_width": {
+      "message": "表示幅"
+   },
+   "download": {
+      "message": "ダウンロード"
+   },
+   "download_wallpaper": {
+      "message": "壁紙をダウンロード"
+   },
+   "edit": {
+      "message": "編集"
+   },
+   "edit_group": {
+      "message": "グループを編集"
+   },
+   "edit_icon": {
+      "message": "編集アイコン"
+   },
+   "efficient": {
+      "message": "効率的"
+   },
+   "email": {
+      "message": "Eメール"
+   },
+   "email_format_invalid": {
+      "message": "メール形式が無効です"
+   },
+   "email_not_exists": {
+      "message": "メールが存在しません"
+   },
+   "email_or_password_invalid": {
+      "message": "メールアドレスまたはパスワードが無効です"
+   },
+   "email_registered": {
+      "message": "メールは他の人によって登録されました"
+   },
+   "enable_clock": {
+      "message": "時計をつける"
+   },
+   "enable_standby_page": {
+      "message": "ロック画面を開く"
+   },
+   "enable_weather": {
+      "message": "天気を有効にする"
+   },
+   "enter_when_inactive": {
+      "message": "非アクティブのときに入力"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "新しいタブを開くときに入力します"
+   },
+   "entertainment": {
+      "message": "エンターテインメント"
+   },
+   "extension_desc": {
+      "message": "これはあなたが夢見ている新しいタブです。WebサイトのURLグループ管理、データのリアルタイムクラウド同期、暗闇と暗夜のテーマモードをサポートします。"
+   },
+   "extension_name": {
+      "message": "MONKNOW 新しいタブ - パーソナライズされたパネル"
+   },
+   "fahrenheit": {
+      "message": "華氏"
+   },
+   "fail": {
+      "message": "失敗"
+   },
+   "feedback": {
+      "message": "フィードバック"
+   },
+   "feedback_and_others": {
+      "message": "フィードバックとその他"
+   },
+   "feedback_and_rate": {
+      "message": "フィードバックと評価"
+   },
+   "finance": {
+      "message": "財政"
+   },
+   "find_password": {
+      "message": "パスワードを見つける"
+   },
+   "find_password_successful": {
+      "message": "$1 にメールを送信しました, パスワードをリセットしてください"
+   },
+   "follow_the_system": {
+      "message": "システムをフォローする"
+   },
+   "forgot_password": {
+      "message": "パスワードをお忘れですか?"
+   },
+   "general": {
+      "message": "従来"
+   },
+   "graphic": {
+      "message": "画像"
+   },
+   "group": {
+      "message": "群"
+   },
+   "have_account_login_right_now": {
+      "message": "アカウントを持っています, 今すぐログインしてください"
+   },
+   "height": {
+      "message": "高さ"
+   },
+   "hide": {
+      "message": "隠す"
+   },
+   "homepage": {
+      "message": "ホーム"
+   },
+   "homepage_url_path": {
+      "message": "/ja"
+   },
+   "hour_unit": {
+      "message": "時"
+   },
+   "icon": {
+      "message": "アイコン"
+   },
+   "icon_text": {
+      "message": "アイコンテキスト"
+   },
+   "image_size_can_not_exceed": {
+      "message": "画像サイズは $1 を超えることはできません"
+   },
+   "import_from_bookmarks": {
+      "message": "ブックマークからインポート"
+   },
+   "import_from_bookmarks_error": {
+      "message": "クォータの制限を超過している場合は、後で「設定->一般->インポート」でブックマークをインポートできます"
+   },
+   "import_successful": {
+      "message": "インポート成功"
+   },
+   "important": {
+      "message": "重要"
+   },
+   "impressive": {
+      "message": "印象的"
+   },
+   "inconsistent": {
+      "message": "一貫性のない"
+   },
+   "info": {
+      "message": "情報"
+   },
+   "internal_app": {
+      "message": "内部アプリ"
+   },
+   "it_is_empty": {
+      "message": "それは空です"
+   },
+   "left_side": {
+      "message": "左側"
+   },
+   "lifestyle": {
+      "message": "ライフスタイル"
+   },
+   "lightweight": {
+      "message": "軽量"
+   },
+   "loading": {
+      "message": "読み込み中"
+   },
+   "local": {
+      "message": "ローカル"
+   },
+   "locating": {
+      "message": "探している"
+   },
+   "location": {
+      "message": "場所"
+   },
+   "login": {
+      "message": "ログイン"
+   },
+   "login_right_now": {
+      "message": "今すぐログイン"
+   },
+   "logout": {
+      "message": "ログアウト"
+   },
+   "main_view": {
+      "message": "メインビュー"
+   },
+   "minute_unit": {
+      "message": "分"
+   },
+   "modify": {
+      "message": "変更"
+   },
+   "modify_nickname": {
+      "message": "ニックネームを変更"
+   },
+   "modify_password": {
+      "message": "パスワード変更"
+   },
+   "modify_portrait": {
+      "message": "ポートレートを変更"
+   },
+   "modify_successful": {
+      "message": "変更成功"
+   },
+   "name": {
+      "message": "名"
+   },
+   "narrow_menu": {
+      "message": "狭いメニュー"
+   },
+   "natural": {
+      "message": "自然"
+   },
+   "need_bookmarks_permission": {
+      "message": "ブックマークへのアクセスを許可してください"
+   },
+   "network_error": {
+      "message": "ネットワークエラー"
+   },
+   "never": {
+      "message": "決して"
+   },
+   "new_nickname": {
+      "message": "新しいニックネーム"
+   },
+   "new_password": {
+      "message": "新しいパスワード"
+   },
+   "new_tab": {
+      "message": "新しいタブ"
+   },
+   "news_and_reading": {
+      "message": "消息と読書"
+   },
+   "next_one": {
+      "message": "次の"
+   },
+   "next_step": {
+      "message": "次のステップ"
+   },
+   "next_wallpaper": {
+      "message": "次の壁紙"
+   },
+   "nickname": {
+      "message": "ニックネーム"
+   },
+   "not_found": {
+      "message": "見つかりません"
+   },
+   "not_have_account_register_right_now": {
+      "message": "アカウントを持っていないので, 今すぐ登録してください"
+   },
+   "not_recognized": {
+      "message": "認識されない"
+   },
+   "not_supported_in_this_browser": {
+      "message": "このブラウザではサポートされていません"
+   },
+   "official": {
+      "message": "公式"
+   },
+   "official_lib": {
+      "message": "公式図書館"
+   },
+   "old_password": {
+      "message": "以前のパスワード"
+   },
+   "old_password_not_match": {
+      "message": "以前のパスワードが一致しません"
+   },
+   "opacity": {
+      "message": "透明性"
+   },
+   "open": {
+      "message": "開いた"
+   },
+   "open_all": {
+      "message": "すべて開く"
+   },
+   "open_in_background_tab": {
+      "message": "バックグラウンドタブで開く"
+   },
+   "open_in_incognito_window": {
+      "message": "シークレットウィンドウで開く"
+   },
+   "open_in_new_tab": {
+      "message": "新しいタブで開く"
+   },
+   "open_method": {
+      "message": "道を開く"
+   },
+   "optional": {
+      "message": "随意"
+   },
+   "others": {
+      "message": "その他"
+   },
+   "particular": {
+      "message": "詳細"
+   },
+   "password": {
+      "message": "パスワード"
+   },
+   "people": {
+      "message": "人"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "インポートするブックマークを選択します"
+   },
+   "please_complete_form": {
+      "message": "フォームに記入してください"
+   },
+   "popular": {
+      "message": "人気の"
+   },
+   "prev_step": {
+      "message": "前のステップ"
+   },
+   "preview": {
+      "message": "試写"
+   },
+   "privacy_policy": {
+      "message": "プライバシーポリシー"
+   },
+   "privacy_policy_url_path": {
+      "message": "/ja/privacy-policy"
+   },
+   "productivity": {
+      "message": "生産性"
+   },
+   "pure_color": {
+      "message": "モノクローム"
+   },
+   "rate_five_stars": {
+      "message": "五つ星の賞賛"
+   },
+   "register": {
+      "message": "登録"
+   },
+   "register_again": {
+      "message": "間違ったメールアドレス？ 再登録"
+   },
+   "register_to_sync_your_data": {
+      "message": "アカウントを登録して情報を同期します"
+   },
+   "remember_the_last_visited_group": {
+      "message": "最後にアクセスしたグループを覚えている"
+   },
+   "replace": {
+      "message": "交換"
+   },
+   "replace_frequency": {
+      "message": "交換頻度"
+   },
+   "replace_location": {
+      "message": "場所を交換"
+   },
+   "request_for_inclusion": {
+      "message": "包含のリクエスト"
+   },
+   "request_for_inclusion_successful": {
+      "message": "包含のリクエストが成功しました"
+   },
+   "required": {
+      "message": "必須"
+   },
+   "right_side": {
+      "message": "右側"
+   },
+   "row_gap": {
+      "message": "行間隔"
+   },
+   "scroll_or_click": {
+      "message": "スクロールまたはクリック"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "スクロールしてグループを切り替えます"
+   },
+   "search": {
+      "message": "検索"
+   },
+   "search_box": {
+      "message": "検索ボックス"
+   },
+   "search_engine": {
+      "message": "検索エンジン"
+   },
+   "search_result": {
+      "message": "検索結果"
+   },
+   "searching": {
+      "message": "検索中"
+   },
+   "second_unit": {
+      "message": "秒"
+   },
+   "server_error": {
+      "message": "サーバーエラー"
+   },
+   "set_nickname_first": {
+      "message": "最初にニックネームを設定"
+   },
+   "settings": {
+      "message": "設定"
+   },
+   "shadow": {
+      "message": "影"
+   },
+   "shopping": {
+      "message": "買物"
+   },
+   "sidebar": {
+      "message": "サイドバー"
+   },
+   "simple": {
+      "message": "シンプル"
+   },
+   "size": {
+      "message": "大きさ"
+   },
+   "skip": {
+      "message": "スキップ"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "ユーザーガイドをスキップ, 直接使用する"
+   },
+   "skip_login_enter_right_now": {
+      "message": "今はログインしないでください, 直接使用する"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "今は登録しないでください, 直接使用する"
+   },
+   "social": {
+      "message": "ソーシャル"
+   },
+   "standby_page": {
+      "message": "ロック画面"
+   },
+   "standby_page_background": {
+      "message": "ロック画面の背景"
+   },
+   "standby_page_clock": {
+      "message": "ロック画面クロック"
+   },
+   "standby_page_weather": {
+      "message": "ロック画面の天気"
+   },
+   "stay_logged_out": {
+      "message": "ログアウトしたままにする"
+   },
+   "success": {
+      "message": "成功"
+   },
+   "target_group": {
+      "message": "ターゲットグループ"
+   },
+   "technology_and_education": {
+      "message": "技術と教育"
+   },
+   "temperature_unit": {
+      "message": "温度単位"
+   },
+   "terms_of_use": {
+      "message": "利用規約"
+   },
+   "terms_of_use_url_path": {
+      "message": "/ja/terms-of-use"
+   },
+   "text": {
+      "message": "本文"
+   },
+   "the_end": {
+      "message": "終わり"
+   },
+   "theme": {
+      "message": "件名"
+   },
+   "theme_and_wallpaper": {
+      "message": "件名 & 壁紙"
+   },
+   "to_do": {
+      "message": "ToDo"
+   },
+   "travel": {
+      "message": "旅行"
+   },
+   "uncompleted": {
+      "message": "未完成"
+   },
+   "unknown": {
+      "message": "未知の"
+   },
+   "upload": {
+      "message": "アップロードする"
+   },
+   "upload_icon": {
+      "message": "アップロードアイコン"
+   },
+   "user_changed": {
+      "message": "ユーザーが変更されました"
+   },
+   "visitor_slogan_1": {
+      "message": "同期するにはログインしてください、 "
+   },
+   "visitor_slogan_2": {
+      "message": "データが失われないことを確認してください。"
+   },
+   "wallpaper": {
+      "message": "壁紙"
+   },
+   "warning": {
+      "message": "警告"
+   },
+   "website_desc": {
+      "message": "ウェブサイトの説明"
+   },
+   "website_name": {
+      "message": "ウェブサイト名"
+   },
+   "welcome_back": {
+      "message": "お帰りなさい"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "MONKNOW 新しいタブページへようこそ"
+   },
+   "width": {
+      "message": "幅"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "竜巻"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "トロピカルストーム"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "にわか雨"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "シャワー"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "雨"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "雪の大雨"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "にわか雪"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "吹いてる雪"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "雪"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "雹"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "みぞれ"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "ほこり"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "ハリケーン"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "霧"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "もや"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "煙"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "ブルースタリー"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "風が強い"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "冷"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "曇り"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "だいたい曇"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "だいたい曇"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "晴れときどき曇り"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "激しい雷雨"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "晴れときどき曇り"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "晴天"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "晴天"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "晴天"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "晴天"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "レインクリップあられ"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "熱"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "孤立した雷雨"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "散乱雷雨"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "にわか雨"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "雷雨"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "大雨"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "にわか雪"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "大雪"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "猛吹雪"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "利用不可"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "にわか雨"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "にわか雪"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "散在する雷雨"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "にわか雨"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "混じりの雨とみぞれ"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "混合雪とみぞれ"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "凍結する霧雨"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "霧雨"
+   }
+}

@@ -1,0 +1,821 @@
+{
+   "24_hour_system": {
+      "message": "24小时制"
+   },
+   "about_us": {
+      "message": "关于我们"
+   },
+   "add": {
+      "message": "添加"
+   },
+   "add_and_continue": {
+      "message": "添加并继续"
+   },
+   "add_group": {
+      "message": "添加分组"
+   },
+   "add_icon": {
+      "message": "添加图标"
+   },
+   "add_manually": {
+      "message": "手动添加"
+   },
+   "add_successful": {
+      "message": "添加成功"
+   },
+   "add_task": {
+      "message": "添加任务"
+   },
+   "address": {
+      "message": "地址"
+   },
+   "all": {
+      "message": "全部"
+   },
+   "all_bookmarks": {
+      "message": "所有书签"
+   },
+   "animal": {
+      "message": "动物"
+   },
+   "anime": {
+      "message": "动漫"
+   },
+   "any_important_plans": {
+      "message": "有什么重要的计划吗？"
+   },
+   "any_plans": {
+      "message": "有什么计划吗？"
+   },
+   "appearance": {
+      "message": "外观"
+   },
+   "architecture": {
+      "message": "建筑"
+   },
+   "authorize": {
+      "message": "授权"
+   },
+   "auto_hide": {
+      "message": "自动隐藏"
+   },
+   "background_color": {
+      "message": "背景颜色"
+   },
+   "background_tab": {
+      "message": "后台页"
+   },
+   "blur": {
+      "message": "模糊"
+   },
+   "border_radius": {
+      "message": "圆角"
+   },
+   "brightness_color": {
+      "message": "浅色"
+   },
+   "cancel": {
+      "message": "取消"
+   },
+   "captcha": {
+      "message": "验证码"
+   },
+   "captcha_expired": {
+      "message": "验证码已过期"
+   },
+   "captcha_invalid": {
+      "message": "验证码不正确"
+   },
+   "category": {
+      "message": "类别"
+   },
+   "celsius": {
+      "message": "摄氏度"
+   },
+   "classic": {
+      "message": "经典"
+   },
+   "column_gap": {
+      "message": "列间距"
+   },
+   "completed": {
+      "message": "已完成"
+   },
+   "confirm": {
+      "message": "确定"
+   },
+   "confirm_new_password": {
+      "message": "确认新密码"
+   },
+   "contact": {
+      "message": "联系"
+   },
+   "contact_url_path": {
+      "message": "/zh-CN/contact"
+   },
+   "current_tab": {
+      "message": "当前标签页"
+   },
+   "darkness_color": {
+      "message": "深色"
+   },
+   "delete": {
+      "message": "删除"
+   },
+   "delete_all_completed_tasks": {
+      "message": "删除全部已完成的任务"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "您确定要删除全部已完成的任务吗？"
+   },
+   "delete_confirmation": {
+      "message": "您确定要删除吗？"
+   },
+   "desc": {
+      "message": "描述"
+   },
+   "display_add_btn": {
+      "message": "显示添加按钮"
+   },
+   "display_notification_badge": {
+      "message": "显示红点提示"
+   },
+   "display_width": {
+      "message": "显示宽度"
+   },
+   "download": {
+      "message": "下载"
+   },
+   "download_wallpaper": {
+      "message": "下载壁纸"
+   },
+   "edit": {
+      "message": "编辑"
+   },
+   "edit_group": {
+      "message": "编辑分组"
+   },
+   "edit_icon": {
+      "message": "编辑图标"
+   },
+   "efficient": {
+      "message": "高效"
+   },
+   "email": {
+      "message": "电子邮箱"
+   },
+   "email_format_invalid": {
+      "message": "邮箱格式不正确"
+   },
+   "email_not_exists": {
+      "message": "邮箱不存在"
+   },
+   "email_or_password_invalid": {
+      "message": "邮箱或密码不正确"
+   },
+   "email_registered": {
+      "message": "邮箱已被注册"
+   },
+   "enable_clock": {
+      "message": "开启时钟"
+   },
+   "enable_standby_page": {
+      "message": "开启待机页"
+   },
+   "enable_weather": {
+      "message": "开启天气"
+   },
+   "enter_when_inactive": {
+      "message": "不活跃时进入"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "打开标签页时进入"
+   },
+   "entertainment": {
+      "message": "娱乐"
+   },
+   "extension_desc": {
+      "message": "这是您梦寐以求的新标签页。支持网站网址URL分组管理，数据实时云同步，黑暗深色夜间主题模式。"
+   },
+   "extension_name": {
+      "message": "MONKNOW 新标签页 - 个性化面板"
+   },
+   "fahrenheit": {
+      "message": "华氏度"
+   },
+   "fail": {
+      "message": "失败"
+   },
+   "feedback": {
+      "message": "反馈"
+   },
+   "feedback_and_others": {
+      "message": "反馈&其他"
+   },
+   "feedback_and_rate": {
+      "message": "反馈与评分"
+   },
+   "feedback_url": {
+      "message": "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAASCXo9JUM1I3NjFXQkRCSEhSR0dVSzhZR1o2TVZKVi4u"
+   },
+   "finance": {
+      "message": "金融"
+   },
+   "find_password": {
+      "message": "找回密码"
+   },
+   "find_password_successful": {
+      "message": "我们已向您的邮箱 $1 发送了一封重置密码的邮件，请前往邮箱修改"
+   },
+   "follow_the_system": {
+      "message": "跟随系统"
+   },
+   "forgot_password": {
+      "message": "忘记密码？"
+   },
+   "general": {
+      "message": "常规"
+   },
+   "graphic": {
+      "message": "图片"
+   },
+   "group": {
+      "message": "分组"
+   },
+   "have_account_login_right_now": {
+      "message": "已有账户，即刻登录"
+   },
+   "height": {
+      "message": "高度"
+   },
+   "hide": {
+      "message": "隐藏"
+   },
+   "homepage": {
+      "message": "主页"
+   },
+   "homepage_url_path": {
+      "message": "/zh-CN"
+   },
+   "hour_unit": {
+      "message": "小时"
+   },
+   "icon": {
+      "message": "图标"
+   },
+   "icon_text": {
+      "message": "图标文字"
+   },
+   "image_size_can_not_exceed": {
+      "message": "图片大小不能超过$1"
+   },
+   "import_from_bookmarks": {
+      "message": "从书签导入"
+   },
+   "import_from_bookmarks_error": {
+      "message": "超出数量上线，稍后可从\"设置->常规->导入\"分批次导入"
+   },
+   "import_successful": {
+      "message": "导入成功"
+   },
+   "important": {
+      "message": "重要"
+   },
+   "impressive": {
+      "message": "深刻"
+   },
+   "inconsistent": {
+      "message": "不一致"
+   },
+   "info": {
+      "message": "信息"
+   },
+   "internal_app": {
+      "message": "内置App"
+   },
+   "it_is_empty": {
+      "message": "这是空的"
+   },
+   "left_side": {
+      "message": "左侧"
+   },
+   "lifestyle": {
+      "message": "生活方式"
+   },
+   "lightweight": {
+      "message": "轻巧"
+   },
+   "loading": {
+      "message": "加载中"
+   },
+   "local": {
+      "message": "本地"
+   },
+   "locating": {
+      "message": "定位中"
+   },
+   "location": {
+      "message": "定位"
+   },
+   "login": {
+      "message": "登录"
+   },
+   "login_right_now": {
+      "message": "即刻登录"
+   },
+   "logout": {
+      "message": "登出"
+   },
+   "main_view": {
+      "message": "主视图"
+   },
+   "minute_unit": {
+      "message": "分钟"
+   },
+   "modify": {
+      "message": "修改"
+   },
+   "modify_nickname": {
+      "message": "修改昵称"
+   },
+   "modify_password": {
+      "message": "修改密码"
+   },
+   "modify_portrait": {
+      "message": "修改头像"
+   },
+   "modify_successful": {
+      "message": "修改成功"
+   },
+   "name": {
+      "message": "名称"
+   },
+   "narrow_menu": {
+      "message": "窄距菜单"
+   },
+   "natural": {
+      "message": "自然"
+   },
+   "need_bookmarks_permission": {
+      "message": "请授权访问书签"
+   },
+   "network_error": {
+      "message": "网络错误"
+   },
+   "never": {
+      "message": "从不"
+   },
+   "new_nickname": {
+      "message": "新昵称"
+   },
+   "new_password": {
+      "message": "新密码"
+   },
+   "new_tab": {
+      "message": "新标签页"
+   },
+   "news_and_reading": {
+      "message": "新闻与阅读"
+   },
+   "next_one": {
+      "message": "下一个"
+   },
+   "next_step": {
+      "message": "下一步"
+   },
+   "next_wallpaper": {
+      "message": "下一张壁纸"
+   },
+   "nickname": {
+      "message": "昵称"
+   },
+   "not_found": {
+      "message": "未找到"
+   },
+   "not_have_account_register_right_now": {
+      "message": "没有账户，即刻注册"
+   },
+   "not_recognized": {
+      "message": "不能识别"
+   },
+   "not_supported_in_this_browser": {
+      "message": "此浏览器暂不支持"
+   },
+   "official": {
+      "message": "官方"
+   },
+   "official_lib": {
+      "message": "官方库"
+   },
+   "old_password": {
+      "message": "旧密码"
+   },
+   "old_password_not_match": {
+      "message": "旧密码不正确"
+   },
+   "opacity": {
+      "message": "不透明度"
+   },
+   "open": {
+      "message": "打开"
+   },
+   "open_all": {
+      "message": "打开所有"
+   },
+   "open_in_background_tab": {
+      "message": "在后台页中打开"
+   },
+   "open_in_incognito_window": {
+      "message": "在隐身窗口中打开"
+   },
+   "open_in_new_tab": {
+      "message": "在新标签页中打开"
+   },
+   "open_method": {
+      "message": "打开方式"
+   },
+   "optional": {
+      "message": "选填"
+   },
+   "others": {
+      "message": "其他"
+   },
+   "particular": {
+      "message": "详细"
+   },
+   "password": {
+      "message": "密码"
+   },
+   "people": {
+      "message": "人物"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "选择您想要导入的书签"
+   },
+   "please_complete_form": {
+      "message": "请完整填写表单"
+   },
+   "popular": {
+      "message": "热门"
+   },
+   "prev_step": {
+      "message": "上一步"
+   },
+   "preview": {
+      "message": "预览"
+   },
+   "privacy_policy": {
+      "message": "隐私政策"
+   },
+   "privacy_policy_url_path": {
+      "message": "/zh-CN/privacy-policy"
+   },
+   "productivity": {
+      "message": "效率"
+   },
+   "pure_color": {
+      "message": "纯色"
+   },
+   "rate_five_stars": {
+      "message": "五星好评"
+   },
+   "register": {
+      "message": "注册"
+   },
+   "register_again": {
+      "message": "邮箱错误？重新注册"
+   },
+   "register_to_sync_your_data": {
+      "message": "注册一个账号以同步您的资料"
+   },
+   "remember_the_last_visited_group": {
+      "message": "记住最后访问的分组"
+   },
+   "replace": {
+      "message": "更换"
+   },
+   "replace_frequency": {
+      "message": "更换频率"
+   },
+   "replace_location": {
+      "message": "更换定位"
+   },
+   "request_for_inclusion": {
+      "message": "申请收录"
+   },
+   "request_for_inclusion_successful": {
+      "message": "申请收录成功"
+   },
+   "required": {
+      "message": "必填项"
+   },
+   "right_side": {
+      "message": "右侧"
+   },
+   "row_gap": {
+      "message": "行间距"
+   },
+   "scroll_or_click": {
+      "message": "滚动或单击"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "滚动以切换分组"
+   },
+   "search": {
+      "message": "搜索"
+   },
+   "search_box": {
+      "message": "搜索框"
+   },
+   "search_engine": {
+      "message": "搜索引擎"
+   },
+   "search_result": {
+      "message": "搜索结果"
+   },
+   "searching": {
+      "message": "搜索中"
+   },
+   "second_unit": {
+      "message": "秒"
+   },
+   "server_error": {
+      "message": "服务器错误"
+   },
+   "set_nickname_first": {
+      "message": "先设置一个昵称"
+   },
+   "settings": {
+      "message": "设置"
+   },
+   "shadow": {
+      "message": "阴影"
+   },
+   "shopping": {
+      "message": "购物"
+   },
+   "sidebar": {
+      "message": "侧边栏"
+   },
+   "simple": {
+      "message": "简单"
+   },
+   "size": {
+      "message": "大小"
+   },
+   "skip": {
+      "message": "跳过"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "跳过引导，直接进入"
+   },
+   "skip_login_enter_right_now": {
+      "message": "暂不登录，直接进入"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "暂不注册，直接进入"
+   },
+   "social": {
+      "message": "社交"
+   },
+   "standby_page": {
+      "message": "待机页"
+   },
+   "standby_page_background": {
+      "message": "待机页背景"
+   },
+   "standby_page_clock": {
+      "message": "待机页时钟"
+   },
+   "standby_page_weather": {
+      "message": "待机页天气"
+   },
+   "stay_logged_out": {
+      "message": "保持登出"
+   },
+   "success": {
+      "message": "成功"
+   },
+   "target_group": {
+      "message": "目标分组"
+   },
+   "technology_and_education": {
+      "message": "科技与教育"
+   },
+   "temperature_unit": {
+      "message": "温度单位"
+   },
+   "terms_of_use": {
+      "message": "使用条款"
+   },
+   "terms_of_use_url_path": {
+      "message": "/zh-CN/terms-of-use"
+   },
+   "text": {
+      "message": "文字"
+   },
+   "the_end": {
+      "message": "到底了"
+   },
+   "theme": {
+      "message": "主题"
+   },
+   "theme_and_wallpaper": {
+      "message": "主题&壁纸"
+   },
+   "to_do": {
+      "message": "待办事项"
+   },
+   "travel": {
+      "message": "旅行"
+   },
+   "uncompleted": {
+      "message": "未完成"
+   },
+   "uninstall_reason_feedback_url": {
+      "message": "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAASCXo9JUMzFHTTY1T1A4RUpXRkxXSDg1VTMxVzhYOS4u"
+   },
+   "unknown": {
+      "message": "未知"
+   },
+   "upload": {
+      "message": "上传"
+   },
+   "upload_icon": {
+      "message": "上传图标"
+   },
+   "user_changed": {
+      "message": "用户发生变化"
+   },
+   "visitor_slogan_1": {
+      "message": "登录即享多端同步，"
+   },
+   "visitor_slogan_2": {
+      "message": "让您的资料永不丢失"
+   },
+   "wallpaper": {
+      "message": "壁纸"
+   },
+   "warning": {
+      "message": "警告"
+   },
+   "website_desc": {
+      "message": "网站描述"
+   },
+   "website_name": {
+      "message": "网站名称"
+   },
+   "welcome_back": {
+      "message": "欢迎回来"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "欢迎您加入MONKNOW新标签页的大家庭"
+   },
+   "width": {
+      "message": "宽度"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "龙卷风"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "热带风暴"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "冻雨"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "阵雨"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "雨"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "小阵雪"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "小阵雪"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "高吹雪"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "雪"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "冰雹"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "雨夹雪"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "沙尘"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "台风"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "雾"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "霾"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "烟雾"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "大风"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "大风"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "寒冷"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "多云"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "大部分多云"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "大部分多云"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "少部分多云"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "大雷雨"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "少部分多云"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "晴"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "雨夹冰雹"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "热"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "局部雷雨"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "大面积雷雨"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "大面积阵雨"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "雷雨"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "大雨"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "大面积阵雪"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "大雪"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "暴风雪"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "不可用"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "大面积阵雨"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "大面积阵雪"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "大面积雷阵雨"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "雨夹雪"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "雨夹雪"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "雨夹雪"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "冻毛毛雨"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "毛毛雨"
+   }
+}

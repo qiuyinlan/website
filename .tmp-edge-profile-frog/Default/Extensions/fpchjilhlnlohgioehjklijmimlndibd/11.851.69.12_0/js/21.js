@@ -1,0 +1,1 @@
+import"../assets/modulepreload-polyfill-3cfb730f.js";(()=>{let e=new URLSearchParams(window.location.search),t=e.get("e"),a=e.get("r");a!==null&&t!==null&&chrome.runtime.sendMessage({type:"chbfljh",data:{type:"opcsy",e:t,r:a}})})();

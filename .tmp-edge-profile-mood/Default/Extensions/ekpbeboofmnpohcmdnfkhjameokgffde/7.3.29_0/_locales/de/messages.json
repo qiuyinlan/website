@@ -1,0 +1,815 @@
+{
+   "24_hour_system": {
+      "message": "24 Stunden System"
+   },
+   "about_us": {
+      "message": "Über uns"
+   },
+   "add": {
+      "message": "Hinzufügen"
+   },
+   "add_and_continue": {
+      "message": "Hinzufügen und fortfahren"
+   },
+   "add_group": {
+      "message": "Gruppe hinzufügen"
+   },
+   "add_icon": {
+      "message": "Symbol hinzufügen"
+   },
+   "add_manually": {
+      "message": "Von Hand eintragen"
+   },
+   "add_successful": {
+      "message": "Hinzufügen erfolgreich"
+   },
+   "add_task": {
+      "message": "Aufgabe hinzufügen"
+   },
+   "address": {
+      "message": "Adresse"
+   },
+   "all": {
+      "message": "Alle"
+   },
+   "all_bookmarks": {
+      "message": "Alle Lesezeichen"
+   },
+   "all_solved_well_done": {
+      "message": "Es ist leer"
+   },
+   "animal": {
+      "message": "Tier"
+   },
+   "anime": {
+      "message": "Anime"
+   },
+   "any_important_plans": {
+      "message": "Irgendwelche wichtigen Pläne?"
+   },
+   "any_plans": {
+      "message": "Irgendwelche Pläne?"
+   },
+   "appearance": {
+      "message": "Aussehen"
+   },
+   "architecture": {
+      "message": "Architektur"
+   },
+   "authorize": {
+      "message": "Autorisieren"
+   },
+   "auto_hide": {
+      "message": "Automatisch ausblenden"
+   },
+   "background_color": {
+      "message": "Hintergrundfarbe"
+   },
+   "background_tab": {
+      "message": "Registerkarte Hintergrund"
+   },
+   "blur": {
+      "message": "Verwischen"
+   },
+   "border_radius": {
+      "message": "Randradius"
+   },
+   "brightness_color": {
+      "message": "Licht Farbe"
+   },
+   "cancel": {
+      "message": "Stornieren"
+   },
+   "captcha": {
+      "message": "Captcha"
+   },
+   "captcha_expired": {
+      "message": "Der Captcha-Code ist abgelaufen"
+   },
+   "captcha_invalid": {
+      "message": "Der Captcha-Code ist ungültig"
+   },
+   "category": {
+      "message": "Kategorie"
+   },
+   "celsius": {
+      "message": "Celsius"
+   },
+   "classic": {
+      "message": "Klassisch"
+   },
+   "column_gap": {
+      "message": "Spaltenabstand"
+   },
+   "completed": {
+      "message": "Abgeschlossen"
+   },
+   "confirm": {
+      "message": "Bestätigen"
+   },
+   "confirm_new_password": {
+      "message": "Bestätige neues Passwort"
+   },
+   "contact": {
+      "message": "Kontakt"
+   },
+   "contact_url_path": {
+      "message": "/de/contact"
+   },
+   "current_tab": {
+      "message": "Aktuelle Registerkarte"
+   },
+   "darkness_color": {
+      "message": "Dunkle Farbe"
+   },
+   "delete": {
+      "message": "Löschen"
+   },
+   "delete_all_completed_tasks": {
+      "message": "Alle abgeschlossenen Aufgaben löschen"
+   },
+   "delete_all_completed_tasks_confirmation": {
+      "message": "Möchten Sie wirklich alle erledigten Aufgaben löschen?"
+   },
+   "delete_confirmation": {
+      "message": "Möchten Sie wirklich löschen?"
+   },
+   "desc": {
+      "message": "Beschreibung"
+   },
+   "display_add_btn": {
+      "message": "Schaltfläche Hinzufügen anzeigen"
+   },
+   "display_notification_badge": {
+      "message": "Benachrichtigungsausweis anzeigen"
+   },
+   "display_width": {
+      "message": "Breite anzeigen"
+   },
+   "download": {
+      "message": "Herunterladen"
+   },
+   "download_wallpaper": {
+      "message": "Hintergrundbild herunterladen"
+   },
+   "edit": {
+      "message": "Bearbeiten"
+   },
+   "edit_group": {
+      "message": "Gruppe bearbeiten"
+   },
+   "edit_icon": {
+      "message": "Symbol bearbeiten"
+   },
+   "efficient": {
+      "message": "Effizient"
+   },
+   "email": {
+      "message": "Email"
+   },
+   "email_format_invalid": {
+      "message": "E-Mail-Format ungültig"
+   },
+   "email_not_exists": {
+      "message": "E-Mail existiert nicht"
+   },
+   "email_or_password_invalid": {
+      "message": "E-Mail oder Passwort ungültig"
+   },
+   "email_registered": {
+      "message": "E-Mail wurde registriert"
+   },
+   "enable_clock": {
+      "message": "Uhr aktivieren"
+   },
+   "enable_standby_page": {
+      "message": "Sperrbildschirm aktivieren"
+   },
+   "enable_weather": {
+      "message": "Wetter aktivieren"
+   },
+   "enter_when_inactive": {
+      "message": "Bei Inaktivität eingeben"
+   },
+   "enter_when_new_tab_opened": {
+      "message": "Geben Sie ein, wenn die neue Registerkarte geöffnet wird"
+   },
+   "entertainment": {
+      "message": "Unterhaltung"
+   },
+   "extension_desc": {
+      "message": "Dies ist die neue Registerkarte, von der Sie träumen. Support-URL-Gruppenverwaltung, Datensynchronisierung, Dark-Theme-Modus."
+   },
+   "extension_name": {
+      "message": "MONKNOW Neuer Tab - Persönliches Dashboard"
+   },
+   "fahrenheit": {
+      "message": "Fahrenheit"
+   },
+   "fail": {
+      "message": "Scheitern"
+   },
+   "feedback": {
+      "message": "Feedback"
+   },
+   "feedback_and_others": {
+      "message": "Feedback & Andere"
+   },
+   "feedback_and_rate": {
+      "message": "Feedback und Bewertung"
+   },
+   "finance": {
+      "message": "Finanzen"
+   },
+   "find_password": {
+      "message": "Finde Passwort"
+   },
+   "find_password_successful": {
+      "message": "Wir haben eine E-Mail an $1 gesendet. Bitte setzen Sie Ihr Passwort zurück"
+   },
+   "follow_the_system": {
+      "message": "Folgen Sie dem System"
+   },
+   "forgot_password": {
+      "message": "Passwort vergessen?"
+   },
+   "general": {
+      "message": "Allgemeines"
+   },
+   "graphic": {
+      "message": "Grafik"
+   },
+   "group": {
+      "message": "Gruppe"
+   },
+   "have_account_login_right_now": {
+      "message": "Ich habe ein Konto und melde mich jetzt an"
+   },
+   "height": {
+      "message": "Высота"
+   },
+   "hide": {
+      "message": "Verbergen"
+   },
+   "homepage": {
+      "message": "Startseite"
+   },
+   "homepage_url_path": {
+      "message": "/de"
+   },
+   "hour_unit": {
+      "message": "Stunden"
+   },
+   "icon": {
+      "message": "Symbol"
+   },
+   "icon_text": {
+      "message": "Symboltext"
+   },
+   "image_size_can_not_exceed": {
+      "message": "Die Bildgröße darf nicht überschritten werden $1"
+   },
+   "import_from_bookmarks": {
+      "message": "Aus Lesezeichen importieren"
+   },
+   "import_from_bookmarks_error": {
+      "message": "Bei Überschreitung der Kontingentgrenzen können Sie Lesezeichen später über 'Einstellungen -> Allgemein -> Importieren' importieren"
+   },
+   "import_successful": {
+      "message": "Importieren erfolgreich"
+   },
+   "important": {
+      "message": "Wichtig"
+   },
+   "impressive": {
+      "message": "Beeindruckend"
+   },
+   "inconsistent": {
+      "message": "Inkonsistent"
+   },
+   "info": {
+      "message": "Info"
+   },
+   "internal_app": {
+      "message": "Interne App"
+   },
+   "left_side": {
+      "message": "Linke Seite"
+   },
+   "lifestyle": {
+      "message": "Lebensstil"
+   },
+   "lightweight": {
+      "message": "Leicht"
+   },
+   "loading": {
+      "message": "Wird geladen"
+   },
+   "local": {
+      "message": "Lokal"
+   },
+   "locating": {
+      "message": "Ortung"
+   },
+   "location": {
+      "message": "Ort"
+   },
+   "login": {
+      "message": "Einloggen"
+   },
+   "login_right_now": {
+      "message": "Jetzt einloggen"
+   },
+   "logout": {
+      "message": "Ausloggen"
+   },
+   "main_view": {
+      "message": "Hauptansicht"
+   },
+   "minute_unit": {
+      "message": "Minuten"
+   },
+   "modify": {
+      "message": "Ändern"
+   },
+   "modify_nickname": {
+      "message": "Spitznamen verändern"
+   },
+   "modify_password": {
+      "message": "Passwort verändern"
+   },
+   "modify_portrait": {
+      "message": "Porträt verändern"
+   },
+   "modify_successful": {
+      "message": "Änderung erfolgreich"
+   },
+   "name": {
+      "message": "Name"
+   },
+   "narrow_menu": {
+      "message": "Schmale Speisekarte"
+   },
+   "natural": {
+      "message": "Natürlich"
+   },
+   "need_bookmarks_permission": {
+      "message": "Bitte gewähren Sie den Zugriff auf Lesezeichen"
+   },
+   "network_error": {
+      "message": "Netzwerkfehler"
+   },
+   "never": {
+      "message": "Noch nie"
+   },
+   "new_nickname": {
+      "message": "Neuer Spitzname"
+   },
+   "new_password": {
+      "message": "Neues Passwort"
+   },
+   "new_tab": {
+      "message": "Neue Registerkarte"
+   },
+   "news_and_reading": {
+      "message": "Nachrichten & lesen"
+   },
+   "next_one": {
+      "message": "Nächste"
+   },
+   "next_step": {
+      "message": "Nächster Schritt"
+   },
+   "next_wallpaper": {
+      "message": "Nächstes Hintergrundbild"
+   },
+   "nickname": {
+      "message": "Spitzname"
+   },
+   "not_found": {
+      "message": "Nicht gefunden"
+   },
+   "not_have_account_register_right_now": {
+      "message": "Ich habe kein Konto, jetzt registrieren"
+   },
+   "not_recognized": {
+      "message": "Nicht wiedererkannt"
+   },
+   "not_supported_in_this_browser": {
+      "message": "Wird in diesem Browser nicht unterstützt"
+   },
+   "official": {
+      "message": "Offiziell"
+   },
+   "official_lib": {
+      "message": "Offizielle Bibliothek"
+   },
+   "old_password": {
+      "message": "Altes Passwort"
+   },
+   "old_password_not_match": {
+      "message": "Altes Passwort stimmt nicht überein"
+   },
+   "opacity": {
+      "message": "Opazität"
+   },
+   "open": {
+      "message": "Öffnen"
+   },
+   "open_all": {
+      "message": "Öffne alles"
+   },
+   "open_in_background_tab": {
+      "message": "Öffnen Sie in der Registerkarte Hintergrund"
+   },
+   "open_in_incognito_window": {
+      "message": "Im Inkognito-Fenster öffnen"
+   },
+   "open_in_new_tab": {
+      "message": "In neuem Tab öffnen"
+   },
+   "open_method": {
+      "message": "Methode öffnen"
+   },
+   "optional": {
+      "message": "Wahlweise"
+   },
+   "others": {
+      "message": "Andere"
+   },
+   "particular": {
+      "message": "Detailliert"
+   },
+   "password": {
+      "message": "Passwort"
+   },
+   "people": {
+      "message": "Menschen"
+   },
+   "pick_bookmarks_you_want_to_import": {
+      "message": "Wählen Sie die Lesezeichen aus, die Sie importieren möchten"
+   },
+   "please_complete_form": {
+      "message": "Bitte füllen Sie das Formular aus"
+   },
+   "popular": {
+      "message": "Beliebt"
+   },
+   "prev_step": {
+      "message": "Vorheriger Schritt"
+   },
+   "preview": {
+      "message": "Vorschau"
+   },
+   "privacy_policy": {
+      "message": "Datenschutz-Bestimmungen"
+   },
+   "privacy_policy_url_path": {
+      "message": "/de/privacy-policy"
+   },
+   "productivity": {
+      "message": "Produktivität"
+   },
+   "pure_color": {
+      "message": "Pure Farbe"
+   },
+   "rate_five_stars": {
+      "message": "Bewertung 5 Sterne"
+   },
+   "register": {
+      "message": "Registrieren"
+   },
+   "register_again": {
+      "message": "Falsche E-Mail Adresse? Registrieren Sie sich erneut"
+   },
+   "register_to_sync_your_data": {
+      "message": "Registrieren Sie sich, um Ihre Daten zu synchronisieren"
+   },
+   "remember_the_last_visited_group": {
+      "message": "Erinnern Sie sich an die zuletzt besuchte Gruppe"
+   },
+   "replace": {
+      "message": "Ersetzen"
+   },
+   "replace_frequency": {
+      "message": "Frequenz ersetzen"
+   },
+   "replace_location": {
+      "message": "Ort ersetzen"
+   },
+   "request_for_inclusion": {
+      "message": "Antrag auf Aufnahme"
+   },
+   "request_for_inclusion_successful": {
+      "message": "Antrag auf Aufnahme erfolgreich"
+   },
+   "required": {
+      "message": "Erforderlich"
+   },
+   "right_side": {
+      "message": "Rechte Seite"
+   },
+   "row_gap": {
+      "message": "Zeilenabstand"
+   },
+   "scroll_or_click": {
+      "message": "Scrollen oder klicken"
+   },
+   "scroll_to_switch_the_group": {
+      "message": "Scrollen Sie zum Wechseln der Gruppe"
+   },
+   "search": {
+      "message": "Suche"
+   },
+   "search_box": {
+      "message": "Suchbox"
+   },
+   "search_engine": {
+      "message": "Suchmaschine"
+   },
+   "search_result": {
+      "message": "Suchergebnis"
+   },
+   "searching": {
+      "message": "Suchen"
+   },
+   "second_unit": {
+      "message": "Sek"
+   },
+   "server_error": {
+      "message": "Serverfehler"
+   },
+   "set_nickname_first": {
+      "message": "Legen Sie zuerst den Spitznamen fest"
+   },
+   "settings": {
+      "message": "Einstellungen"
+   },
+   "shadow": {
+      "message": "Schatten"
+   },
+   "shopping": {
+      "message": "Einkaufen"
+   },
+   "sidebar": {
+      "message": "Seitenleiste"
+   },
+   "simple": {
+      "message": "Einfach"
+   },
+   "size": {
+      "message": "Größe"
+   },
+   "skip": {
+      "message": "Überspringen"
+   },
+   "skip_guide_enter_right_now": {
+      "message": "Anleitung überspringen, gleich eintreten"
+   },
+   "skip_login_enter_right_now": {
+      "message": "Zur Zeit nicht registrieren, direkt eingeben"
+   },
+   "skip_registration_enter_right_now": {
+      "message": "Zur Zeit nicht einloggen, direkt eingeben"
+   },
+   "social": {
+      "message": "Sozial"
+   },
+   "standby_page": {
+      "message": "Sperrbildschirm"
+   },
+   "standby_page_background": {
+      "message": "Hintergrund der Sperrbildschirm"
+   },
+   "standby_page_clock": {
+      "message": "Uhr der Sperrbildschirm"
+   },
+   "standby_page_weather": {
+      "message": "Wetter der Sperrbildschirm"
+   },
+   "stay_logged_out": {
+      "message": "Abgemeldet bleiben"
+   },
+   "success": {
+      "message": "Erfolg"
+   },
+   "target_group": {
+      "message": "Zielgruppe"
+   },
+   "technology_and_education": {
+      "message": "Technologie & Bildung"
+   },
+   "temperature_unit": {
+      "message": "Temperatureinheit"
+   },
+   "terms_of_use": {
+      "message": "Nutzungsbedingungen"
+   },
+   "terms_of_use_url_path": {
+      "message": "/de/terms-of-use"
+   },
+   "text": {
+      "message": "Text"
+   },
+   "the_end": {
+      "message": "Das Ende"
+   },
+   "theme": {
+      "message": "Thema"
+   },
+   "theme_and_wallpaper": {
+      "message": "Thema & Hintergrundbild"
+   },
+   "to_do": {
+      "message": "ToDo"
+   },
+   "travel": {
+      "message": "Reise"
+   },
+   "uncompleted": {
+      "message": "Unvollendet"
+   },
+   "unknown": {
+      "message": "Unbekannte"
+   },
+   "upload": {
+      "message": "Hochladen"
+   },
+   "upload_icon": {
+      "message": "Symbol hochladen"
+   },
+   "user_changed": {
+      "message": "Benutzer geändert"
+   },
+   "visitor_slogan_1": {
+      "message": "Melden Sie sich zur Synchronisierung an, "
+   },
+   "visitor_slogan_2": {
+      "message": "damit Ihre Daten nie verloren gehen."
+   },
+   "wallpaper": {
+      "message": "Bewertung"
+   },
+   "warning": {
+      "message": "Warnung"
+   },
+   "website_desc": {
+      "message": "Webseitenbeschreibung"
+   },
+   "website_name": {
+      "message": "Webseiten-Name"
+   },
+   "welcome_back": {
+      "message": "Willkommen zurück"
+   },
+   "welcome_to_monknow_new_tab": {
+      "message": "Willkommen bei MONKNOW New Tab"
+   },
+   "width": {
+      "message": "Breite"
+   },
+   "yahoo_condition_code_desc_0": {
+      "message": "Tornado"
+   },
+   "yahoo_condition_code_desc_1": {
+      "message": "Tropensturm"
+   },
+   "yahoo_condition_code_desc_10": {
+      "message": "Gefrierender Regen"
+   },
+   "yahoo_condition_code_desc_11": {
+      "message": "Duschen"
+   },
+   "yahoo_condition_code_desc_12": {
+      "message": "Regen"
+   },
+   "yahoo_condition_code_desc_13": {
+      "message": "Schneegestöber"
+   },
+   "yahoo_condition_code_desc_14": {
+      "message": "Leichte Schneeschauer"
+   },
+   "yahoo_condition_code_desc_15": {
+      "message": "Schneetreiben"
+   },
+   "yahoo_condition_code_desc_16": {
+      "message": "Schnee"
+   },
+   "yahoo_condition_code_desc_17": {
+      "message": "Hagel"
+   },
+   "yahoo_condition_code_desc_18": {
+      "message": "Schneeregen"
+   },
+   "yahoo_condition_code_desc_19": {
+      "message": "Staub"
+   },
+   "yahoo_condition_code_desc_2": {
+      "message": "Hurrikan"
+   },
+   "yahoo_condition_code_desc_20": {
+      "message": "Nebelig"
+   },
+   "yahoo_condition_code_desc_21": {
+      "message": "Dunst"
+   },
+   "yahoo_condition_code_desc_22": {
+      "message": "Rauchig"
+   },
+   "yahoo_condition_code_desc_23": {
+      "message": "Stürmisch"
+   },
+   "yahoo_condition_code_desc_24": {
+      "message": "Windig"
+   },
+   "yahoo_condition_code_desc_25": {
+      "message": "Kalt"
+   },
+   "yahoo_condition_code_desc_26": {
+      "message": "Bewölkt"
+   },
+   "yahoo_condition_code_desc_27": {
+      "message": "Meist bewölkt"
+   },
+   "yahoo_condition_code_desc_28": {
+      "message": "Meist bewölkt"
+   },
+   "yahoo_condition_code_desc_29": {
+      "message": "Teilweise bewölkt"
+   },
+   "yahoo_condition_code_desc_3": {
+      "message": "Schwere Gewitter"
+   },
+   "yahoo_condition_code_desc_30": {
+      "message": "Teilweise bewölkt"
+   },
+   "yahoo_condition_code_desc_31": {
+      "message": "Klar"
+   },
+   "yahoo_condition_code_desc_32": {
+      "message": "Sonnig"
+   },
+   "yahoo_condition_code_desc_33": {
+      "message": "Messe"
+   },
+   "yahoo_condition_code_desc_34": {
+      "message": "Messe"
+   },
+   "yahoo_condition_code_desc_35": {
+      "message": "Regen und Hagel"
+   },
+   "yahoo_condition_code_desc_36": {
+      "message": "Heiß"
+   },
+   "yahoo_condition_code_desc_37": {
+      "message": "Vereinzelte Gewitter"
+   },
+   "yahoo_condition_code_desc_38": {
+      "message": "Vereinzelte Gewitter"
+   },
+   "yahoo_condition_code_desc_39": {
+      "message": "Vereinzelte Regenschauer"
+   },
+   "yahoo_condition_code_desc_4": {
+      "message": "Gewitter"
+   },
+   "yahoo_condition_code_desc_40": {
+      "message": "Starkregen"
+   },
+   "yahoo_condition_code_desc_41": {
+      "message": "Vereinzelte Schneeschauer"
+   },
+   "yahoo_condition_code_desc_42": {
+      "message": "Starker Schneefall"
+   },
+   "yahoo_condition_code_desc_43": {
+      "message": "Schneesturm"
+   },
+   "yahoo_condition_code_desc_44": {
+      "message": "Nicht verfügbar"
+   },
+   "yahoo_condition_code_desc_45": {
+      "message": "Vereinzelte Regenschauer"
+   },
+   "yahoo_condition_code_desc_46": {
+      "message": "Vereinzelte Schneeschauer"
+   },
+   "yahoo_condition_code_desc_47": {
+      "message": "Zerstreute Gewitterwolken"
+   },
+   "yahoo_condition_code_desc_5": {
+      "message": "Mischregen Und Schnee"
+   },
+   "yahoo_condition_code_desc_6": {
+      "message": "Gemischter Regen und Graupel"
+   },
+   "yahoo_condition_code_desc_7": {
+      "message": "Mischschnee Und Schneeregen"
+   },
+   "yahoo_condition_code_desc_8": {
+      "message": "Gefrierender Nieselregen"
+   },
+   "yahoo_condition_code_desc_9": {
+      "message": "Nieseln"
+   }
+}

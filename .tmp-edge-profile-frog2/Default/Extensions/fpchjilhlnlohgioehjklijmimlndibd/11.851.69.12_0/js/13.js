@@ -1,0 +1,1 @@
+export function stripAndCollapse(t){var r=t.match(rnothtmlwhite)||[];return r.join(" ")}

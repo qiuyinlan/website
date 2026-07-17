@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>8-freezing drizzle</title>
+    <desc>Created with Sketch.</desc>
+    <g id="8-freezing-drizzle" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M45.7317708,72.6992187 L45.7317708,85.1992187 L37.3984375,85.1992187 L37.3984375,72.6992187 C20.5806051,72.6939232 6.40088476,60.1613564 4.32941755,43.4715829 C2.25795034,26.7818094 12.9436416,11.1630482 29.2498907,7.04652556 C45.5561397,2.93000293 62.3748699,11.6052559 68.4734375,27.2783854 C77.0233187,25.6338824 85.7666065,28.9764059 91.0389878,35.9051038 C96.3113691,42.8338017 97.2020494,52.1517539 93.3377445,59.9538053 C89.4734397,67.7558568 81.5217013,72.6942171 72.8151042,72.6992187 L45.7317708,72.6992187 Z" id="路径" fill="#333333" fill-rule="nonzero"></path>
+        <circle id="椭圆形" fill="#333333" cx="60" cy="85" r="6"></circle>
+    </g>
+</svg>

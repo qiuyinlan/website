@@ -1,0 +1,5 @@
+2026/07/17-17:36:24.564 14d68 Creating DB C:\Users\29785\project\website\.tmp-edge-profile-frog2\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/07/17-17:36:24.573 14d68 Reusing MANIFEST C:\Users\29785\project\website\.tmp-edge-profile-frog2\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/07/17-17:37:07.040 15a5c Level-0 table #5: started
+2026/07/17-17:37:07.043 15a5c Level-0 table #5: 683052 bytes OK
+2026/07/17-17:37:07.044 15a5c Delete type=0 #3

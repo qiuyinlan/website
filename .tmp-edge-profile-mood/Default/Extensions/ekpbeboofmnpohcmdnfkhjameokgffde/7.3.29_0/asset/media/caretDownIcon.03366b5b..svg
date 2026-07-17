@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>caret-down</title>
+    <desc>Created with Sketch.</desc>
+    <g id="caret-down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(4.000000, 7.000000)" fill="#333333" fill-rule="nonzero" id="fill">
+            <path d="M7.88444639,3.26105601 L2.49465029,7.92748731 C2.29462776,8.10009761 1.99999999,7.94534351 1.99999999,7.66559571 L1.99999999,-1.66429068 C1.99999999,-1.94403847 2.29462776,-2.10176861 2.49465029,-1.92618223 L7.88444639,2.73727296 C8.03851789,2.87119477 8.03851789,3.12713421 7.88444639,3.26105601 Z" transform="translate(5.000000, 3.000000) rotate(90.000000) translate(-5.000000, -3.000000) "></path>
+        </g>
+    </g>
+</svg>
