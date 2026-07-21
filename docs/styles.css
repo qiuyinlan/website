@@ -803,6 +803,24 @@ body.habit-dragging .drag-handle {
   border-color: rgba(143, 45, 70, 0.32);
 }
 
+.bedtime-button {
+  min-height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(162, 116, 15, 0.26);
+  padding: 0 14px;
+  background: #fff2b8;
+  color: #7a5200;
+  font-size: 0.92rem;
+  font-weight: 800;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.bedtime-button:hover {
+  transform: translateY(-1px);
+  background: #ffe68a;
+  border-color: rgba(122, 82, 0, 0.38);
+}
+
 .frog-button {
   min-height: 40px;
   border-radius: 999px;
@@ -1120,6 +1138,37 @@ body.habit-dragging .drag-handle {
 
 .mood-option-b:hover {
   border-color: rgba(43, 106, 74, 0.32);
+}
+
+.bedtime-dialog {
+  width: min(620px, calc(100vw - 32px));
+}
+
+.bedtime-shell {
+  background:
+    radial-gradient(circle at top right, rgba(255, 230, 138, 0.72), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(255, 248, 211, 0.9), transparent 34%),
+    var(--bg);
+}
+
+.bedtime-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.bedtime-progress {
+  background: rgba(122, 82, 0, 0.1);
+  color: #7a5200;
+}
+
+.bedtime-option-next,
+.bedtime-option-done {
+  background: #fff5c9;
+}
+
+.bedtime-option-next:hover,
+.bedtime-option-done:hover {
+  border-color: rgba(122, 82, 0, 0.34);
 }
 
 .frog-shell {

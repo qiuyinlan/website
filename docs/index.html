@@ -37,10 +37,10 @@
     </script>
     <link rel="manifest" href="./manifest.webmanifest?v=2026.06.18-fireworks" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.06.18-fireworks" />
+    <link rel="stylesheet" href="./styles.css?v=2026.07.21-bedtime" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script defer src="./config.js?v=2026.06.18-fireworks"></script>
-    <script defer src="./app.js?v=2026.06.18-fireworks"></script>
+    <script defer src="./app.js?v=2026.07.21-bedtime"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -55,6 +55,7 @@
           <button id="open-weekly-review" class="review-button weekly-button" type="button">周复盘</button>
           <button id="open-monthly-review" class="review-button monthly-button" type="button">月复盘</button>
           <button id="open-mood" class="mood-button" type="button">心情</button>
+          <button id="open-bedtime" class="bedtime-button" type="button">早睡</button>
           <button id="open-frog" class="frog-button" type="button">蛙</button>
           <details id="extension-menu" class="extension-menu">
             <summary aria-label="打开扩展功能">＋</summary>
@@ -447,6 +448,35 @@
             <button id="mood-option-b" class="mood-option mood-option-b" type="button">
               <span>b</span>
               <strong>主宰自己的人生，自由地活</strong>
+            </button>
+          </div>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="bedtime-dialog" class="settings-dialog bedtime-dialog">
+      <div class="settings-shell bedtime-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Early Sleep</p>
+            <h2>早睡</h2>
+          </div>
+          <button id="bedtime-close" class="ghost-button" type="button">关闭</button>
+        </header>
+
+        <section class="panel bedtime-panel" aria-live="polite">
+          <p id="bedtime-progress" class="mood-progress bedtime-progress">第 1 页 / 共 2 页</p>
+          <h3 id="bedtime-message" class="mood-question bedtime-message">
+            明天一定是很棒的一天，明媚自由！让我们一起畅想吧，明天想做什么呢？
+          </h3>
+          <div class="mood-options bedtime-options">
+            <button id="bedtime-next" class="mood-option bedtime-option-next" type="button">
+              <span>1</span>
+              <strong>下一个</strong>
+            </button>
+            <button id="bedtime-done" class="mood-option bedtime-option-done" type="button" hidden>
+              <span>2</span>
+              <strong>关闭</strong>
             </button>
           </div>
         </section>

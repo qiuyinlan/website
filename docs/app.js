@@ -78,6 +78,13 @@
     moodQuestion: document.getElementById("mood-question"),
     moodOptionA: document.getElementById("mood-option-a"),
     moodOptionB: document.getElementById("mood-option-b"),
+    bedtimeDialog: document.getElementById("bedtime-dialog"),
+    openBedtime: document.getElementById("open-bedtime"),
+    bedtimeClose: document.getElementById("bedtime-close"),
+    bedtimeProgress: document.getElementById("bedtime-progress"),
+    bedtimeMessage: document.getElementById("bedtime-message"),
+    bedtimeNext: document.getElementById("bedtime-next"),
+    bedtimeDone: document.getElementById("bedtime-done"),
     frogDialog: document.getElementById("frog-dialog"),
     openFrog: document.getElementById("open-frog"),
     frogClose: document.getElementById("frog-close"),
@@ -103,6 +110,7 @@
   let selectedPrincipleId = null;
   let selectedInterestId = null;
   let moodStepIndex = 0;
+  let bedtimeStepIndex = 0;
   const dismissedMoodSteps = new Set();
   const moodSteps = [
     {
@@ -2203,6 +2211,35 @@
     renderMoodDialog();
   }
 
+  function renderBedtimeDialog() {
+    const isReady = bedtimeStepIndex > 0;
+    els.bedtimeProgress.textContent = isReady ? "完成" : "第 1 页 / 共 2 页";
+    els.bedtimeMessage.textContent = isReady
+      ? "我已做好准备早睡"
+      : "明天一定是很棒的一天，明媚自由！让我们一起畅想吧，明天想做什么呢？";
+    els.bedtimeNext.hidden = isReady;
+    els.bedtimeDone.hidden = !isReady;
+  }
+
+  function openBedtimeDialog() {
+    bedtimeStepIndex = 0;
+    renderBedtimeDialog();
+    if (!els.bedtimeDialog.open) {
+      els.bedtimeDialog.showModal();
+    }
+  }
+
+  function closeBedtimeDialog() {
+    if (els.bedtimeDialog.open) {
+      els.bedtimeDialog.close();
+    }
+  }
+
+  function goToBedtimeReadyStep() {
+    bedtimeStepIndex = 1;
+    renderBedtimeDialog();
+  }
+
   const FROG_STORAGE_PREFIX = "micro-habit-frogs-";
   let frogViewDate = TODAY();
 
@@ -2397,6 +2434,10 @@
     els.moodClose.addEventListener("click", closeMoodDialog);
     els.moodOptionA.addEventListener("click", dismissMoodOptionA);
     els.moodOptionB.addEventListener("click", goToNextMoodStep);
+    els.openBedtime.addEventListener("click", openBedtimeDialog);
+    els.bedtimeClose.addEventListener("click", closeBedtimeDialog);
+    els.bedtimeNext.addEventListener("click", goToBedtimeReadyStep);
+    els.bedtimeDone.addEventListener("click", closeBedtimeDialog);
     els.openFrog.addEventListener("click", () => openFrogDialog(TODAY()));
     els.frogClose.addEventListener("click", () => els.frogDialog.close());
     els.frogAdd.addEventListener("click", addFrog);
@@ -3220,7 +3261,7 @@
 
   function formatWeeklyReviewTag(dateKey = weeklyViewKey) {
     const parts = String(dateKey).split("-");
-    return `#${parts[0]}/${parts[1]}.${parts[2]}`;
+    return `#${parts[0]}/${parseInt(parts[1], 10)}/${parseInt(parts[1], 10)}.${parseInt(parts[2], 10)}`;
   }
 
   function updateWeeklyStepView() {
