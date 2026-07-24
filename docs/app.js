@@ -11,6 +11,7 @@
     mainlines: [],
     principles: [],
     interests: [],
+    scoreRules: [],
     supabaseNotice: "",
     currentHabitId: null,
     skippedToday: [],
@@ -312,6 +313,7 @@
         mainline: state.mainlines[0]?.title || "",
         principles: state.principles,
         interests: state.interests,
+        scoreRules: state.scoreRules,
       }),
     );
   }
@@ -323,6 +325,7 @@
     state.mainlines = parseMainlinesContent(saved.mainlines, saved.mainline);
     state.principles = parsePrinciplesContent(saved.principles);
     state.interests = parseInterestsContent(saved.interests);
+    state.scoreRules = parseScoreRulesContent(saved.scoreRules);
     ensureHabitIdsAreUuids();
     selectedMainlineId = getSortedMainlines()[0]?.id || null;
     selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
@@ -351,7 +354,7 @@
   }
 
   function getContentSchemaNotice() {
-    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线/原则/兴趣”同步需要重新执行最新的 supabase/schema.sql。";
+    return "当前 Supabase 还是旧版表结构：习惯同步可继续使用，但“主线/原则/兴趣/打分规则”同步需要重新执行最新的 supabase/schema.sql。";
   }
 
   function createOrderedList(items) {
@@ -511,6 +514,34 @@
     };
   }
 
+  function createScoreRule(partial = {}, fallbackOrder = 0) {
+    const rawPoints = Number(partial.points);
+    return {
+      id: typeof partial.id === "string" && partial.id.trim() ? partial.id : uid(),
+      title: typeof partial.title === "string" ? partial.title.trim() : "",
+      points: Number.isFinite(rawPoints) ? Math.trunc(rawPoints) : 0,
+      active: partial.active !== false,
+      createdAt:
+        typeof partial.createdAt === "string" && partial.createdAt.trim()
+          ? partial.createdAt
+          : new Date().toISOString(),
+      updatedAt:
+        typeof partial.updatedAt === "string" && partial.updatedAt.trim()
+          ? partial.updatedAt
+          : new Date().toISOString(),
+      order: Number.isFinite(partial.order) ? partial.order : fallbackOrder,
+    };
+  }
+
+  function getDefaultScoreRules() {
+    return [
+      createScoreRule({ title: "主动开始困难任务", points: 5, order: 0 }, 0),
+      createScoreRule({ title: "完成一个关键行动", points: 10, order: 1 }, 1),
+      createScoreRule({ title: "及时复盘并调整", points: 3, order: 2 }, 2),
+      createScoreRule({ title: "无意识拖延", points: -5, order: 3 }, 3),
+    ];
+  }
+
   function normalizePrincipleCollection(items) {
     if (!Array.isArray(items)) return [];
     return createOrderedList(
@@ -544,6 +575,26 @@
 
   function parseInterestsContent(savedInterests) {
     return normalizeInterestCollection(savedInterests);
+  }
+
+  function normalizeScoreRuleCollection(items) {
+    if (!Array.isArray(items)) return [];
+    return createOrderedList(
+      items
+        .map((item, index) => {
+          if (typeof item === "string") {
+            return createScoreRule({ title: item, points: 0 }, index);
+          }
+          if (!item || typeof item !== "object") return null;
+          return createScoreRule(item, index);
+        })
+        .filter((rule) => rule && rule.title),
+    );
+  }
+
+  function parseScoreRulesContent(savedRules) {
+    if (!Array.isArray(savedRules)) return getDefaultScoreRules();
+    return normalizeScoreRuleCollection(savedRules);
   }
 
   function parseInterestsPayload(content) {
@@ -586,6 +637,26 @@
     return [];
   }
 
+  function parseScoreRulesPayload(content) {
+    if (typeof content !== "string" || !content.trim()) {
+      return getDefaultScoreRules();
+    }
+
+    try {
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed)) {
+        return parseScoreRulesContent(parsed);
+      }
+      if (parsed && typeof parsed === "object" && Array.isArray(parsed.items)) {
+        return parseScoreRulesContent(parsed.items);
+      }
+    } catch {
+      return getDefaultScoreRules();
+    }
+
+    return getDefaultScoreRules();
+  }
+
   function serializePrinciplesPayload() {
     if (!state.principles.length) {
       return "";
@@ -624,6 +695,21 @@
     });
   }
 
+  function serializeScoreRulesPayload() {
+    return JSON.stringify({
+      version: 1,
+      items: getSortedScoreRules().map((rule) => ({
+        id: rule.id,
+        title: rule.title,
+        points: rule.points,
+        active: rule.active !== false,
+        createdAt: rule.createdAt,
+        updatedAt: rule.updatedAt,
+        order: rule.order,
+      })),
+    });
+  }
+
   function getSortedMainlines() {
     return state.mainlines.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
@@ -634,6 +720,10 @@
 
   function getSortedInterests() {
     return state.interests.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  function getSortedScoreRules() {
+    return state.scoreRules.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
 
   function ensureSelectedMainline() {
@@ -1965,10 +2055,11 @@
         [TODAY()]: (completions || []).map((item) => item.habit_id),
       };
 
-      const [mainlineResult, principleResult, interestResult] = await Promise.all([
+      const [mainlineResult, principleResult, interestResult, scoreRuleResult] = await Promise.all([
         fetchContentCollection("user_mainlines"),
         fetchContentCollection("user_principles"),
         fetchContentCollection("user_interests"),
+        fetchContentCollection("user_score_rules"),
       ]);
 
       state.mainlines = mainlineResult.missingSchema
@@ -1980,6 +2071,9 @@
       state.interests = interestResult.missingSchema
         ? parseInterestsContent(savedState.interests)
         : parseInterestsPayload(interestResult.content);
+      state.scoreRules = scoreRuleResult.missingSchema
+        ? parseScoreRulesContent(savedState.scoreRules)
+        : parseScoreRulesPayload(scoreRuleResult.content);
 
       selectedMainlineId = getSortedMainlines()[0]?.id || null;
       selectedPrincipleId = getSortedPrinciples()[0]?.id || null;
@@ -1987,7 +2081,8 @@
       state.supabaseNotice =
         mainlineResult.missingSchema ||
         principleResult.missingSchema ||
-        interestResult.missingSchema
+        interestResult.missingSchema ||
+        scoreRuleResult.missingSchema
           ? getContentSchemaNotice()
           : "";
       state.mode = "supabase";
@@ -2038,16 +2133,18 @@
           if (error) throw error;
         }
 
-        const [mainlineSync, principleSync, interestSync] = await Promise.all([
+        const [mainlineSync, principleSync, interestSync, scoreRuleSync] = await Promise.all([
           syncContentCollection("user_mainlines", serializeMainlinesPayload(), userId),
           syncContentCollection("user_principles", serializePrinciplesPayload(), userId),
           syncContentCollection("user_interests", serializeInterestsPayload(), userId),
+          syncContentCollection("user_score_rules", serializeScoreRulesPayload(), userId),
         ]);
 
         state.supabaseNotice =
           mainlineSync.missingSchema ||
           principleSync.missingSchema ||
-          interestSync.missingSchema
+          interestSync.missingSchema ||
+          scoreRuleSync.missingSchema
             ? getContentSchemaNotice()
             : "";
       },
@@ -2253,8 +2350,12 @@
           .filter((item) => item && typeof item === "object")
           .map((item) => ({
             id: typeof item.id === "string" && item.id ? item.id : uid(),
-            title: typeof item.title === "string" ? item.title : "",
+            title: typeof item.title === "string" ? item.title.trim() : "",
             done: item.done === true,
+            autoSourceDate:
+              typeof item.autoSourceDate === "string" && item.autoSourceDate.trim()
+                ? item.autoSourceDate.trim()
+                : "",
           }))
           .filter((item) => item.title.trim())
       : [];
@@ -2280,6 +2381,57 @@
   function saveFrogsForDate(dateStr, frogs) {
     localStorage.setItem(frogDateKey(dateStr), JSON.stringify(normalizeFrogs(frogs)));
     renderDonelistFrogSummary();
+  }
+
+  function nextDateKey(dateStr) {
+    const year = Number(dateStr.slice(0, 4));
+    const month = Number(dateStr.slice(5, 7));
+    const day = Number(dateStr.slice(8, 10));
+    const date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() + 1);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function saveFrogsIntoDonelist(dateStr, frogs) {
+    const normalized = normalizeFrogs(frogs);
+    const current = loadDonelistForDate(dateStr) || { ...freshDonelist(), date: dateStr };
+    const next = { ...current, date: dateStr, frogs: normalized };
+    localStorage.setItem(donelistDateKey(dateStr), JSON.stringify(next));
+    if (dateStr === TODAY()) {
+      localStorage.setItem(DONELIST_KEY, JSON.stringify(next));
+    }
+    syncDonelistToSupabase(next);
+  }
+
+  function syncTomorrowPlanToNextFrog(data) {
+    const sourceDate = data.date || TODAY();
+    const plan = typeof data.tomorrowPlan === "string" ? data.tomorrowPlan.trim() : "";
+    const targetDate = nextDateKey(sourceDate);
+    const frogs = loadFrogsForDate(targetDate);
+    const autoIndex = frogs.findIndex((frog) => frog.autoSourceDate === sourceDate);
+
+    if (!plan) {
+      if (autoIndex < 0) return;
+      const next = frogs.filter((frog) => frog.autoSourceDate !== sourceDate);
+      saveFrogsForDate(targetDate, next);
+      saveFrogsIntoDonelist(targetDate, next);
+      return;
+    }
+
+    const next = frogs.slice();
+    if (autoIndex >= 0) {
+      next[autoIndex] = { ...next[autoIndex], title: plan };
+    } else {
+      next.push({
+        id: uid(),
+        title: plan,
+        done: false,
+        autoSourceDate: sourceDate,
+      });
+    }
+
+    saveFrogsForDate(targetDate, next);
+    saveFrogsIntoDonelist(targetDate, next);
   }
 
   function getFrogStatusText(frog) {
@@ -2594,6 +2746,7 @@
     openBtn: document.getElementById("open-donelist"),
     closeBtn: document.getElementById("donelist-close"),
     copyBtn: document.getElementById("donelist-copy"),
+    copyTemplateBtn: document.getElementById("donelist-copy-template"),
     modeTemplateBtn: document.getElementById("donelist-mode-template"),
     modeFreeBtn: document.getElementById("donelist-mode-free"),
     modeGuidedBtn: document.getElementById("donelist-mode-guided"),
@@ -2689,6 +2842,7 @@
       vent: "",
       tomorrowPlan: "",
       frogs: [],
+      scoreEntries: [],
     };
   }
 
@@ -2709,6 +2863,7 @@
     if (!merged.events.trim()) {
       merged.events = buildLegacyDonelistEvents(merged);
     }
+    merged.scoreEntries = normalizeScoreEntries(merged.scoreEntries);
     return merged;
   }
 
@@ -2768,6 +2923,7 @@
       vent: donelistEls.vent.value,
       tomorrowPlan: donelistEls.tomorrowPlan.value,
       frogs: loadFrogsForDate(donelistViewDate),
+      scoreEntries: loadScoreEntriesForDate(donelistViewDate),
     };
   }
 
@@ -2775,6 +2931,7 @@
     const data = collectDonelistData();
     localStorage.setItem(DONELIST_KEY, JSON.stringify(data));
     localStorage.setItem(donelistDateKey(data.date || TODAY()), JSON.stringify(data));
+    syncTomorrowPlanToNextFrog(data);
     syncDonelistToSupabase(data);
   }
 
@@ -2858,6 +3015,7 @@
     donelistStepIndex = getFirstEmptyReviewStepIndex(donelistSteps);
     setDonelistMode(data.mode);
     renderDonelistFrogSummary(data.date || donelistViewDate);
+    renderDonelistScoreSummary(data.date || donelistViewDate);
     Object.values(donelistEls).forEach((el) => {
       if (el instanceof HTMLTextAreaElement) autoResizeTextarea(el);
     });
@@ -2882,11 +3040,10 @@
   function copyDonelist() {
     const dateStr = formatDonelistTag(donelistViewDate);
     const frogBlock = formatFrogCopyBlock(donelistViewDate);
+    const scoreBlock = formatScoreCopyBlock(donelistViewDate);
     if (getDonelistMode() === "free") {
       const freeform = donelistEls.freeform.value.trim();
-      const text = freeform
-        ? `${dateStr}\n\n${frogBlock}\n\n${freeform}`
-        : `${dateStr}\n\n${frogBlock}`;
+      const text = [dateStr, frogBlock, freeform, scoreBlock].filter(Boolean).join("\n\n");
       copyTextWithFeedback(text, donelistEls.copyBtn);
       return;
     }
@@ -2911,19 +3068,447 @@
 
     const planVal = donelistEls.tomorrowPlan.value.trim();
     if (planVal) parts.push(`• 明日计划:\n${planVal}`);
+    parts.push(scoreBlock);
 
     const text = `${dateStr}\n\n${parts.join("\n\n")}`;
     copyTextWithFeedback(text, donelistEls.copyBtn);
+  }
+
+  function copyDonelistTemplate() {
+    const dateStr = formatDonelistTag(donelistViewDate);
+    const fields = [
+      "蛙",
+      "随记",
+      "收获",
+      "复盘",
+      "正向链接（生活中的美好）",
+      "具体事件",
+      "感谢",
+      "夸夸自己",
+      "身体",
+      "情绪",
+      "自由发泄区",
+      "明日计划",
+      "今日打分",
+    ];
+    const blocks = fields.map((label) => {
+      if (label === "蛙") {
+        return `• ${label}:\n○ `;
+      }
+      if (label === "今日打分") {
+        return `• ${label}:\n总分：\n加分：\n扣分：\n明细：\n- `;
+      }
+      return `• ${label}:\n`;
+    });
+    copyTextWithFeedback(`${dateStr}\n\n${blocks.join("\n\n")}`, donelistEls.copyTemplateBtn);
   }
 
   function clearDonelist() {
     if (!confirm("确定要清空今天的所有日志记录吗？此操作不可恢复！")) return;
     const fields = [donelistEls.freeform, donelistEls.events, donelistEls.positive, donelistEls.gratitude, donelistEls.selfPraise, donelistEls.review, donelistEls.body, donelistEls.emotion, donelistEls.emotionKit, donelistEls.vent, donelistEls.tomorrowPlan];
     fields.forEach((el) => { el.value = ""; autoResizeTextarea(el); });
+    writeScoreEntriesForDate(donelistViewDate, [], { sync: false });
     donelistStepIndex = 0;
     updateDonelistStepView();
     saveDonelist();
   }
+
+  const scoreEls = {
+    dialog: document.getElementById("score-dialog"),
+    openBtn: document.getElementById("open-score"),
+    closeBtn: document.getElementById("score-close"),
+    total: document.getElementById("score-total"),
+    positive: document.getElementById("score-positive"),
+    negative: document.getElementById("score-negative"),
+    noteInput: document.getElementById("score-note-input"),
+    ruleButtons: document.getElementById("score-rule-buttons"),
+    ruleTitle: document.getElementById("score-rule-title"),
+    rulePoints: document.getElementById("score-rule-points"),
+    ruleAdd: document.getElementById("score-rule-add"),
+    ruleList: document.getElementById("score-rule-list"),
+    entryList: document.getElementById("score-entry-list"),
+    clearToday: document.getElementById("score-clear-today"),
+    donelistOpenScore: document.getElementById("donelist-open-score"),
+    donelistTotal: document.getElementById("donelist-score-total"),
+    donelistList: document.getElementById("donelist-score-list"),
+  };
+
+  let scoreViewDate = TODAY();
+
+  function normalizeScoreEntries(items) {
+    if (!Array.isArray(items)) return [];
+    return items
+      .filter((item) => item && typeof item === "object")
+      .map((item) => {
+        const points = Number(item.points);
+        return {
+          id: typeof item.id === "string" && item.id ? item.id : uid(),
+          ruleId: typeof item.ruleId === "string" ? item.ruleId : "",
+          title: typeof item.title === "string" ? item.title.trim() : "",
+          points: Number.isFinite(points) ? Math.trunc(points) : 0,
+          note: typeof item.note === "string" ? item.note.trim() : "",
+          createdAt:
+            typeof item.createdAt === "string" && item.createdAt.trim()
+              ? item.createdAt
+              : new Date().toISOString(),
+        };
+      })
+      .filter((item) => item.title)
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  }
+
+  function loadScoreEntriesForDate(dateStr = TODAY()) {
+    const data = loadDonelistForDate(dateStr);
+    return normalizeScoreEntries(data?.scoreEntries || []);
+  }
+
+  function writeScoreEntriesForDate(dateStr, entries, options = {}) {
+    const normalized = normalizeScoreEntries(entries);
+    const current = loadDonelistForDate(dateStr) || { ...freshDonelist(), date: dateStr };
+    const next = { ...current, date: dateStr, scoreEntries: normalized };
+    localStorage.setItem(donelistDateKey(dateStr), JSON.stringify(next));
+    if (dateStr === TODAY()) {
+      localStorage.setItem(DONELIST_KEY, JSON.stringify(next));
+    }
+    if (options.sync !== false) {
+      syncDonelistToSupabase(next);
+    }
+    renderDonelistScoreSummary(dateStr);
+  }
+
+  function getScoreTotals(entries) {
+    return entries.reduce(
+      (acc, entry) => {
+        acc.total += entry.points;
+        if (entry.points > 0) acc.positive += entry.points;
+        if (entry.points < 0) acc.negative += entry.points;
+        return acc;
+      },
+      { total: 0, positive: 0, negative: 0 },
+    );
+  }
+
+  function formatSignedPoints(points) {
+    return points > 0 ? `+${points}` : String(points);
+  }
+
+  function formatScoreTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  }
+
+  function formatScoreCopyBlock(dateStr = donelistViewDate) {
+    const entries = loadScoreEntriesForDate(dateStr);
+    const totals = getScoreTotals(entries);
+    const lines = [
+      `总分：${formatSignedPoints(totals.total)}`,
+      `加分：+${totals.positive}`,
+      `扣分：${totals.negative}`,
+      "明细：",
+    ];
+    if (!entries.length) {
+      lines.push("暂无");
+    } else {
+      entries.forEach((entry) => {
+        const note = entry.note ? `｜${entry.note}` : "";
+        lines.push(`- ${formatScoreTime(entry.createdAt)} ${formatSignedPoints(entry.points)} ${entry.title}${note}`);
+      });
+    }
+    return `• 今日打分:\n${lines.join("\n")}`;
+  }
+
+  function renderDonelistScoreSummary(dateStr = donelistViewDate) {
+    if (!scoreEls.donelistList || !scoreEls.donelistTotal) return;
+    const entries = loadScoreEntriesForDate(dateStr);
+    const totals = getScoreTotals(entries);
+    scoreEls.donelistTotal.textContent = `总分：${formatSignedPoints(totals.total)}（加分 +${totals.positive} / 扣分 ${totals.negative}）`;
+    scoreEls.donelistList.innerHTML = "";
+    if (!entries.length) {
+      const empty = document.createElement("li");
+      empty.className = "score-empty";
+      empty.textContent = "本日还没有打分明细。";
+      scoreEls.donelistList.appendChild(empty);
+      return;
+    }
+    entries.forEach((entry) => {
+      const li = document.createElement("li");
+      li.className = "score-entry-item";
+      const note = entry.note ? `<span class="score-entry-meta">${escapeHtml(entry.note)}</span>` : "";
+      li.innerHTML = `
+        <div class="score-entry-main">
+          <span class="score-entry-title">${escapeHtml(entry.title)}</span>
+          <span class="score-entry-meta">${formatScoreTime(entry.createdAt)}</span>
+          ${note}
+        </div>
+        <strong class="score-entry-points${entry.points < 0 ? " is-negative" : ""}">${formatSignedPoints(entry.points)}</strong>
+      `;
+      scoreEls.donelistList.appendChild(li);
+    });
+  }
+
+  function renderScoreHistoryBlock(entriesInput) {
+    const entries = normalizeScoreEntries(entriesInput);
+    const totals = getScoreTotals(entries);
+    let h = '<section class="panel score-summary"><h3 class="donelist-period-title">今日打分</h3>';
+    h += `<div class="score-summary-total">总分：${formatSignedPoints(totals.total)}（加分 +${totals.positive} / 扣分 ${totals.negative}）</div>`;
+    h += '<ul class="score-entry-list">';
+    if (!entries.length) {
+      h += '<li class="score-empty">这天没有打分明细。</li>';
+    } else {
+      entries.forEach((entry) => {
+        const note = entry.note ? `<span class="score-entry-meta">${escapeHtml(entry.note)}</span>` : "";
+        h += `
+          <li class="score-entry-item">
+            <div class="score-entry-main">
+              <span class="score-entry-title">${escapeHtml(entry.title)}</span>
+              <span class="score-entry-meta">${formatScoreTime(entry.createdAt)}</span>
+              ${note}
+            </div>
+            <strong class="score-entry-points${entry.points < 0 ? " is-negative" : ""}">${formatSignedPoints(entry.points)}</strong>
+          </li>
+        `;
+      });
+    }
+    h += "</ul></section>";
+    return h;
+  }
+
+  function saveScoreRules() {
+    state.scoreRules = createOrderedList(state.scoreRules.filter((rule) => rule.title.trim()));
+    saveLocalState();
+    if (state.mode === "supabase" && state.session) {
+      scheduleProviderPersist();
+    }
+  }
+
+  function renderScoreRules() {
+    const rules = getSortedScoreRules();
+    scoreEls.ruleButtons.innerHTML = "";
+    scoreEls.ruleList.innerHTML = "";
+
+    const activeRules = rules.filter((rule) => rule.active !== false);
+    if (!activeRules.length) {
+      const empty = document.createElement("div");
+      empty.className = "score-empty";
+      empty.textContent = "还没有可用规则，先在下方添加一条。";
+      scoreEls.ruleButtons.appendChild(empty);
+    } else {
+      activeRules.forEach((rule) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `score-rule-button${rule.points < 0 ? " is-negative" : ""}`;
+        button.innerHTML = `<span>${escapeHtml(rule.title)}</span><strong>${formatSignedPoints(rule.points)}</strong>`;
+        button.addEventListener("click", () => addScoreEntry(rule));
+        scoreEls.ruleButtons.appendChild(button);
+      });
+    }
+
+    rules.forEach((rule) => {
+      const li = document.createElement("li");
+      li.className = "score-rule-item";
+
+      const editor = document.createElement("div");
+      editor.className = "score-rule-editor";
+
+      const titleInput = document.createElement("input");
+      titleInput.type = "text";
+      titleInput.maxLength = 60;
+      titleInput.value = rule.title;
+      titleInput.addEventListener("change", () => {
+        rule.title = titleInput.value.trim() || "未命名规则";
+        rule.updatedAt = new Date().toISOString();
+        saveScoreRules();
+        renderScoreDialog();
+      });
+
+      const pointsInput = document.createElement("input");
+      pointsInput.type = "number";
+      pointsInput.min = "-999";
+      pointsInput.max = "999";
+      pointsInput.step = "1";
+      pointsInput.value = String(rule.points);
+      pointsInput.addEventListener("change", () => {
+        const points = Number(pointsInput.value);
+        rule.points = Number.isFinite(points) ? Math.trunc(points) : 0;
+        rule.updatedAt = new Date().toISOString();
+        saveScoreRules();
+        renderScoreDialog();
+      });
+
+      editor.appendChild(titleInput);
+      editor.appendChild(pointsInput);
+
+      const actions = document.createElement("div");
+      actions.className = "habit-item-actions";
+
+      const activeToggle = document.createElement("button");
+      activeToggle.type = "button";
+      activeToggle.className = "small-button";
+      activeToggle.textContent = rule.active === false ? "启" : "停";
+      activeToggle.title = rule.active === false ? "启用" : "停用";
+      activeToggle.addEventListener("click", () => {
+        rule.active = rule.active === false;
+        rule.updatedAt = new Date().toISOString();
+        saveScoreRules();
+        renderScoreDialog();
+      });
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "small-button danger";
+      remove.textContent = "删";
+      remove.addEventListener("click", () => {
+        if (!confirm(`确定删除“${rule.title}”吗？`)) return;
+        state.scoreRules = state.scoreRules.filter((item) => item.id !== rule.id);
+        saveScoreRules();
+        renderScoreDialog();
+      });
+
+      actions.appendChild(activeToggle);
+      actions.appendChild(remove);
+      li.appendChild(editor);
+      li.appendChild(actions);
+      scoreEls.ruleList.appendChild(li);
+    });
+  }
+
+  function renderScoreEntries() {
+    const entries = loadScoreEntriesForDate(scoreViewDate);
+    const totals = getScoreTotals(entries);
+    scoreEls.total.textContent = formatSignedPoints(totals.total);
+    scoreEls.positive.textContent = `+${totals.positive}`;
+    scoreEls.negative.textContent = String(totals.negative);
+    scoreEls.entryList.innerHTML = "";
+
+    if (!entries.length) {
+      const empty = document.createElement("li");
+      empty.className = "score-empty";
+      empty.textContent = "本日还没有打分。";
+      scoreEls.entryList.appendChild(empty);
+      return;
+    }
+
+    entries.forEach((entry) => {
+      const li = document.createElement("li");
+      li.className = "score-entry-item";
+      const main = document.createElement("div");
+      main.className = "score-entry-main";
+      const title = document.createElement("span");
+      title.className = "score-entry-title";
+      title.textContent = entry.title;
+      const meta = document.createElement("span");
+      meta.className = "score-entry-meta";
+      meta.textContent = entry.note
+        ? `${formatScoreTime(entry.createdAt)}｜${entry.note}`
+        : formatScoreTime(entry.createdAt);
+      main.appendChild(title);
+      main.appendChild(meta);
+
+      const actions = document.createElement("div");
+      actions.className = "habit-item-actions";
+      const points = document.createElement("strong");
+      points.className = `score-entry-points${entry.points < 0 ? " is-negative" : ""}`;
+      points.textContent = formatSignedPoints(entry.points);
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "small-button danger";
+      remove.textContent = "删";
+      remove.addEventListener("click", () => {
+        const next = loadScoreEntriesForDate(scoreViewDate).filter((item) => item.id !== entry.id);
+        writeScoreEntriesForDate(scoreViewDate, next);
+        renderScoreDialog();
+      });
+      actions.appendChild(points);
+      actions.appendChild(remove);
+
+      li.appendChild(main);
+      li.appendChild(actions);
+      scoreEls.entryList.appendChild(li);
+    });
+  }
+
+  function renderScoreDialog() {
+    renderScoreRules();
+    renderScoreEntries();
+    renderDonelistScoreSummary(scoreViewDate);
+  }
+
+  function openScoreDialog(dateStr = TODAY()) {
+    if (donelistEls.dialog.open && donelistViewDate === dateStr) {
+      saveDonelist();
+    }
+    scoreViewDate = dateStr;
+    scoreEls.noteInput.value = "";
+    renderScoreDialog();
+    if (!scoreEls.dialog.open) {
+      scoreEls.dialog.showModal();
+    }
+  }
+
+  function addScoreRule() {
+    const title = scoreEls.ruleTitle.value.trim();
+    const points = Number(scoreEls.rulePoints.value);
+    if (!title) {
+      alert("请先填写规则内容。");
+      scoreEls.ruleTitle.focus();
+      return;
+    }
+    if (!Number.isFinite(points)) {
+      alert("请填写有效分数。");
+      scoreEls.rulePoints.focus();
+      return;
+    }
+    state.scoreRules.push(
+      createScoreRule(
+        {
+          title,
+          points,
+          order: state.scoreRules.length,
+        },
+        state.scoreRules.length,
+      ),
+    );
+    scoreEls.ruleTitle.value = "";
+    scoreEls.rulePoints.value = "";
+    saveScoreRules();
+    renderScoreDialog();
+    scoreEls.ruleTitle.focus();
+  }
+
+  function addScoreEntry(rule) {
+    const note = scoreEls.noteInput.value.trim();
+    const entries = loadScoreEntriesForDate(scoreViewDate);
+    entries.push({
+      id: uid(),
+      ruleId: rule.id,
+      title: rule.title,
+      points: rule.points,
+      note,
+      createdAt: new Date().toISOString(),
+    });
+    writeScoreEntriesForDate(scoreViewDate, entries);
+    scoreEls.noteInput.value = "";
+    renderScoreDialog();
+  }
+
+  function clearTodayScores() {
+    if (!confirm("确定清空本日的所有打分明细吗？")) return;
+    writeScoreEntriesForDate(scoreViewDate, []);
+    renderScoreDialog();
+  }
+
+  scoreEls.openBtn.addEventListener("click", () => openScoreDialog(TODAY()));
+  scoreEls.closeBtn.addEventListener("click", () => scoreEls.dialog.close());
+  scoreEls.ruleAdd.addEventListener("click", addScoreRule);
+  scoreEls.clearToday.addEventListener("click", clearTodayScores);
+  scoreEls.ruleTitle.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") addScoreRule();
+  });
+  scoreEls.rulePoints.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") addScoreRule();
+  });
+  scoreEls.donelistOpenScore.addEventListener("click", () => openScoreDialog(donelistViewDate));
 
   donelistEls.openBtn.addEventListener("click", openDonelist);
   donelistEls.closeBtn.addEventListener("click", () => {
@@ -2931,6 +3516,7 @@
     donelistEls.dialog.close();
   });
   donelistEls.copyBtn.addEventListener("click", copyDonelist);
+  donelistEls.copyTemplateBtn.addEventListener("click", copyDonelistTemplate);
   donelistEls.modeTemplateBtn.addEventListener("click", () => {
     setDonelistMode("template");
     saveDonelist();
@@ -4143,6 +4729,7 @@
       h += '<section class="panel donelist-section"><h3 class="donelist-period-title">明日计划</h3>';
       h += `<textarea id="h-tomorrowPlan" class="donelist-input" placeholder="明天的计划是什么...">${escapeHtml(data.tomorrowPlan || "")}</textarea></section>`;
     }
+    h += renderScoreHistoryBlock(data.scoreEntries || []);
     historyEls.content.innerHTML = h;
     requestAnimationFrame(function () { refreshAutoResizeTextareas(historyEls.content); });
     void (async function () {
@@ -4176,6 +4763,7 @@
       emotionKit: mode === "free" ? (base.emotionKit || "") : getVal("h-emotionKit"),
       vent: mode === "free" ? (base.vent || "") : getVal("h-vent"),
       tomorrowPlan: mode === "free" ? (base.tomorrowPlan || "") : getVal("h-tomorrowPlan"),
+      scoreEntries: normalizeScoreEntries(base.scoreEntries),
     };
   }
 
@@ -4183,6 +4771,7 @@
     var data = collectHistoryDayData();
     var ds = `${historyState.year}-${String(historyState.month).padStart(2, "0")}-${String(historyState.day).padStart(2, "0")}`;
     localStorage.setItem(donelistDateKey(ds), JSON.stringify(data));
+    syncTomorrowPlanToNextFrog(data);
     syncDonelistToSupabase(data);
   }
 

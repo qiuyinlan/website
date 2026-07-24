@@ -36,6 +36,12 @@ create table if not exists public.user_interests (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.user_score_rules (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  content text not null check (char_length(btrim(content)) > 0),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.user_donelist (
   user_id uuid primary key references auth.users(id) on delete cascade,
   content text not null check (char_length(btrim(content)) > 0),
@@ -77,6 +83,7 @@ alter table public.habit_completions enable row level security;
 alter table public.user_mainlines enable row level security;
 alter table public.user_principles enable row level security;
 alter table public.user_interests enable row level security;
+alter table public.user_score_rules enable row level security;
 alter table public.user_donelist enable row level security;
 alter table public.user_orchard_state enable row level security;
 alter table public.user_donelist_entries enable row level security;
@@ -114,6 +121,13 @@ with check (auth.uid() = user_id);
 drop policy if exists "users_manage_own_interests" on public.user_interests;
 create policy "users_manage_own_interests"
 on public.user_interests
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+drop policy if exists "users_manage_own_score_rules" on public.user_score_rules;
+create policy "users_manage_own_score_rules"
+on public.user_score_rules
 for all
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);

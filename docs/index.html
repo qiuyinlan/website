@@ -37,10 +37,10 @@
     </script>
     <link rel="manifest" href="./manifest.webmanifest?v=2026.06.18-fireworks" />
     <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=2026.07.21-bedtime" />
+    <link rel="stylesheet" href="./styles.css?v=2026.07.24-score" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script defer src="./config.js?v=2026.06.18-fireworks"></script>
-    <script defer src="./app.js?v=2026.07.21-bedtime"></script>
+    <script defer src="./app.js?v=2026.07.24-log-template"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -56,6 +56,7 @@
           <button id="open-monthly-review" class="review-button monthly-button" type="button">月复盘</button>
           <button id="open-mood" class="mood-button" type="button">心情</button>
           <button id="open-bedtime" class="bedtime-button" type="button">早睡</button>
+          <button id="open-score" class="score-button" type="button">打分</button>
           <button id="open-frog" class="frog-button" type="button">蛙</button>
           <details id="extension-menu" class="extension-menu">
             <summary aria-label="打开扩展功能">＋</summary>
@@ -113,6 +114,7 @@
               <button id="donelist-mode-guided" class="review-mode-btn" type="button" aria-pressed="false">逐个记</button>
             </div>
             <button id="donelist-copy" class="secondary-button" type="button">复制全部</button>
+            <button id="donelist-copy-template" class="secondary-button" type="button">复制模板</button>
             <button id="donelist-clear" class="secondary-button danger-button" type="button">清空</button>
             <button id="donelist-goto-history" class="secondary-button" type="button">回顾</button>
             <button id="donelist-close" class="ghost-button" type="button">关闭</button>
@@ -212,6 +214,15 @@
             </section>
           </div>
         </div>
+
+        <section id="donelist-score-summary" class="panel score-summary" aria-live="polite">
+          <div class="frog-summary-head">
+            <h3 class="donelist-period-title">今日打分</h3>
+            <button id="donelist-open-score" class="secondary-button frog-summary-edit" type="button">编辑打分</button>
+          </div>
+          <div id="donelist-score-total" class="score-summary-total">总分：0</div>
+          <ul id="donelist-score-list" class="score-entry-list"></ul>
+        </section>
       </div>
     </dialog>
 
@@ -422,6 +433,81 @@
             <button id="frog-add" class="primary-button" type="button">添加蛙</button>
           </div>
           <ul id="frog-list" class="frog-list"></ul>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="score-dialog" class="settings-dialog score-dialog">
+      <div class="settings-shell score-shell">
+        <header class="settings-header">
+          <div>
+            <p class="eyebrow">Score</p>
+            <h2>本日打分</h2>
+          </div>
+          <button id="score-close" class="ghost-button" type="button">关闭</button>
+        </header>
+
+        <section class="panel score-overview" aria-live="polite">
+          <div>
+            <p class="score-kicker">本日总分</p>
+            <p id="score-total" class="score-total">0</p>
+          </div>
+          <div class="score-stat-grid">
+            <div class="score-stat score-stat-positive">
+              <span>加分</span>
+              <strong id="score-positive">+0</strong>
+            </div>
+            <div class="score-stat score-stat-negative">
+              <span>扣分</span>
+              <strong id="score-negative">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel score-panel">
+          <div class="panel-header">
+            <div>
+              <h3>快速记一笔</h3>
+              <p>点一下规则就会记录分数和当前时间；备注可以留空。</p>
+            </div>
+          </div>
+          <label>
+            备注
+            <input id="score-note-input" type="text" maxlength="120" placeholder="可选，例如：为什么加/扣这一分" />
+          </label>
+          <div id="score-rule-buttons" class="score-rule-buttons"></div>
+        </section>
+
+        <section class="panel score-panel">
+          <div class="panel-header">
+            <div>
+              <h3>自定义规则</h3>
+              <p>分数可以填正数或负数，之后会出现在上面的快速按钮里。</p>
+            </div>
+          </div>
+          <div class="score-rule-form">
+            <label>
+              内容
+              <input id="score-rule-title" type="text" maxlength="60" placeholder="例如：主动开始困难任务" />
+            </label>
+            <label>
+              分数
+              <input id="score-rule-points" type="number" min="-999" max="999" step="1" placeholder="5" />
+            </label>
+            <button id="score-rule-add" class="primary-button" type="button">添加</button>
+          </div>
+          <ul id="score-rule-list" class="score-rule-list"></ul>
+        </section>
+
+        <section class="panel score-panel">
+          <div class="panel-header">
+            <div>
+              <h3>本日明细</h3>
+              <p>会出现在每日志末尾，复制时也会一起复制出去。</p>
+            </div>
+            <button id="score-clear-today" class="secondary-button danger-button" type="button">清空本日</button>
+          </div>
+          <ul id="score-entry-list" class="score-entry-list"></ul>
         </section>
       </div>
     </dialog>
