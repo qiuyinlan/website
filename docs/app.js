@@ -3040,10 +3040,9 @@
   function copyDonelist() {
     const dateStr = formatDonelistTag(donelistViewDate);
     const frogBlock = formatFrogCopyBlock(donelistViewDate);
-    const scoreBlock = formatScoreCopyBlock(donelistViewDate);
     if (getDonelistMode() === "free") {
       const freeform = donelistEls.freeform.value.trim();
-      const text = [dateStr, frogBlock, freeform, scoreBlock].filter(Boolean).join("\n\n");
+      const text = [dateStr, frogBlock, freeform].filter(Boolean).join("\n\n");
       copyTextWithFeedback(text, donelistEls.copyBtn);
       return;
     }
@@ -3068,7 +3067,6 @@
 
     const planVal = donelistEls.tomorrowPlan.value.trim();
     if (planVal) parts.push(`• 明日计划:\n${planVal}`);
-    parts.push(scoreBlock);
 
     const text = `${dateStr}\n\n${parts.join("\n\n")}`;
     copyTextWithFeedback(text, donelistEls.copyBtn);
@@ -3078,7 +3076,6 @@
     const dateStr = formatDonelistTag(donelistViewDate);
     const fields = [
       "蛙",
-      "随记",
       "收获",
       "复盘",
       "正向链接（生活中的美好）",
@@ -3089,14 +3086,10 @@
       "情绪",
       "自由发泄区",
       "明日计划",
-      "今日打分",
     ];
     const blocks = fields.map((label) => {
       if (label === "蛙") {
         return `• ${label}:\n○ `;
-      }
-      if (label === "今日打分") {
-        return `• ${label}:\n总分：\n加分：\n扣分：\n明细：\n- `;
       }
       return `• ${label}:\n`;
     });
@@ -3117,6 +3110,7 @@
     dialog: document.getElementById("score-dialog"),
     openBtn: document.getElementById("open-score"),
     closeBtn: document.getElementById("score-close"),
+    copyBtn: document.getElementById("score-copy"),
     total: document.getElementById("score-total"),
     positive: document.getElementById("score-positive"),
     negative: document.getElementById("score-negative"),
@@ -3498,8 +3492,16 @@
     renderScoreDialog();
   }
 
+  function copyScore() {
+    copyTextWithFeedback(
+      `${formatDonelistTag(scoreViewDate)}\n\n${formatScoreCopyBlock(scoreViewDate)}`,
+      scoreEls.copyBtn,
+    );
+  }
+
   scoreEls.openBtn.addEventListener("click", () => openScoreDialog(TODAY()));
   scoreEls.closeBtn.addEventListener("click", () => scoreEls.dialog.close());
+  scoreEls.copyBtn.addEventListener("click", copyScore);
   scoreEls.ruleAdd.addEventListener("click", addScoreRule);
   scoreEls.clearToday.addEventListener("click", clearTodayScores);
   scoreEls.ruleTitle.addEventListener("keydown", (event) => {

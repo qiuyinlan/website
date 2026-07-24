@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="./styles.css?v=2026.07.24-score" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script defer src="./config.js?v=2026.06.18-fireworks"></script>
-    <script defer src="./app.js?v=2026.07.24-log-template"></script>
+    <script defer src="./app.js?v=2026.07.24-score-copy"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -444,7 +444,10 @@
             <p class="eyebrow">Score</p>
             <h2>本日打分</h2>
           </div>
-          <button id="score-close" class="ghost-button" type="button">关闭</button>
+          <div class="mainline-actions">
+            <button id="score-copy" class="secondary-button" type="button">复制打分</button>
+            <button id="score-close" class="ghost-button" type="button">关闭</button>
+          </div>
         </header>
 
         <section class="panel score-overview" aria-live="polite">
